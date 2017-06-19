@@ -1,0 +1,24 @@
+﻿@model int
+
+@{ 
+    string[] headers = { "Media", "Companies", "People" };
+}
+
+<div class="col-md-4">
+    <div class="form-group rel-group-header">
+        <h4>@headers[Model]</h4>
+        <div class="header-control-panel">
+            <div class="header-control">
+                <label>Add</label>
+                <button type="button" class="btn btn-sm btn-primary" onclick="addRelationship(@Model)"><span class="glyphicon glyphicon-plus"></span></button>
+            </div>
+            <div class="header-control header-space"></div>
+            <div class="header-control header-control-left">
+                <label>Clear</label>
+                <button type="button" class="btn btn-sm btn-danger" onclick="clearRelationships(@Model)"><span class="glyphicon glyphicon-remove-circle"></span></button>
+            </div>
+        </div>
+    </div>
+    <div class="scroll-panel" id="rel-content-@Model">
+    </div>
+</div>

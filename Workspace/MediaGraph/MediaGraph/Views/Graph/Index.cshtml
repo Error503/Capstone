@@ -1,0 +1,30 @@
+﻿@model string
+@{
+    ViewBag.Title = "Index";
+    AjaxOptions ajaxSearchOptions = new AjaxOptions
+    {
+        OnSuccess = "RenderData",
+        Url = Url.Action("GetNodeData", new { id = Guid.Empty }),
+        UpdateTargetId = "mini-graph-wrap",
+    };
+}
+
+@section scripts {
+    <script src="~/Scripts/myScripts/graphRenderer.js"></script> 
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/bower_components/svg.js/dist/svg.min.js"></script>
+}
+
+<h2>Index</h2>
+
+<article>
+    <section class="graph-control-panel">
+        <button type="button" onclick="getFullData('00000000-0000-0000-0000-000000000000')">Test:    No Node</button>
+        <button type="button" onclick="getFullData('00000000-0000-0000-0000-000000000001')">Test: Yes Node</button>
+    </section>
+    <section id="mini-graph-wrap">
+
+    </section>
+</article>
+

@@ -1,0 +1,33 @@
+﻿@model MediaGraph.ViewModels.SearchViewModel
+@{
+    ViewBag.Title = "Search";
+    AjaxOptions options = new AjaxOptions
+    {
+        UpdateTargetId = "advanced-search-section",
+        InsertionMode = InsertionMode.Replace,
+        Url = Url.Action("GetAdvancedSearchFields")
+    };
+}
+@section css {
+    <link rel="stylesheet" type="text/css" href="~/Content/mediaPageStyle.css" />
+}
+@section headScripts {
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>    
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/myScripts/searchScript.js"></script>
+}
+
+<h2>Search</h2>
+
+<article>
+    <section class="search-form">
+        @Html.Partial("_SearchFormPartial", Model)
+        <section class="other-search-options">
+            <h4>Other Search Options</h4>
+            <ul>
+                <li>Shortest Path Search</li>
+            </ul>
+        </section>
+    </section>
+</article>
+

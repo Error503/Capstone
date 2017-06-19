@@ -1,0 +1,20 @@
+﻿@model MediaGraph.Models.AdvancedSearchDataViewModel
+@{
+    ViewBag.Title = "AdvancedSearch";
+}
+
+<h2>Advanced Search</h2>
+
+<!-- May want to move this into a partial view in case it is used elsewhere. -->
+@using (Html.BeginForm("AdvancedSearch", "MediaDisplay", FormMethod.Post))
+{
+    Html.ValidationSummary();
+    <h3>I'm looking for...</h3>
+    <span class="search-text">A</span>
+    @Html.EnumDropDownListFor(x => Model.StartingNodeLabel)
+    <span class="search-text">named</span>
+    @Html.TextBoxFor(x => Model.StartingNodeName)
+    <span class="search-text">related to</span>
+    @Html.EnumDropDownListFor(x => Model.EndingLodeLabel)
+    <input type="submit" value="Search"/>
+}

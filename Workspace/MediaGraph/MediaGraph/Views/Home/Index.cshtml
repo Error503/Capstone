@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section headScripts {
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/myScripts/homepage.js"></script>
+}
+@section css {
+    <link rel="stylesheet" type="text/css" href="~/Content/home/HomePage.css" />
+}
+<article class="body-wrapper">
+    <section class="main-control-panel">
+        @* TODO: Instead of buttons, these could be links to the other pages of the site *@
+        <button type="button" class="control-button" id="searchButton" onclick="searchButtonClicked()">Search</button>
+        <button type="button" class="control-button" id="createButton" onclick="createButtonClicked()">Create</button>
+        <button type="button" class="control-button" id="profileButton" onclick="profileButtonClicked()">Profile</button>
+    </section>
+    <section id="response-section">
+        @* Response from Ajax requests will go here*@
+    </section>
+</article>

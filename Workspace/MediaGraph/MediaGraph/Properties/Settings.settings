@@ -1,0 +1,39 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MediaGraph.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="neo4jLogin" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">neo4j</Value>
+    </Setting>
+    <Setting Name="neo4jPass" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">meaninglessPassword</Value>
+    </Setting>
+    <Setting Name="mediaNodeWidth" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="mediaNodeHeight" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="mediaNodeTextInset" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">7.5</Value>
+    </Setting>
+    <Setting Name="mediaNodeLineHeight" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="mediaGraphRowSpacing" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="mediaGraphColSpacing" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">25</Value>
+    </Setting>
+    <Setting Name="mediaGraphWidth" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="mediaGraphHeight" Type="System.Single" Scope="Application">
+      <Value Profile="(Default)">500</Value>
+    </Setting>
+    <Setting Name="neo4jUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">bolt://localhost</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

@@ -1,0 +1,69 @@
+﻿@model MediaGraph.ViewModels.Edit.NodeDescriptionViewModel
+@{ 
+    ViewBag.Title = "Edit Request";
+    object formStyle = new { @class = "form-control", autocomplete = "off" };
+}
+@section scripts {
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/myScripts/nodeForm.js"></script>
+}
+@section css {
+    <link rel="stylesheet" type="text/css" href="~/Content/form.css"/>   
+}
+<h2>Edit Request</h2>
+<article>
+    @using (Html.BeginForm("Index", "NodeEdit", new { autocomplete = "off" }))
+    {
+        if (!ViewContext.ViewData.ModelState.IsValid)
+        {
+            <section class="form-group row">
+                @Html.ValidationSummary()
+            </section>
+        }
+        <section class="form-group row fancy-section">
+            <h4>General Information</h4>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.SimpleType)
+                    @Html.EnumDropDownListFor(x => x.SimpleType, "Content Type", formStyle)
+                </div>
+                <div id="content-description">
+                    <p>A content description should go here.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.PrimaryName)
+                    @Html.TextBoxFor(x => x.PrimaryName, formStyle)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.AlternateNames)
+                    @Html.TextAreaFor(x => x.AlternateNames, formStyle)
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label id="date-label">Date</label>
+                    <input type="date" name=@Html.NameFor(x => x.Date) class="form-control" />
+                </div>
+            </div>
+        </section>
+        <section class="form-group row fancy-section" id="media-information-section" hidden>
+            <h4>Media Information</h4>
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Franchise)
+                    @Html.TextBoxFor(x => x.Franchise, formStyle)
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Genres)
+                    <small>Not Implemented Yet</small>
+                </div>
+            </div>
+        </section>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    }
+</article>

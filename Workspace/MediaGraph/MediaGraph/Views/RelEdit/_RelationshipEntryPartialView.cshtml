@@ -1,0 +1,21 @@
+﻿@model MediaGraph.ViewModels.Edit.RelationshipViewModel
+@{
+    int uid = (new Random()).Next();
+    string collapseId = "rel-entry-" + Model.RelationshipType + "-" + uid;
+}
+<div class="rel-entry" id="rel-entry-@uid">
+    <div class="rel-entry-head">
+        <span class="rel-entry-label" id="rel-entry-label-@uid">Label here</span>
+        <div class="rel-entry-control">
+            <button class="btn btn-xs btn-default" type="button" data-toggle="collapse" data-target=@("#" + collapseId) aria-expanded="false" aria-controls="@collapseId"><span class="glyphicon glyphicon-chevron-down"></span></button>
+            <button class="btn btn-xs btn-danger" type="button" onclick="removeRelationship(this)"><span class="glyphicon glyphicon-remove"></span></button> 
+        </div>
+    </div>
+    <div class="collapse rel-entry-content" id="@collapseId">
+        <input type="hidden" id="targetId" value="-1" />
+        <label class="block-label">Target Name</label>
+        <input class="form-control" id="auto-@uid"/>
+        <label class="block-label">Roles</label>
+        <textarea class="form-control"></textarea>
+    </div>
+</div>
