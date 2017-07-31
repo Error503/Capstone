@@ -1,13 +1,15 @@
-﻿using System;
+﻿using MediaGraph.Code;
+using MediaGraph.Models;
+using MediaGraph.Models.Component;
+using MediaGraph.ViewModels;
+using MediaGraph.ViewModels.Edit;
+using Neo4j.Driver.V1;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using MediaGraph.ViewModels;
-using MediaGraph.Models;
-using MediaGraph.Code;
-using MediaGraph.ViewModels.Edit;
-using System.Threading.Tasks;
 
 namespace MediaGraph.Controllers
 {
@@ -18,6 +20,7 @@ namespace MediaGraph.Controllers
 
         public static List<NodeDescriptionViewModel> nodes = new List<NodeDescriptionViewModel>();
 
+        #region Node Edit
         [HttpGet]
         // GET: NodeEdit/Index/<GUID>
         public ActionResult Index(Guid? id)
@@ -28,8 +31,8 @@ namespace MediaGraph.Controllers
             }
             else
             {
-                // TODO: Get the node with the specified id
-                NodeDescriptionViewModel toEdit = nodes.SingleOrDefault(x => x.NodeId == id);
+                // Find the node to edit
+                NodeDescription toEdit = databaseDriver.GetNode(id.As<Guid>());
                 if(toEdit != null)
                 {
                     // The node was found, return it
@@ -42,26 +45,37 @@ namespace MediaGraph.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult EditNode()
+        {
+            return View();
+        }
+
         [HttpPost]
-        // POST: NodeEdit/Index
-        public ActionResult Index(NodeDescriptionViewModel model)
+        // POST: NodeEdit/CreateNode
+        public ActionResult CreateNode(NodeDescriptionViewModel model)
         {
             // If the model state is invalid,
             if (!ModelState.IsValid)
             {
                 // Return the view
-                return View(model: model);
+                return View("Index", model: model);
             }
             else
             {
-                // TODO: Handle valid requests
-
-                // Put the valid model into the testing collection
-                nodes.Add(model);
-
-                // Redirect the user
-                return RedirectToAction("Index", "Home");
+                // Attempt to put the node in the database,
+                //if (databaseDriver.AddNode(NodeDescription.FromViewModel(model)))
+                    // The creation was successful, redirect
+                    // Add the view model data to the session storage
+                    Session.Add("createdNode", model);
+                    return RedirectToAction("RequestAccepted", model.NodeId);
             }
         }
+
+        public ActionResult RequestAccepted()
+        {
+            return View(Session["createdNode"].As<NodeDescriptionViewModel>());
+        }
+        #endregion
     }
 }

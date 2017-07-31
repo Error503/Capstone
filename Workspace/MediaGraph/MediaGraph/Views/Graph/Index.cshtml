@@ -1,30 +1,40 @@
 ﻿@model string
 @{
-    ViewBag.Title = "Index";
-    AjaxOptions ajaxSearchOptions = new AjaxOptions
-    {
-        OnSuccess = "RenderData",
-        Url = Url.Action("GetNodeData", new { id = Guid.Empty }),
-        UpdateTargetId = "mini-graph-wrap",
-    };
+    ViewBag.Title = "Visualization";
+}
+
+@section css {
+    <link rel="stylesheet" type="text/css" href="~/Content/graphStyle.css" />    
 }
 
 @section scripts {
-    <script src="~/Scripts/myScripts/graphRenderer.js"></script> 
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/bower_components/svg.js/dist/svg.min.js"></script>
+    <script src="~/Scripts/myScripts/graph/graphRenderer.js"></script>
+    <script src="~/Scripts/myScripts/graph/graph-control.js"></script>
 }
 
-<h2>Index</h2>
+<h2>Graph</h2>
 
 <article>
-    <section class="graph-control-panel">
-        <button type="button" onclick="getFullData('00000000-0000-0000-0000-000000000000')">Test:    No Node</button>
-        <button type="button" onclick="getFullData('00000000-0000-0000-0000-000000000001')">Test: Yes Node</button>
+    <section id="graph">
     </section>
-    <section id="mini-graph-wrap">
+    <section>
+        <!-- 
+            Questions for Mr.Beatty:
 
+            1) Is there a good way to create a color palette for large numbers of colors?
+                - Color coding the graph by node and relationship would take at least 8 colors
+            2) What are some ways to model user-defined one-to-many relationships in a web form?
+                - Would it be better to have those relationships determined on the back end?
+                    -- I think that might be a better way to implement relationships actually. I would handle it, and not the users.
+                - Actually... I'm already doing this
+            3) I would like to connect nodes with a smooth beizer curve. I have never worked with them before.
+                Do you have any tips on how I can calculate control points?
+            4) What are some things I should keep in mind when designing a website for mobile devices?
+            5) 
+        -->
     </section>
 </article>
 

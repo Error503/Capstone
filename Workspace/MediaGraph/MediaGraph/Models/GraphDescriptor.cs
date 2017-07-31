@@ -25,6 +25,7 @@ namespace MediaGraph.Models
     }
 
     [JsonObject]
+    [Obsolete]
     public class NodeDefinition
     {
         [JsonProperty("id")]

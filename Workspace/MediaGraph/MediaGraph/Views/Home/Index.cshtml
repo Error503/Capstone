@@ -1,23 +1,25 @@
-﻿@{
+﻿@model MediaGraph.ViewModels.Edit.NodeDescriptionViewModel
+@{
     ViewBag.Title = "Home Page";
 }
-@section headScripts {
-    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
+@section scripts {
     <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script src="~/Scripts/myScripts/homepage.js"></script>
 }
-@section css {
-    <link rel="stylesheet" type="text/css" href="~/Content/home/HomePage.css" />
-}
-<article class="body-wrapper">
-    <section class="main-control-panel">
-        @* TODO: Instead of buttons, these could be links to the other pages of the site *@
-        <button type="button" class="control-button" id="searchButton" onclick="searchButtonClicked()">Search</button>
-        <button type="button" class="control-button" id="createButton" onclick="createButtonClicked()">Create</button>
-        <button type="button" class="control-button" id="profileButton" onclick="profileButtonClicked()">Profile</button>
-    </section>
-    <section id="response-section">
-        @* Response from Ajax requests will go here*@
+
+<article>
+    <section class="row">
+        <form id="test-form" class="col s12" autocomplete="off">
+            <div class="row">
+                <div class="input-field col s6">
+                    <input id="english_name" type="text">
+                    <label for="english_name">English Name</label>
+                </div>
+                <div class="input-field col s6">
+                    <div id="other_names" class="chips chips-placeholder"></div>
+                    <label for="other_names">Other Names</label>
+                </div>
+            </div>
+        </form>
     </section>
 </article>

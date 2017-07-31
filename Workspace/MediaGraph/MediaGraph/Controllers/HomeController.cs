@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaGraph.ViewModels.Edit;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,7 +11,7 @@ namespace MediaGraph.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return View(model: null);
         }
 
         public ActionResult About()

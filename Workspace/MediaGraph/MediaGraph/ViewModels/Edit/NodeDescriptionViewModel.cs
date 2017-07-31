@@ -9,41 +9,30 @@ using System.Threading.Tasks;
 
 namespace MediaGraph.ViewModels.Edit
 {
-    [JsonObject]
     public class NodeDescriptionViewModel : IValidatableObject
     {
         #region Properties
         #region Universal Required Properties
-        [JsonProperty("id")]
         public Guid NodeId { get; set; }
 
-        [JsonProperty("type")]
         [Display(Name = "Content Type")]
-        public SimpleNodeType SimpleType { get; set; }
+        public NodeType ContentType { get; set; }
 
-        [JsonProperty("date")]
-        public DateTime? Date { get; set; }
+        public DateTime? Date { get; set; } = null;
 
-        [JsonProperty("primaryName")]
         [Display(Name = "Common English Name")]
         public string PrimaryName { get; set; }
         #endregion
 
         #region Optional Properties
-        [JsonProperty("alternateNames")]
-        public IEnumerable<string> AlternateNames { get; set; } = null;
-
-        [JsonIgnore]
         [Display(Name = "Other Names")]
         public string AlternateNamesString { get; set; } = null;
 
-        [JsonProperty("franchise", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [Display(Name = "Franchise")]
         public string Franchise { get; set; } = null;
 
-        [JsonProperty("genre", DefaultValueHandling = DefaultValueHandling.Ignore)]
         [Display(Name = "Genres")]
-        public uint Genres { get; set; } = 0;
+        public long Genres { get; set; } = 0;
         #endregion
         #endregion
 
@@ -51,26 +40,37 @@ namespace MediaGraph.ViewModels.Edit
         {
             List<ValidationResult> errors = new List<ValidationResult>();
 
-            // Check the trimed primary name string
-            if (string.IsNullOrWhiteSpace((PrimaryName = PrimaryName.Trim())))
-                errors.Add(new ValidationResult("A name must be provided", new string[] { "PrimaryName" }));
-            // If there are alternate names
-            if (!string.IsNullOrWhiteSpace(AlternateNamesString))
-                // Parse the alternate names
-                AlternateNames = ParseAlternateNames();
+            // Check the Content Type
+            if (ContentType == 0)
+                errors.Add(new ValidationResult("A content type must be specified", new string[] { "ContentType" }));
+
+            // Check if a primary name was given
+            if (string.IsNullOrWhiteSpace(PrimaryName))
+            {
+                errors.Add(new ValidationResult("A primary name must be provided", new string[] { "PrimaryName" }));
+            } 
+            else
+            {
+                // Trim the name
+                PrimaryName = PrimaryName.Trim();
+            }
 
             // If this node is a media node
-            if (((int)SimpleType & (int)NodeType.Generic_Media) == (int)SimpleType)
+            if (ContentType != 0 && (ContentType & NodeTypeExtensions.kGenericMedia) == ContentType)
             {
                 // Validate as a media object
                 ValidateAsMediaNode(validationContext, ref errors);
             }
             else
             {
-                // Give the node a GUID if it needs one
-                if (NodeId == Guid.Empty)
-                    NodeId = Guid.NewGuid();
+                // This is not a media node, ensure that values of Franchise and Genres are defaults
+                Franchise = null;
+                Genres = 0;
             }
+
+            // Give the node a GUID if it needs one,
+            if (NodeId == Guid.Empty && errors.Count == 0)
+                NodeId = Guid.NewGuid();
 
             return errors;
         }
@@ -82,33 +82,12 @@ namespace MediaGraph.ViewModels.Edit
         /// <param name="errors">The collection of validation errors</param>
         private void ValidateAsMediaNode(ValidationContext context, ref List<ValidationResult> errors)
         {
-            if (Date == DateTime.MinValue)
+            // Check the release date
+            if (Date == null)
                 errors.Add(new ValidationResult("Media objects must have a valid release date", new string[] { "Date" }));
-            // If a franchise is provided, then it must be a valid franchise
-            if (!string.IsNullOrWhiteSpace(Franchise))
-            {
-                // Trim the Franchise string
-                Franchise = Franchise.Trim();
-                // Validate the provided franchise as a valid franchise
-                // TODO: Franchise validation
-            }
-            else
-            {
-                // Ensure that the value of Franchise is null if the value is not valid
-                // Protection against input strings such as "     "
-                Franchise = null;
-            }
-        }
-
-        /// <summary>
-        /// Helper method that parses the alternate names out of the comma
-        /// separated string provided
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<string> ParseAlternateNames()
-        {
-            // Split and trim non-empty elements
-            return AlternateNamesString.Split(',').Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim());
+            // Check the franchise name, set it to null if it is a bad value
+            Franchise = string.IsNullOrWhiteSpace(Franchise) ? null : Franchise;
+            // TODO: Verify genres?
         }
     }
 }

@@ -90,3 +90,34 @@ textarea {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 1.3em;
 }
+
+/* My site-wide styling */
+/* Node Popup Callback Display */
+.popup {
+    position:absolute;
+    right: 15%;
+    bottom: 5px;
+    width: 20%;
+    height: 175px;
+    max-width: 250px;
+    max-height: 300px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+.popup-content {
+    padding: 5px;
+}
+
+.popup-head {
+    width: 100%;
+    border-bottom: 2px solid black;
+    background-color: rgba(69, 212, 172, 0.29);
+}
+.popup-head h3 {
+    margin: 0;
+}
+
+.popup-title {
+    font-weight: bold;
+}
+

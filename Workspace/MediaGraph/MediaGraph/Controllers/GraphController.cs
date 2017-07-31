@@ -7,6 +7,7 @@ using MediaGraph.Code;
 using Newtonsoft.Json;
 using MediaGraph.Models;
 using Neo4j.Driver.V1;
+using MediaGraph.Models.Component;
 
 namespace MediaGraph.Controllers
 {
@@ -34,11 +35,11 @@ namespace MediaGraph.Controllers
         {
             FullNode node = null;
             // Get the node from the database
-            INode result = databaseDriver.GetNode(id);
+            NodeDescription result = databaseDriver.GetNode(id);
             // If the node exists,
             if(result != null)
             {
-                node = FullNode.FromINode(result);
+
             }
 
             return Json(node);

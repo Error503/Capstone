@@ -20,15 +20,15 @@
     "src/",
     "gulpfile.js"
   ],
-  "version": "2.6.1",
-  "_release": "2.6.1",
+  "version": "2.6.3",
+  "_release": "2.6.3",
   "_resolution": {
     "type": "version",
-    "tag": "2.6.1",
-    "commit": "f404ed77bed86f1e9184b421b34176a0b9ef716c"
+    "tag": "2.6.3",
+    "commit": "b5b263b2fe28bca4546c00cc12840ebadefdb9e6"
   },
   "_source": "https://github.com/svgdotjs/svg.js.git",
-  "_target": "2.6.1",
+  "_target": "2.6.3",
   "_originalSource": "svg.js",
   "_direct": true
 }

@@ -17,7 +17,7 @@ namespace MediaGraph.Models.Util
         /// <summary>
         /// Characters from videos, games, or audio.
         /// </summary>
-        Character = 4,
+        //Character = 4,
         /// <summary>
         /// Television shows and movies.
         /// </summary>
@@ -33,48 +33,32 @@ namespace MediaGraph.Models.Util
         /// <summary>
         /// Any type of book. 
         /// </summary>
-        Book = 64,
-        /// <summary>
-        /// Any form of media
-        /// </summary>
-        Generic_Media = Video | Audio | Game | Book
+        Book = 64
     }
 
-    public static class NodeContentTypeExtensions
+    public static class NodeTypeExtensions
     {
+        public const NodeType kGenericMedia = NodeType.Audio | NodeType.Book | NodeType.Game | NodeType.Video;
+
         /// <summary>
         /// Returns a string representing this content type label.
         /// </summary>
         /// <param name="label">The label for which to get a string form</param>
         public static string ToLabelString(this NodeType label)
         {
-            NodeType temp = label;
-            bool shouldOrLabels = false;
-            StringBuilder builder = new StringBuilder();
+            StringBuilder labelString = new StringBuilder();
 
-            // First check if the value is the generic media label
-            if((temp & NodeType.Generic_Media) == NodeType.Generic_Media)
+            // If this is a media label, 
+            if((label & kGenericMedia) == label)
             {
-                builder.Append(":Media");
-                temp ^= NodeType.Generic_Media;
-                shouldOrLabels = true;
+                // Add the media label 
+                labelString.Append(":Media");
             }
 
-            // Handle non-compound values
-            foreach (object val in Enum.GetValues(typeof(NodeType)))
-            {
-                NodeType enumVal = (NodeType)val;
-                // If the tag is present,
-                if((temp & enumVal) == enumVal)
-                {
-                    // Add the value to the 
-                    builder.Append($"{(shouldOrLabels ? "|" : "")}:{enumVal.ToString()}");
-                }
+            // Append the string value of the
+            labelString.Append(string.Format(":{0}", Enum.GetName(typeof(NodeType), label)));
 
-                temp ^= enumVal;
-            }
-
-            return builder.ToString();
+            return labelString.ToString();
         }
 
         /// <summary>

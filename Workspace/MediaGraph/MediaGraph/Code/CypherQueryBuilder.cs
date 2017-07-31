@@ -33,7 +33,7 @@ namespace MediaGraph.Code
         /// <param name="title">The title, or name, on the node</param>
         /// <param name="type">The label of the node</param>
         /// <returns>The query string to return the data for the specified node</returns>
-        public static string NodeDataQuery(string title, NodeType type = NodeType.Generic_Media)
+        public static string NodeDataQuery(string title, NodeType type)
         {
             return $"MATCH (n{type.ToLabelString()}) WHERE \"{title}\" IN n.names RETURN n";
         }

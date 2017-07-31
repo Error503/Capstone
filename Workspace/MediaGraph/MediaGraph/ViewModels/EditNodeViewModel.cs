@@ -53,7 +53,7 @@ namespace MediaGraph.ViewModels
             }
 
             // Check for other information
-            if((Labels & NodeType.Generic_Media) == Labels)
+            if((Labels & NodeTypeExtensions.kGenericMedia) == Labels)
             {
                 // This node is some form of media, so get media information
                 Franchise = node.NodeData.Properties["franchise"] as string;

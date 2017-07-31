@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewBag.Title</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="~/Content/materialize/materialize.min.css" media="screen,projection" />
+        @RenderSection("headScripts", false)
+        @RenderSection("css", false)
+    </head>
+    <body>
+        <header>
+            @Html.Partial("_NavBarPartial")
+        </header>
+        <main class="container">
+            @RenderBody()
+        </main>
+        <footer class="page-footer">
+            <div class="footer-copyright">
+                <div class="container">
+                    &copy; @DateTime.Now.Year by Tyler Voyles
+                </div>
+            </div>
+        </footer>
+        @Scripts.Render("~/bundles/core")
+        <script src="~/Scripts/materialize/materialize.min.js"></script>
+        <script src="~/Scripts/myScripts/menu.js"></script>
+        @RenderSection("scripts", required: false)
+    </body>
+</html>

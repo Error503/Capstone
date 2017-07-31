@@ -1,35 +1,67 @@
-﻿text {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
+﻿#graph {
+    /*border: 2px solid #000;*/
+    min-height: 1000px;
+    max-width: 1000px;
+    min-height: 500px;
+    max-height: 500px;
+}
+#svg-graph {
+    border: 1px solid black;
+    cursor: grab;
+}
+text tspan {
     -moz-user-select: none;
     -ms-user-select: none;
-    -o-user-select: none;
+    -webkit-user-select: none;
     user-select: none;
+    cursor: pointer;
 }
-
-.relationship-node {
-    stroke: black;
-    fill:white;
+/* Node Style */
+.node {
+    stroke-width: 0.5px;
+    stroke: #000;
+    fill: #fff;
+    cursor: pointer;
 }
-
-#relationship-layer line {
-    stroke:black;
+.node-media {
+    fill: #ababcc;
 }
-
-#mini-graph-container {
+.node-game {
+    fill: #6bde4c;
 }
-
-#mini-graph-wrap {
-    width: 95%;
-    height:350px;
-    margin: 10px auto;
-    border: 1px solid black;
-    border-radius: 5px;
-    box-shadow: 5px 5px 7px #788;
+.node-video {
+    fill: #f8ff7a;
 }
+.node-audio {
 
-#mini-graph-canvas {
-    width:100%;
-    height:500px;
+}
+.node-print {
+
+}
+.node-person {
+    fill: #bc89d1;
+}
+.node-company {
+
+}
+/* Relationship Style */
+.relationship {
+    marker-end: none;
+    stroke-width: 1.5px;
+    stroke: #000;
+}
+.relationship:hover {
+    marker-end: url(#end-mark);
+}
+.relationship-cast {
+    stroke: #d63838;
+}
+.relationship-multiple {
+    stroke: #ec5bdf;
+}
+.relationship-adaptation {
+    stroke: #ed850b;
+}
+.relationship-sequel {
+    stroke: #fe2e2e;
 }

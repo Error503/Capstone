@@ -1,0 +1,37 @@
+﻿<nav>
+    <div class="nav-wrapper">
+        @Html.ActionLink("Logo", "Index", "Home", new { area = "" }, new { @class = "brand-logo center" })
+        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>@Html.ActionLink("Add", "Index", "NodeEdit")</li>
+            <li>@Html.ActionLink("Account", "Index", "Account")</li>
+        </ul>
+        <ul class="side-nav" id="mobile-demo">
+            <li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="user-view">
+                        <div class="background">
+                        </div>
+                    </div>
+                    <a href="#!user"><span class="name">@User.Identity.Name</span></a>
+                    <a href="#!email"><span class="email">@User.Identity.Name</span></a>
+                }
+                else
+                {
+                    @Html.ActionLink("Sign up", "Register", "Account", null, new { @class = "waves-light btn" });
+                }
+            </li>
+            <li><div class="divider"></div></li>
+            <li>@Html.ActionLink("Home", "Index", "Home")</li>
+            <li>@Html.ActionLink("Add", "Index", "NodeEdit")</li>
+            @if(true)
+            {
+                <li><div class="divider"></div></li>
+                <li><span class="subheader">Admin Tools</span></li>
+                <li>Tool 1</li>
+            }
+        </ul>
+    </div>
+</nav>

@@ -26,7 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TypeScriptToolsVersion>2.1</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>2.2</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -261,6 +261,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Code\CypherQueryBuilder.cs" />
+    <Compile Include="Code\DatabaseInterface.cs" />
     <Compile Include="Code\EnumerableExtensions.cs" />
     <Compile Include="Code\IGraphDatabaseDriver.cs" />
     <Compile Include="Code\LogicalGrid.cs" />
@@ -279,6 +280,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Code\DatabaseDriver.cs" />
+    <Compile Include="Models\Component\NodeDescription.cs" />
     <Compile Include="Models\GraphDescriptor.cs" />
     <Compile Include="Models\GraphModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -305,8 +307,8 @@
     <Compile Include="ViewModels\AutocompleteLabel.cs" />
     <Compile Include="ViewModels\EditNodeViewModel.cs" />
     <Compile Include="ViewModels\Edit\NodeDescriptionViewModel.cs" />
-    <Compile Include="ViewModels\Edit\RelationshipCollectionViewModel.cs" />
-    <Compile Include="ViewModels\Edit\RelationshipViewModel.cs" />
+    <Compile Include="ViewModels\Edit\RelationshipDescriptionViewModel.cs" />
+    <Compile Include="ViewModels\Edit\RelationshipEntryViewModel.cs" />
     <Compile Include="ViewModels\Edit\SimpleNodeType.cs" />
     <Compile Include="ViewModels\MediaDataViewModel.cs" />
     <Compile Include="ViewModels\MediaNodeViewModel.cs" />
@@ -328,7 +330,10 @@
     <Content Include="Content\form.css" />
     <Content Include="Content\graphStyle.css" />
     <Content Include="Content\home\HomePage.css" />
+    <Content Include="Content\materialize\materialize.css" />
+    <Content Include="Content\materialize\materialize.min.css" />
     <Content Include="Content\mediaPageStyle.css" />
+    <Content Include="Content\requestaccepted.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -384,6 +389,16 @@
     <Content Include="bower_components\svg.js\CHANGELOG.md" />
     <Content Include="bower_components\svg.js\package.json" />
     <Content Include="bower_components\svg.js\README.md" />
+    <Content Include="Content\fonts\roboto\Roboto-Bold.woff" />
+    <Content Include="Content\fonts\roboto\Roboto-Bold.woff2" />
+    <Content Include="Content\fonts\roboto\Roboto-Light.woff" />
+    <Content Include="Content\fonts\roboto\Roboto-Light.woff2" />
+    <Content Include="Content\fonts\roboto\Roboto-Medium.woff" />
+    <Content Include="Content\fonts\roboto\Roboto-Medium.woff2" />
+    <Content Include="Content\fonts\roboto\Roboto-Regular.woff" />
+    <Content Include="Content\fonts\roboto\Roboto-Regular.woff2" />
+    <Content Include="Content\fonts\roboto\Roboto-Thin.woff" />
+    <Content Include="Content\fonts\roboto\Roboto-Thin.woff2" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -401,10 +416,13 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\materialize\materialize.js" />
+    <Content Include="Scripts\materialize\materialize.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\myScripts\homepage.js" />
+    <Content Include="Scripts\myScripts\graph\graph-control.js" />
+    <Content Include="Scripts\myScripts\menu.js" />
     <Content Include="Scripts\myScripts\nodeForm.js" />
-    <Content Include="Scripts\myScripts\graphRenderer.js" />
+    <Content Include="Scripts\myScripts\graph\graphRenderer.js" />
     <Content Include="Scripts\myScripts\relationshipForm.js" />
     <Content Include="Scripts\myScripts\searchScript.js" />
     <Content Include="Scripts\respond.js" />
@@ -456,6 +474,11 @@
     <Content Include="Views\RelEdit\_RelationshipEntryPartialView.cshtml" />
     <Content Include="Views\Shared\_SearchPartialView.cshtml" />
     <Content Include="Views\Shared\_NodeCreationCallbackPartialView.cshtml" />
+    <Content Include="Views\NodeEdit\RequestAccepted.cshtml" />
+    <Content Include="Views\Shared\_MaterialLayout.cshtml" />
+    <Content Include="Views\Shared\_NavBarPartial.cshtml" />
+    <Content Include="Views\NodeEdit\RelationshipEdit.cshtml" />
+    <Content Include="Views\NodeEdit\EditNode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

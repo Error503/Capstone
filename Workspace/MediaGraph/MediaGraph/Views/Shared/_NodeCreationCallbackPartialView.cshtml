@@ -1,1 +1,11 @@
-﻿
+﻿@model MediaGraph.ViewModels.Edit.NodeDescriptionViewModel
+
+<div class="popup" id="node-creation-callback">
+    <div class="popup-head popup-content">
+        <h3>Node Created!</h3>
+    </div>
+    <div class="popup-content">
+        <p>The node <span class='popup-title'>"@Model.PrimaryName"</span> has been created.</p>
+        @Html.ActionLink("Edit Relationships", "Index", "RelEdit", new { id = Model.NodeId } , new { @class = "placeholder" })
+    </div>
+</div>

@@ -5,41 +5,101 @@ using System.Web;
 using MediaGraph.Models;
 using Neo4j.Driver.V1;
 using MediaGraph.Models.Util;
+using MediaGraph.Models.Component;
 
 namespace MediaGraph.Code
 {
     public class Neo4jGraphDatabaseDriver : IGraphDatabaseDriver
     {
-        private const string kSingleMatchQueryFormat = "MATCH (n) WHERE \"{0}\" = n.id RETURN n";
-        private const string kDeleteQueryFormat = "MATCH (n) WHERE \"{0}\" = n.id DETACH DELETE n";
+        private const string kNodeCreationStatement = "CREATE (n{0} {1}) RETURN n";
+        private const string kNodeParameters = "{id: $id, primaryName: $primaryName, date: $date, otherNames: $otherNames, franchise: $franchise, genres: $genres}";
+        private const string kNodeDeleteStatement = "MATCH (n {id = $id}) DETATCH DELETE n";
+        private const string kSingleNodeMatchStatement = "MATCH (n {id = $id}) RETURN n";
+        private const string kRelationshipsMatchStatement = "MATCH (n { id = $id})-[r]-(e) RETURN DISTINCT r";
+        // Old Statements below
         private const string kMediaToMediaPathQueryFormat = "MATCH paths = (n)-[*1..5]-(:Media) WHERE \"{0}\" = n.id RETURN DISTINCT paths";
         private const string kNodeAndDirectConnectionsQueryFormat = "MATCH (n) WHERE \"{0}\" = n.id OPTIONAL MATCH (n)-[r]-(e) RETURN n, e, r";
 
-        public bool AddNode(EditNode node)
+        /// <summary>
+        /// Adds the given node to the graph. 
+        /// PRECONDITION: The node must be valid
+        /// </summary>
+        /// <param name="node">The NodeDefinition of the node to add to the graph</param>
+        /// <returns>Returns true if the node was added to the graph successfully</returns>
+        public bool AddNode(NodeDescription node)
+        {
+            IStatementResult result;
+            using (IDriver driver = GetDatabaseConnection())
+            {
+                // Create a session
+                using (ISession session = driver.Session())
+                {
+                    // Run the statement
+                    // TODO: Implement transactions for safer editing
+                    result = session.Run(new Statement(string.Format(kNodeCreationStatement, node.ContentType.ToLabelString(), kNodeParameters), node.GetParameterMap()));
+                }
+            }
+
+            return result.Summary.Counters.NodesCreated > 0;
+        }
+
+        public int AddRelationships(object relationships)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Deletes a node and the relationships associated with that node.
+        /// </summary>
+        /// <param name="id">The GUID of the node to remove</param>
+        /// <returns>Returns true if the node was deleted successfully</returns>
         public bool DeleteNode(Guid id)
         {
-            // Run the delete query 
-            IStatementResult queryResult = RunQuery(string.Format(kDeleteQueryFormat, id));
-            // If at least one node was deleted, then deletion was completed successfully
-            return queryResult.Summary.Counters.NodesDeleted > 0;
+            IStatementResult result;
+
+            using (IDriver driver = GetDatabaseConnection())
+            {
+                using (ISession session = driver.Session())
+                {
+                    // Run the statement
+                    result = session.Run(new Statement(kNodeDeleteStatement, new Dictionary<string, object> { { "id", id.ToString() } }));
+                }
+            }
+
+            return result.Summary.Counters.NodesDeleted > 0;
         }
 
-        public INode GetNode(Guid id)
+        public NodeDescription GetNode(Guid id)
         {
-            INode result = null;
-            IStatementResult queryResult = RunQuery(string.Format(kSingleMatchQueryFormat, id));
-            // Get the first (and only record)
-            IRecord record = queryResult.Peek();
-            // If the record exists, then get the value of the node
-            result = record?["n"].As<INode>();
-            // Consume the result
-            queryResult.Consume();
-            // Return the result
-            return result;
+            IStatementResult result;
+
+            using (IDriver driver = GetDatabaseConnection())
+            {
+                using (ISession session = driver.Session())
+                {
+                    result = session.Run(new Statement(kSingleNodeMatchStatement, new Dictionary<string, object> { { "id", id.ToString() } }));
+                }
+            }
+
+            return NodeDescription.FromINode(result.First()[0].As<INode>());
+        }
+
+        public IEnumerable<IRelationship> GetNodeRelationships(Guid id)
+        {
+            IStatementResult result;
+            List<IRelationship> relationships = new List<IRelationship>();
+
+            using (IDriver driver = GetDatabaseConnection())
+            {
+                using (ISession session = driver.Session())
+                {
+                    result = session.Run(kRelationshipsMatchStatement, new Dictionary<string, object> { { "id", id.ToString() } });
+                }
+            }
+
+            
+
+            return relationships;
         }
 
         public IEnumerable<IPath> GetPaths(Guid id)
@@ -65,6 +125,17 @@ namespace MediaGraph.Code
         {
             throw new NotImplementedException();
         }
+
+        #region Helper Methods
+        /// <summary>
+        /// Creates an IDriver to interface with the Neo4j database.
+        /// </summary>
+        /// <returns>The IDriver to use to interface with the Neo4j database</returns>
+        private IDriver GetDatabaseConnection()
+        {
+            return GraphDatabase.Driver(Properties.Settings.Default.neo4jUrl, AuthTokens.Basic(Properties.Settings.Default.neo4jLogin, Properties.Settings.Default.neo4jPass));
+        }
+        #endregion
 
         /// <summary>
         /// Private helper method that runs the given query. 

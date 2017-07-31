@@ -46,7 +46,7 @@ namespace MediaGraph.Models
         /// <returns>The FullNode object created from the INode</returns>
         public static FullNode FromINode(INode node)
         {
-            return new FullNode { Id = Guid.Parse(node.Properties["id"].As<string>()), Labels = NodeContentTypeExtensions.FromNodeLabels(node.Labels), Properties = GetPropertyDictionary(node.Properties) };
+            return new FullNode { Id = Guid.Parse(node.Properties["id"].As<string>()), Labels = NodeTypeExtensions.FromNodeLabels(node.Labels), Properties = GetPropertyDictionary(node.Properties) };
         }
 
         /// <summary>

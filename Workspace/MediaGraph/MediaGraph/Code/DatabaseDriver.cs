@@ -59,7 +59,7 @@ namespace MediaGraph.Code
                 {
                     if(node.Labels.ToList().Contains("Media"))
                     {
-                        GraphNode gNode = new GraphNode { Id = Guid.Parse(node.Properties["id"].As<string>()), Labels = NodeContentTypeExtensions.FromNodeLabels(node.Labels), Names = node.Properties["names"].As<List<string>>() };
+                        GraphNode gNode = new GraphNode { Id = Guid.Parse(node.Properties["id"].As<string>()), Labels = NodeTypeExtensions.FromNodeLabels(node.Labels), Names = node.Properties["names"].As<List<string>>() };
                         if (nodesList.Find(x => x.Id == gNode.Id) == null)
                             nodesList.Add(gNode);
                     }

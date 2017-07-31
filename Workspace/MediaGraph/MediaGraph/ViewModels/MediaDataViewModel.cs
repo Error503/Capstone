@@ -45,7 +45,7 @@ namespace MediaGraph.ViewModels
                 errors.Add(new ValidationResult("At least one name must be given.", new string[] { "Names" }));
 
             // If the label is a media type
-            if((NodeType.Generic_Media & Label) == Label)
+            if((NodeTypeExtensions.kGenericMedia & Label) == Label)
             {
                 // Allow ReleaseDate and Franchise to be null, they may not be known
                 // Validate genres

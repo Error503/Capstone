@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using MediaGraph.Models;
 using Neo4j.Driver.V1;
+using MediaGraph.Models.Component;
 
 namespace MediaGraph.Code
 {
@@ -16,7 +17,7 @@ namespace MediaGraph.Code
         /// <param name="id">The GUID of the node to return</param>
         /// <returns>The GraphNode with the specified GUID or null if
         /// no such node can be found</returns>
-        INode GetNode(Guid id);
+        NodeDescription GetNode(Guid id);
 
         /// <summary>
         /// Gets the specified node and all of its relationships so that
@@ -39,7 +40,7 @@ namespace MediaGraph.Code
         /// </summary>
         /// <param name="node">The EditNode to add to the database</param>
         /// <returns>Returns true if the node was added successfully</returns>
-        bool AddNode(EditNode node);
+        bool AddNode(NodeDescription node);
 
         /// <summary>
         /// Attempts to update a node in the database by using a FullNode.
