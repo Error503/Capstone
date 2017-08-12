@@ -81,7 +81,7 @@ namespace MediaGraph.ViewModels.Edit
         /// <param name="context">The validation context</param>
         /// <param name="errors">The collection of validation errors</param>
         private void ValidateAsMediaNode(ValidationContext context, ref List<ValidationResult> errors)
-        {
+        { 
             // Check the release date
             if (Date == null)
                 errors.Add(new ValidationResult("Media objects must have a valid release date", new string[] { "Date" }));

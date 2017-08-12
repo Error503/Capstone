@@ -1,0 +1,8 @@
+﻿.relationship-group {
+    overflow-y: scroll;
+    height: 250px;
+    max-height: 250px;
+}
+.collection-link {
+    cursor: pointer;
+}

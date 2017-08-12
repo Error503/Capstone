@@ -1,37 +1,37 @@
-﻿<nav>
-    <div class="nav-wrapper">
-        @Html.ActionLink("Logo", "Index", "Home", new { area = "" }, new { @class = "brand-logo center" })
-        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-        <ul class="right hide-on-med-and-down">
-            <li>@Html.ActionLink("Home", "Index", "Home")</li>
-            <li>@Html.ActionLink("Add", "Index", "NodeEdit")</li>
-            <li>@Html.ActionLink("Account", "Index", "Account")</li>
-        </ul>
-        <ul class="side-nav" id="mobile-demo">
+﻿@using Microsoft.AspNet.Identity
+<div class="navbar-fixed">
+    <nav>
+        <div class="nav-wrapper">
+            @Html.ActionLink("Logo", "Index", "Home", new { area = "" }, new { @class = "brand-logo center" })
+            <a href="#" data-activates="side-nav" class="button-collapse"><i class="material-icons">menu</i></a>
+            <ul class="left hide-on-med-and-down">
+                <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                <li>@Html.ActionLink("Add", "Index", "Edit")</li>
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </nav>
+</div>
+<ul class="side-nav" id="side-nav">
+    @if(Request.IsAuthenticated)
+    {
+        <li class="hide-on-med-and-up">
+            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+        </li>
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutFormSide", @class = "hide-on-med-and-up" }))
+        {
+            @Html.AntiForgeryToken()
             <li>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <div class="user-view">
-                        <div class="background">
-                        </div>
-                    </div>
-                    <a href="#!user"><span class="name">@User.Identity.Name</span></a>
-                    <a href="#!email"><span class="email">@User.Identity.Name</span></a>
-                }
-                else
-                {
-                    @Html.ActionLink("Sign up", "Register", "Account", null, new { @class = "waves-light btn" });
-                }
+                <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
             </li>
-            <li><div class="divider"></div></li>
-            <li>@Html.ActionLink("Home", "Index", "Home")</li>
-            <li>@Html.ActionLink("Add", "Index", "NodeEdit")</li>
-            @if(true)
-            {
-                <li><div class="divider"></div></li>
-                <li><span class="subheader">Admin Tools</span></li>
-                <li>Tool 1</li>
-            }
-        </ul>
-    </div>
-</nav>
+        }
+    }
+    else
+    {
+        <li class="hide-on-med-and-up">@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li class="hide-on-med-and-up">@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    }
+    <li class="hide-on-med-and-up"><div class="divider"></div></li>
+    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+    <li>@Html.ActionLink("Add", "Index", "Edit")</li>
+</ul>

@@ -1,25 +1,23 @@
-﻿@model MediaGraph.ViewModels.Edit.NodeDescriptionViewModel
-@{
+﻿@{
     ViewBag.Title = "Home Page";
 }
-@section scripts {
-    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-}
 
-<article>
-    <section class="row">
-        <form id="test-form" class="col s12" autocomplete="off">
-            <div class="row">
-                <div class="input-field col s6">
-                    <input id="english_name" type="text">
-                    <label for="english_name">English Name</label>
-                </div>
-                <div class="input-field col s6">
-                    <div id="other_names" class="chips chips-placeholder"></div>
-                    <label for="other_names">Other Names</label>
-                </div>
-            </div>
-        </form>
+<article class="row">
+    <section class="col s12 m8">
+        <h4>Main Content</h4>
     </section>
+    @if(User.IsInRole("admin"))
+    {
+        <section class="col s12 m4 card-panel teal lighten-2">
+            <h4 class="white-text center">Admin Tools</h4>
+            <ul>
+                <li>@Html.ActionLink("Manage Edit Requests", "Index", "RequestManager", null, new { @class = "white-text" })</li>
+                <li>@Html.ActionLink("Upload Node File", "Upload", "Edit", null, new { @class = "white-text" })</li>
+                @if (User.IsInRole("staff"))
+                {
+                    <li>@Html.ActionLink("Manage Users", "Index", "UserManager", null, new { @class = "white-text" })</li>
+                }
+            </ul>
+        </section>
+    }
 </article>
