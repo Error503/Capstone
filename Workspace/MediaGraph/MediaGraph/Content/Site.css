@@ -12,3 +12,25 @@ main {
 .active-item {
     font-size: 1.5em;
 }
+.small-text {
+    font-size: 0.8rem;
+}
+.info-display {
+    min-height: 200px;
+    height: 250px;
+}
+.scroll-list {
+    height: 200px;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+#request-list {
+    overflow-y: scroll;
+    max-height: 50vh
+}
+
+#page-selection-box {
+    width: 50px;
+    text-align: center;
+    border-radius: 5px;
+}

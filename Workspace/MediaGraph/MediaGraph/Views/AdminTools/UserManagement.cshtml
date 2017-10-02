@@ -1,0 +1,102 @@
+﻿@{
+    ViewBag.Title = "UserManagement";
+    Layout = "~/Views/Shared/_ContainerLayout.cshtml";
+}
+<div ng-app="UserManagerApp" ng-controller="UserManagerController">
+    <article id="filter" class="row">
+        <section class="col s12 m6 l3">
+            <div class="input-field">
+                <label for="userNameField">Username</label>
+                <input id="userNameField" name="userName" type="text" ng-model="filter.userName" />
+            </div>
+        </section>
+        <section class="col s12 m6 l3">
+            <div class="input-field">
+                <label for="userEmailField">Email</label>
+                <input id="userEmailField" name="userEmail" type="text" ng-model="filter.userEmail" />
+            </div>
+        </section>
+        <section class="col s12 m6 l3">
+            <div class="input-field">
+                <select id="resultsPerPage">
+                    <option value="1">1</option>
+                    <option value="10">10</option>
+                    <option value="25" selected>25</option>
+                    <option value="50">50</option>
+                </select>
+            </div>
+        </section>
+        <section class="col s12 m6 l3">
+            <div class="input-field">
+                <button type="submit" class="waves-effect waves-light btn" ng-click="applyFilter()">Filter</button>
+            </div>
+        </section>
+    </article>
+    <article class="row">
+        <section id="user-table" class="col s12">
+            <div class="row">
+                <div class="col s3">
+                    <span>Username</span>
+                </div>
+                <div class="col s3">
+                    <span>Email</span>
+                </div>
+                <div class="col s3">
+                    <span>Roles</span>
+                </div>
+                <div class="col s3">
+                    <span>Update</span>
+                </div>
+            </div> 
+            <div id="user-list" class="collection">
+                <section class="row collection-item" ng-repeat="user in users track by $index" user-list-directive>
+                    <div class="col s4 m3">
+                        <div class="input-field">
+                            <span class="truncate" ng-bind="user.Username"></span>
+                        </div>
+                    </div>
+                    <div class="col s4 m3">
+                        <div class="input-field">
+                            <span class="truncate" ng-bind="user.Email"></span>
+                        </div>
+                    </div>
+                    <div class="col s4 m3">
+                        <select name="roles">
+                            <option value="0">User</option>
+                            <option value="1">Admin</option>
+                            <option value="2">Staff</option>
+                        </select>
+                    </div>
+                    <div clsas="col s4 m3">
+                        <div class="input-field">
+                            <button type="button" class="waves-effect waves-light btn" ng-click="updateUser($index)">Update</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </section>
+        <section id="preloader" class="center">
+            <div class="preloader-wrapper">
+                <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div><div class="gap-patch">
+                        <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
+    <article class="row">
+        <section class="col s12 center">
+            <button type="button" class="waves-effect waves-light btn" ng-class="{'disabled': currentPage == 1}" ng-click="getPage(currentPage - 1)"><i class="material-icons">chevron_left</i></button>
+            <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="{{currentPage}}" /> of {{totalPages}}</span>
+            <button type="button" class="waves-effect waves-light btn" ng-class="{'disabled': currentPage == totalPages}" ng-click="getPage(currentPage + 1)"><i class="material-icons">chevron_right</i></button>
+        </section>
+    </article>
+</div>
+@section scripts {
+    <script src="~/Scripts/myScripts/angular_scripts/userManagerApp.js"></script>
+}

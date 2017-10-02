@@ -1,0 +1,31 @@
+﻿<article class="row">
+    <h5 class="left-align">Filter</h5>
+    <section class="col s3">
+        <div class="input-field">
+            <label for="submitterName">Submitted By</label>
+            <input id="submitterName" type="text" ng-model="filterSettings.SubmitterName" />
+        </div>
+    </section>
+    <section class="col s3">
+        <div class="input-field">
+            <label for="targetName">Node Name</label>
+            <input id="targetName" type="text" ng-model="filterSettings.TargetName" />
+        </div>
+    </section>
+    <section class="col s3">
+        <div class="input-field">
+            <label for="submissionDate">Submission Date</label>
+            <input id="submissionDate" type="text" class="datepicker" />
+        </div>
+    </section>
+    <section class="col s3">
+        <div class="input-field">
+            <select id="requestType">
+                <option value="0" selected>Request Type</option>
+                <option value="1">Add</option>
+                <option value="2">Update</option>
+                <option value="3">Delete</option>
+            </select>
+        </div>
+    </section>
+</article>

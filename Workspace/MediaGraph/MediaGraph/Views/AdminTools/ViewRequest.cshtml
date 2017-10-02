@@ -1,0 +1,124 @@
+﻿@using MediaGraph.ViewModels
+@model  MediaGraph.Models.DatabaseRequestViewModel
+@{
+    ViewBag.Title = "Review Request";
+    Layout = "~/Views/Shared/_ContainerLayout.cshtml";
+}
+<div class="row">
+    <div class="col s12 m6">
+        <h4>@Model.NodeData.Node.CommonName</h4>
+    </div>
+    <div class="col s12 m6">
+        <div class="input-field">
+            @Html.ActionLink("Edit", "Edit", "Edit", new { id = Model.NodeData.Node.Id }, new { @class = "waves-effect waves-light btn-flat left" })
+        </div>
+        <div class="input-field">
+            @Html.ActionLink("Back to List", "DatabaseRequests", "AdminTools", null, new { @class = "waves-effect waves-light btn-flat right" })
+        </div>
+    </div>
+</div>
+<article class="row">
+    <div>
+        <ul class="tabs tabs-fixed-width">
+            <li class="tab"><a href="#node-tab">Node Data</a></li>
+            <li class="tab"><a href="#relationship-tab">Relationship Data</a></li>
+        </ul>
+    </div>
+    <section id="node-tab" class="col s12 info-display">
+        <h5>Node Data</h5>
+        <div class="col s12 m6 l4">
+            <span>Common Name: @Model.NodeData.Node.CommonName</span>
+        </div>
+        <div class="col s12 m6 l4">
+            <span>Other Names: @Model.NodeData.Node.GetOtherNamesString()</span>
+        </div>
+        <div class="col s12 m6 l4">
+            <span>Release Date: @Model.NodeData.Node.Date.Value.ToShortDateString()</span>
+        </div>
+        @if(Model.NodeData.Node.ContentType == "media")
+        {
+            <div class="col s12">
+                <section class="row">
+                    @*TODO: View models are in danger ov being deprecated*@
+                    <div class="col s12 m6 l4">
+                        <span>Media Type: @Model.NodeData.Node.MediaData.MediaType</span>
+                    </div>
+                    <div class="col s12 m6 l4">
+                        <span>Franchise: @Model.NodeData.Node.MediaData.FranchiseName</span>
+                    </div>
+                    <div class="col s12 m6 l4">
+                        <span>Genres: @Model.NodeData.Node.MediaData.GetGenresString()</span>
+                    </div>
+                </section>
+            </div>
+        }
+    </section>
+    <section id="relationship-tab" class="col s12 info-display">
+        <h5>Relationship Data</h5>
+        <div class="col s12 l4">
+            <h6>Companies</h6>
+            <div class="scroll-list">
+                <ul class="collapsible" data-collapsible="accordion">
+                    @foreach (RelationshipViewModel relationship in Model.NodeData.Relationships.Companies)
+                    {
+                        <li>
+                            <div class="collapsible-header">@relationship.OtherName</div>
+                            <div class="collapsible-body">@relationship.GetRolesString()</div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="col s12 l4">
+            <h6>Media</h6>
+            <div class="scroll-list">
+                <ul class="collapsible" data-collapsible="accordion">
+                    @foreach (RelationshipViewModel relationship in Model.NodeData.Relationships.Media)
+                    {
+                        <li>
+                            <div class="collapsible-header">@relationship.OtherName</div>
+                            <div class="collapsible-body">@relationship.GetRolesString()</div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="col s12 l4">
+            <h6>People</h6>
+            <div class="scroll-list">
+                <ul class="collapsible" data-collapsible="accordion">
+                    @foreach (RelationshipViewModel relationship in Model.NodeData.Relationships.People)
+                    {
+                        <li>
+                            <div class="collapsible-header">@relationship.OtherName</div>
+                            <div class="collapsible-body">
+                                @relationship.GetRolesString()
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </section>
+</article>
+<article class="row">
+    <h5>Submission Info</h5>
+    @using (Html.BeginForm("SubmitReview", "AdminTools", FormMethod.Post))
+    {
+        @Html.HiddenFor(x => x.Id)
+        <section class="col s12 m4 l6">
+            <div>Submitted by: @Model.SubmitterName</div>
+            <div>Submission date: @Model.SubmissionDate.ToLocalTime()</div>
+        </section>
+        <section class="col s12 m8 l6">
+            <div class="input-field">
+                @Html.TextAreaFor(x => x.Notes)
+            </div>
+            <div class="input-field">
+                <button type="submit" class="waves-effect waves-light green btn left">Accept</button>
+                <button type="submit" class="waves-effect waves-light red btn right">Reject</button>
+            </div>
+        </section>
+    }
+</article>
+

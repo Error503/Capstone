@@ -6,7 +6,7 @@
     <section class="col s12 m8">
         <h4>Main Content</h4>
     </section>
-    @if(User.IsInRole("admin"))
+    @if(User.IsInRole("admin") || User.IsInRole("staff"))
     {
         <section class="col s12 m4 card-panel teal lighten-2">
             <h4 class="white-text center">Admin Tools</h4>

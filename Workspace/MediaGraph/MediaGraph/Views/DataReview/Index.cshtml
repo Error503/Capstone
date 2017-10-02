@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Database Requests";
+}
+<div class="body-buffer container" ng-app="RequestManagerApp" ng-controller="requestController">
+    <div id="request-search">
+        <article class="row">
+            <section id="requests-preloader" class="col s12 center">
+                <div class="preloader-wrapper big">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div><div class="gap-patch">
+                            <div class="circle"></div>
+                        </div><div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="requests-list" class="col s12" style="display:none">
+                <div class="collection">
+                    <a class="collection-item" ng-repeat="item in requestsList track by $index" ng-class="{'active': selectedIndex == $index}" href="/datarewiew/view?id={{requestsList[$index].Id}}">[{{getRequestTypeString($index)}}] {{item.NodeData.Node.CommonName}}</a>
+                </div>
+            </section>
+        </article>
+        <article id="paginator" class="row">
+            <section class="col s12 center">
+                <ul class="pagination">
+                    <li id="previous-arrow" ng-class="{'disabled': pageNumber == 1, 'waves-effect': pageNumber > 1}"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                    <!-- Pagination with angular -->
+                    <li ng-repeat="page in getDisplayPages() track by $index" ng-class="{'active': totalPages - pageNumber == $index, 'waves-effect': totalPages - pageNumber != $index}"><a href="" ng-click="getPage(pageNumber + $index)">{{$index + 1}}</a></li>
+                    <li id="next-arrow" ng-class="{'disabled': pageNumber == totalPages, 'waves-effect': pageNumber < totalPages}"><a href=""><i class="material-icons">chevron_right</i></a></li>
+                </ul>
+            </section>
+        </article>
+    </div>
+    @Html.Partial("_RequestViewPartial")
+</div>
+@section scripts {
+    <script type="text/javascript" src="~/Scripts/myScripts/angular_scripts/databaseRequestManagerApp.js"></script> 
+}
+

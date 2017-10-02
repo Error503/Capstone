@@ -6,6 +6,7 @@ using MediaGraph.Models;
 using MediaGraph.Models.Util;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace MediaGraph.ViewModels
 {
@@ -57,6 +58,23 @@ namespace MediaGraph.ViewModels
         public MediaDataViewModel MediaData { get; set; } = null;
 
         /// <summary>
+        /// Creates a single string for each of the names in the other names collection.
+        /// </summary>
+        /// <returns>A single string containing all of the alternate names</returns>
+        public string GetOtherNamesString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach(string n in OtherNames)
+            {
+                builder.AppendFormat("{0}, ", n);
+            }
+
+            // Remove the trailing space and comma before returning
+            return builder.ToString().TrimEnd(' ', ',');
+        }
+
+        /// <summary>
         /// Validates this NodeDataViewModel.
         /// </summary>
         /// <param name="validationContext">The current validation context</param>
@@ -90,6 +108,23 @@ namespace MediaGraph.ViewModels
         public string FranchiseName { get; set; }
         [JsonProperty("genres")]
         public IEnumerable<string> Genres { get; set; }
+
+        /// <summary>
+        /// Returns the genres as a single string.
+        /// </summary>
+        /// <returns>The genres of the media as a string</returns>
+        public string GetGenresString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach(string g in Genres)
+            {
+                builder.AppendFormat("{0}, ", g);
+            }
+
+            // Remove the trailing space and comma before returning
+            return builder.ToString().TrimEnd(' ', ',');
+        }
 
         public List<ValidationResult> Validate(ValidationContext context)
         {
@@ -188,6 +223,23 @@ namespace MediaGraph.ViewModels
         public string OtherName { get; set; }
         [JsonProperty("roles")]
         public IEnumerable<string> Roles { get; set; }
+
+        /// <summary>
+        /// Returns the roles as a single string.
+        /// </summary>
+        /// <returns>The roles of the relationship as a single string</returns>
+        public string GetRolesString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach(string r in Roles)
+            {
+                builder.AppendFormat("{0}, ", r);
+            }
+
+            // Remove the trailing space and comma before returning
+            return builder.ToString().TrimEnd(' ', ',');
+        }
 
         /// <summary>
         /// Determines if this relationship entry is valid.

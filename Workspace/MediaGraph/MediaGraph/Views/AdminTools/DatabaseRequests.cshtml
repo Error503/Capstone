@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewBag.Title = "Database Requests";
+    Layout = "~/Views/Shared/_ContainerLayout.cshtml";
+}
+
+<div ng-app="RequestManagerApp" ng-controller="RequestManagerController">
+    <article id="filter" class="row">
+
+    </article>
+    <article class="row">
+        <section id="request-list" class="col s12">
+            <div class="collection">
+                <a class="collection-item" ng-repeat="request in requestList track by $index" href="/admintools/viewrequest/{{request.Id}}">{{request.NodeData.node.commonName}}</a>
+            </div>
+        </section>
+        <section id="preloader" class="center" style="display:none;">
+            <div class="preloader-wrapper">
+                <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div><div class="gap-patch">
+                        <div class="circle"></div>
+                    </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </article>
+    <article class="row">
+        <section class="col s12 center">
+            <button type="button" class="waves-effect waves-light btn" ng-class="{'disabled': currentPage == 1}" ng-click="getPage(currentPage - 1)"><i class="material-icons">chevron_left</i></button>
+            <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="{{currentPage}}"/> of {{totalPages}}</span>
+            <button type="button" class="waves-effect waves-light btn" ng-class="{'disabled': currentPage == totalPages}" ng-click="getPage(currentPage + 1)"><i class="material-icons">chevron_right</i></button>
+        </section>
+    </article>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/myScripts/admin-tools/request-manager.js"></script>
+}
+
+

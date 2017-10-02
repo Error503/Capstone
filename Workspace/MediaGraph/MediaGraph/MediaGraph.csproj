@@ -266,21 +266,31 @@
     <Compile Include="Code\IGraphDatabaseDriver.cs" />
     <Compile Include="Code\Neo4jGraphDatabaseDriver.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminToolsController.cs" />
     <Compile Include="Controllers\Api\AutocompleteController.cs" />
+    <Compile Include="Controllers\DataReviewController.cs" />
     <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Controllers\GraphController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MediaDisplayController.cs" />
-    <Compile Include="Controllers\RelEditController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201708281903414_DatabaseRequestsAddition.cs" />
+    <Compile Include="Migrations\201708281903414_DatabaseRequestsAddition.Designer.cs">
+      <DependentUpon>201708281903414_DatabaseRequestsAddition.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201708301709524_UpdateRequestModel.cs" />
+    <Compile Include="Migrations\201708301709524_UpdateRequestModel.Designer.cs">
+      <DependentUpon>201708301709524_UpdateRequestModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Code\DatabaseDriver.cs" />
     <Compile Include="Models\Component\NodeDescription.cs" />
-    <Compile Include="Models\GraphDescriptor.cs" />
+    <Compile Include="Models\DatabaseRequestModels.cs" />
     <Compile Include="Models\GraphModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -303,12 +313,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AdminTools\UserViewModel.cs" />
     <Compile Include="ViewModels\AutocompleteLabel.cs" />
+    <Compile Include="ViewModels\Edit\BasicNodeViewModel.cs" />
+    <Compile Include="ViewModels\FilterSettings.cs" />
     <Compile Include="ViewModels\NodeViewModel.cs" />
     <Compile Include="ViewModels\Edit\NodeDescriptionViewModel.cs" />
     <Compile Include="ViewModels\Edit\RelationshipDescriptionViewModel.cs" />
     <Compile Include="ViewModels\Edit\RelationshipEntryViewModel.cs" />
-    <Compile Include="ViewModels\Edit\SimpleNodeType.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -432,11 +444,14 @@
     <Content Include="Scripts\materialize\materialize.js" />
     <Content Include="Scripts\materialize\materialize.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\myScripts\admin-tools\request-manager.js" />
+    <Content Include="Scripts\myScripts\admin-tools\user-manager.js" />
+    <Content Include="Scripts\myScripts\angular_scripts\databaseRequestManagerApp.js" />
     <Content Include="Scripts\myScripts\angular_scripts\nodeCreationApp.js" />
     <Content Include="Scripts\myScripts\angular_scripts\userManagerApp.js" />
     <Content Include="Scripts\myScripts\graph\graph-control.js" />
     <Content Include="Scripts\myScripts\menu.js" />
-    <Content Include="Scripts\myScripts\editForm.js" />
+    <Content Include="Scripts\myScripts\edit\edit-form-script.js" />
     <Content Include="Scripts\myScripts\graph\graphRenderer.js" />
     <Content Include="Scripts\myScripts\relationshipForm.js" />
     <Content Include="Scripts\myScripts\searchScript.js" />
@@ -486,15 +501,24 @@
     <Content Include="Views\RelEdit\Index.cshtml" />
     <Content Include="Views\RelEdit\_RelationshipEntryPartialView.cshtml" />
     <Content Include="Views\Shared\_SearchPartialView.cshtml" />
-    <Content Include="Views\Shared\_NodeCreationCallbackPartialView.cshtml" />
     <Content Include="Views\Edit\RequestAccepted.cshtml" />
     <Content Include="Views\Shared\_MaterialLayout.cshtml" />
     <Content Include="Views\Shared\_NavBarPartial.cshtml" />
     <Content Include="Views\Edit\Index.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
-    <Content Include="Views\Edit\_NodeFormPartial.cshtml" />
+    <Content Include="Views\Edit\_MediaInformationPartial.cshtml" />
     <Content Include="Views\Edit\_ValidationSummaryPartial.cshtml" />
     <Content Include="Views\Edit\_AcceptedPartial.cshtml" />
+    <Content Include="Views\DataReview\Index.cshtml" />
+    <Content Include="Views\DataReview\_FilterFormPartial.cshtml" />
+    <Content Include="Views\DataReview\_RequestViewPartial.cshtml" />
+    <Content Include="Views\Shared\_NodeEditPartial.cshtml" />
+    <Content Include="Views\AdminTools\Index.cshtml" />
+    <Content Include="Views\Shared\_ContainerLayout.cshtml" />
+    <Content Include="Views\AdminTools\UserManagement.cshtml" />
+    <Content Include="Views\AdminTools\DatabaseRequests.cshtml" />
+    <Content Include="Views\AdminTools\ViewRequest.cshtml" />
+    <Content Include="Views\Edit\AltIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -512,6 +536,12 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Migrations\201708281903414_DatabaseRequestsAddition.resx">
+      <DependentUpon>201708281903414_DatabaseRequestsAddition.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201708301709524_UpdateRequestModel.resx">
+      <DependentUpon>201708301709524_UpdateRequestModel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
