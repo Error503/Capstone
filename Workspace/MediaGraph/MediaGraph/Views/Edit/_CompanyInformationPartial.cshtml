@@ -1,0 +1,23 @@
+﻿<section>
+    <h5 class="center-align">Company Information</h5>
+    <div class="col s12 m6">
+        <div class="input-field">
+            <label for="common-name">Common English Name</label>
+            <input type="text" name="common-name" ng-model="node.commonName" />
+        </div>
+    </div>
+    <div class="col s12 m6">
+        <div class="input-field">
+            <label for="other-names">Other Names</label>
+            <div id="other-names" class="chips other-names-chips"></div>
+        </div>
+    </div>
+    <div class="col s12 m6">
+        <label for="date-founded" class="active">Date Founded</label>
+        <input type="text" name="date-founded" class="datepicker" ng-model="node.releaseDate" />
+    </div>
+    <div class="col s12 m6">
+        <label for="date-disbanded" class="active">Date Disbanded</label>
+        <input type="text" name="date-disbanded" class="datepicker" ng-model="node.deathDate" />
+    </div>
+</section>

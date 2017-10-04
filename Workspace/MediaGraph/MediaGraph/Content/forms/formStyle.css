@@ -3,6 +3,18 @@
     height: 250px;
     max-height: 250px;
 }
-.collection-link {
+.pointer-item {
+    cursor: pointer;
+}
+.picker__header select {
+    display: inline-block !important;
+}
+#relationship-chips.disabled {
+    border-bottom-style: dotted;
+}
+#relationship-chips input {
+    border-bottom:none;
+}
+.relationship-group li {
     cursor: pointer;
 }

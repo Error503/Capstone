@@ -6,9 +6,14 @@
 
 <div ng-app="EditFormApp" ng-controller="EditFormController">
     <article id="basic-node-info" class="row">
+        <div class="col s12 m6 offset-l2 l4">
+            <div class="valign-wrapper">
+                <h5>What are you adding?</h5>
+            </div>
+        </div>
         <div class="col s12 m6 l4">
             <div class="input-field">
-                <select name="nodeType" ng-model="node.contentType" ng-change="nodeTypeChanged()">
+                <select id="node-content-type" name="content-type" onchange="contentTypeChanged">
                     <option value="" disabled selected>Content Type</option>
                     <option value="company">Company</option>
                     <option value="media">Media</option>
@@ -17,53 +22,59 @@
             </div>
         </div>
     </article>
+    <div id="hidden-divider" class="divider" style="display:none;"></div>
     <article id="type-specific-info" class="row">
+        <div dynamic-html-directive></div>
     </article>
     <div class="divider"></div>
     <article id="relationship-info" class="row">
+        <h5 class="center-align">Relationship Data</h5>
         <div class="col s12">
             <ul class="tabs tabs-fixed-width">
-                <li class="tab"><a>Companies</a></li>
-                <li class="tab"><a>Media</a></li>
-                <li class="tab"><a>People</a></li>
+                <li class="tab"><a class="pointer-item" ng-click="selectTab('Companies')">Companies</a></li>
+                <li class="tab"><a class="pointer-item" ng-click="selectTab('Media')">Media</a></li>
+                <li class="tab"><a class="pointer-item" ng-click="selectTab('People')">People</a></li>
             </ul>
         </div>
         <div id="relationship-data" class="col s12 m6">
-            <h5 class="center-align">Related ???</h5>
+            <h5 class="center-align">Related {{activeGroup}}</h5>
             <ul class="collection relationship-group">
-                <li class="collection-item">
-                    <div>
-                        <span>Title</span>
-                        <a class="secondary-content collection-link"><i class="material-icons">close</i></a>
-                    </div>
+                <li class="collection-item" ng-repeat="rel in activeGroupArray track by $index" ng-click="selectGroupItem($index)" relationship-list-directive>
+                    <span>{{getTargetName($index)}}</span>
+                    <a class="secondary-content pointer-item black-text" ng-click="removeRelationship($index)"><i class="material-icons">close</i></a>
                 </li>
             </ul>
         </div>
-        <div id="relationship-data-entry" class="col s12 m6">
-            <form name="relationship-entry-form" autocomplete="off">
+        <div class="col s12 m6">
+            <div id="relationship-data-entry" class="row">
                 <div class="input-field">
-                    <label for="target-name">Name</label>
-                    <input name="target-name" type="text" />
+                    <label id="relationship-name-label" for="target-name">Name</label>
+                    <input type="text" id="relationship-name-entry" name="target-name" ng-model="activeGroupArray[activeIndex].targetName" disabled />
                 </div>
                 <div class="input-field">
-                    <label for="relationship-chips">Roles</label>
-                    <div id="relationship-chips" class="chips"></div>
+                    <label id="relationship-chips-label" for="relationship-chips">Roles</label>
+                    <div id="relationship-chips" class="chips disabled"></div>
                 </div>
-            </form>
+            </div>
+            <div class="row">
+                <button id="add-relationship-button" type="button" class="waves-effect waves-light btn disabled" ng-click="addRelationship()">New Item</button>
+            </div>
         </div>
     </article>
     <article id="submission-section" class="row">
         <section class="col s12">
             <div class="center">
-                <button type="submit" class="waves-effect waves-light btn">Submit<i class="material-icons">send</i></button>
+                <button type="button" class="waves-effect waves-light btn disabled">Reset Form</button>
+                <button type="button" class="waves-effect waves-light btn disabled">Submit</button>
             </div>
         </section>
     </article>
 </div>
 
 @section css {
-
+    <link rel="stylesheet" type="text/css" href="~/Content/forms/formStyle.css" />
 }
 @section scripts {
     <script src="~/Scripts/myScripts/edit/edit-form-script.js"></script>
+    <script src="~/Scripts/myScripts/edit/edit-form-script-query.js"></script>
 }

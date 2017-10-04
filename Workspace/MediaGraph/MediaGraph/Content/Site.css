@@ -7,8 +7,6 @@
 main {
     flex: 1 0 auto;
 }
-
-
 .active-item {
     font-size: 1.5em;
 }

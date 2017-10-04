@@ -13,16 +13,32 @@
     </div>
     <div class="col s12 m6 l4">
         <div class="input-field">
-            <label for="franchise-name">Franchise</label>
-            <input type="text" name="franchise-name" />
+            <label for="release-date" class="active">First Release Date</label>
         </div>
-    </div>
-    <div class="col s12 m6 l4">
-
+        <input name="release-date" type="text" class="datepicker" ng-model="node.releaseDate"/>
     </div>
     <div class="col s12 m6 l4">
         <div class="input-field">
-            <div id="genre-chips" classs="chips"></div>
+            <label for="franchise-name">Franchise</label>
+            <input type="text" name="franchise-name" ng-model="node.franchiseName" />
+        </div>
+    </div>
+    <div class="col s12 m6">
+        <div class="input-field">
+            <label for="common-name">Common English Name</label>
+            <input name="common-name" type="text" ng-model="node.commonName" />
+        </div>
+    </div>
+    <div class="col s12 m6">
+        <div class="input-field">
+            <label for="other-name-chips">Other Names</label>
+            <div id="other-name-chips" class="chips"></div>
+        </div>
+    </div>
+    <div class="col s12">
+        <div class="input-field">
+            <label for="genre-chips">Genres</label>
+            <div id="genre-chips" class="chips"></div>
         </div>
     </div>
 </section>

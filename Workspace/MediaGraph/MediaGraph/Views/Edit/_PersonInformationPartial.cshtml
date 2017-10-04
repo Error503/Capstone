@@ -1,0 +1,40 @@
+﻿<section>
+    <h5 class="center-align">Person Information</h5>
+    <div class="col s12 m6 l4">
+        <div class="input-field">
+            <label for="given-name">Given Name</label>
+            <input type="text" name="given-name" ng-model="node.givenName" />
+        </div>
+    </div>
+    <div class="col s12 m6 l4">
+        <div class="input-field">
+            <label for="family-name">Family name</label>
+            <input type="text" name="family-name" ng-model="node.familyName" />
+        </div>
+    </div>
+    <div class="col s12 l4">
+        <div class="input-field">
+            <label for="other-name-chips">Other Names</label>
+            <div id="other-name-chips" class="other-name-chips"></div>
+        </div>
+    </div>
+    <div class="col s12 m6">
+        <label for="date-of-birth" class="active">Date of Birth</label>
+        <input type="text" name="date-of-birth" class="datepicker" ng-model="node.releaseDate" />
+    </div>
+    <div class="col s12 m6">
+        <label for="date-of-death" class="active">Date of Death</label>
+        <input type="text" name="date-of-death" class="datepicker" ng-model="node.deathDate" />
+    </div>
+    <div class="col s12 m6 l4">
+        <div class="input-field">
+            <label for="person-status" class="active">Status</label>
+            <select name="person-status">
+                <option value="active" selected>Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="retired">Retired</option>
+                <option value="deceased">Deceased</option>
+            </select>
+        </div>
+    </div>
+</section>

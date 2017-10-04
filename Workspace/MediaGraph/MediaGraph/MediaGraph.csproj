@@ -508,7 +508,6 @@
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
     <Content Include="Views\Edit\_MediaInformationPartial.cshtml" />
     <Content Include="Views\Edit\_ValidationSummaryPartial.cshtml" />
-    <Content Include="Views\Edit\_AcceptedPartial.cshtml" />
     <Content Include="Views\DataReview\Index.cshtml" />
     <Content Include="Views\DataReview\_FilterFormPartial.cshtml" />
     <Content Include="Views\DataReview\_RequestViewPartial.cshtml" />
@@ -519,6 +518,8 @@
     <Content Include="Views\AdminTools\DatabaseRequests.cshtml" />
     <Content Include="Views\AdminTools\ViewRequest.cshtml" />
     <Content Include="Views\Edit\AltIndex.cshtml" />
+    <Content Include="Views\Edit\_CompanyInformationPartial.cshtml" />
+    <Content Include="Views\Edit\_PersonInformationPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

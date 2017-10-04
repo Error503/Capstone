@@ -33,7 +33,7 @@ namespace MediaGraph.Controllers
         {
             ActionResult result = PartialView("_AcceptedPartial");
 
-            if(model == null || !ModelState.IsValid)
+            if (model == null || !ModelState.IsValid)
             {
                 HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 HttpContext.Response.StatusDescription = "Invalid model state";
@@ -68,16 +68,61 @@ namespace MediaGraph.Controllers
             return result;
         }
 
-        private ActionResult Accpeted(NodeViewModel model)
+        [HttpPost]
+        public ActionResult SubmitInformation()
         {
-            return View(model);
+            return View();
         }
 
         [HttpGet]
-        public NodeViewModel GetNode(Guid id)
+        public ActionResult Edit(Guid id)
         {
-            // Get the node from the Neo4j database
-            throw new NotImplementedException();
+            // TODO: Edit
+            return View("Error");
+        }
+
+        [HttpPost]
+        public ActionResult FlagDeletion(Guid id)
+        {
+            string message = "An error occurred. The node was not flagged";
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            // If the node with the given id is not null,
+            if (databaseDriver.GetNode(id) != null)
+            {
+                DatabaseRequest request = new DatabaseRequest
+                {
+                    Id = Guid.NewGuid(),
+                    SubmissionDate = DateTime.Now,
+                    RequestType = "Delete",
+                    NodeData = JsonConvert.SerializeObject(new { id = id }),
+                    Approved = false,
+                    ApprovalDate = null,
+                    Notes = null,
+                    Reviewed = false,
+                    ReviewedDate = null,
+                    Reviewer = null,
+                    ReviewerRefId = null
+                };
+
+                // Add a deletion request,
+                using (ApplicationDbContext context = ApplicationDbContext.Create())
+                {
+                    request.Submitter = context.Users.Single(u => u.UserName == User.Identity.Name);
+                    context.Requests.Add(request);
+                    context.SaveChanges();
+                }
+
+                message = "Node flagged for deletion";
+                Response.StatusCode = (int)HttpStatusCode.Accepted;
+            }
+            else
+            {
+                message = "Could not find the specified node.";
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+            }
+
+            return Json(new { message = message });
         }
 
         [HttpGet]
