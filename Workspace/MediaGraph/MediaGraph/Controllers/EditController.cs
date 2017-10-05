@@ -69,7 +69,19 @@ namespace MediaGraph.Controllers
         }
 
         [HttpPost]
-        public ActionResult SubmitInformation()
+        public ActionResult SubmitCompany(CompanyNodeViewModel model)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SubmitMedia(MediaNodeViewModel model)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SubmitPerson(PersonNodeViewModel model)
         {
             return View();
         }
@@ -94,7 +106,7 @@ namespace MediaGraph.Controllers
                 {
                     Id = Guid.NewGuid(),
                     SubmissionDate = DateTime.Now,
-                    RequestType = "Delete",
+                    //RequestType = "Delete",
                     NodeData = JsonConvert.SerializeObject(new { id = id }),
                     Approved = false,
                     ApprovalDate = null,

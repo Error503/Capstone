@@ -1,40 +1,51 @@
-﻿<section>
-    <h5 class="center-align">Person Information</h5>
-    <div class="col s12 m6 l4">
-        <div class="input-field">
-            <label for="given-name">Given Name</label>
-            <input type="text" name="given-name" ng-model="node.givenName" />
+﻿@model MediaGraph.ViewModels.Edit.PersonNodeViewModel
+
+@using (Html.BeginForm("SubmitPerson", "Edit", FormMethod.Post, new { onsumbit = "return validate();", id = "nodeForm" }))
+{
+    <section>
+        <h5 class="center-align">Person Information</h5>
+        <div class="col s12 m6">
+            <div class="input-field">
+                <label for="givenName">Given Name</label>
+                <input type="text" name="givenName" model="givenName" />
+            </div>
         </div>
-    </div>
-    <div class="col s12 m6 l4">
-        <div class="input-field">
-            <label for="family-name">Family name</label>
-            <input type="text" name="family-name" ng-model="node.familyName" />
+        <div class="col s12 m6">
+            <div class="input-field">
+                <label for="familyName">Family name</label>
+                <input type="text" name="familyName" model="familyName" />
+            </div>
         </div>
-    </div>
-    <div class="col s12 l4">
-        <div class="input-field">
-            <label for="other-name-chips">Other Names</label>
-            <div id="other-name-chips" class="other-name-chips"></div>
+        <div class="col s12">
+            <div class="input-field">
+                <label for="other-names">Other Names</label>
+                <div id="other-names" class="chips"></div>
+            </div>
         </div>
-    </div>
-    <div class="col s12 m6">
-        <label for="date-of-birth" class="active">Date of Birth</label>
-        <input type="text" name="date-of-birth" class="datepicker" ng-model="node.releaseDate" />
-    </div>
-    <div class="col s12 m6">
-        <label for="date-of-death" class="active">Date of Death</label>
-        <input type="text" name="date-of-death" class="datepicker" ng-model="node.deathDate" />
-    </div>
-    <div class="col s12 m6 l4">
-        <div class="input-field">
-            <label for="person-status" class="active">Status</label>
-            <select name="person-status">
-                <option value="active" selected>Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="retired">Retired</option>
-                <option value="deceased">Deceased</option>
-            </select>
+        <div class="col s12 m6">
+            <label for="releaseDate" class="active">Date of Birth</label>
+            <input type="text" name="releaseDate" class="datepicker" model="releaseDate" />
         </div>
-    </div>
-</section>
+        <div class="col s12 m6">
+            <label for="deathDate" class="active">Date of Death</label>
+            <input type="text" name="deathDate" class="datepicker" model="deathDate" />
+        </div>
+        <div class="col s12 m6 l4">
+            <div class="input-field">
+                <label for="Status" class="active">Status</label>
+                <select id="person-status" name="Status">
+                    <option value="active" selected>Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="retired">Retired</option>
+                    <option value="deceased">Deceased</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <input type="hidden" name="contentType" value="person" />
+    <input type="hidden" name="otherNames" />
+    <input type="hidden" name="relatedCompanies" />
+    <input type="hidden" name="relatedMedia" />
+    <input type="hidden" name="relatedPeople" />
+}

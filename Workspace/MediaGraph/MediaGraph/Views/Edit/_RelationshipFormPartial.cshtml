@@ -1,0 +1,27 @@
+﻿<h5 class="center-align">Relationship Data</h5>
+<div class="col s12">
+    <ul class="tabs tabs-fixed-width">
+        <li class="tab" tab-value="Companies"><a class="pointer-item">Companies</a></li>
+        <li class="tab" tab-value="Media"><a class="pointer-item">Media</a></li>
+        <li class="tab" tab-value="People"><a class="pointer-item">People</a></li>
+    </ul>
+</div>
+<div id="relationship-data" class="col s12 m6">
+    <h5 class="center-align">Related <span id="relationship-group-header"></span></h5>
+    <ul class="collection relationship-group"></ul>
+</div>
+<div class="col s12 m6">
+    <div id="relationship-data-entry" class="row">
+        <div class="input-field">
+            <label id="relationship-name-label" for="target-name">Name</label>
+            <input type="text" id="relationship-name-entry" name="target-name" disabled />
+        </div>
+        <div class="input-field">
+            <label id="relationship-chips-label" for="relationship-chips">Roles</label>
+            <div id="relationship-chips" class="chips disabled"></div>
+        </div>
+    </div>
+    <div class="row">
+        <button id="add-relationship-button" type="button" class="waves-effect waves-light btn disabled">New Item</button>
+    </div>
+</div>

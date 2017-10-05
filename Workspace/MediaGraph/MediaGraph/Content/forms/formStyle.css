@@ -18,3 +18,7 @@
 .relationship-group li {
     cursor: pointer;
 }
+.relationship-label {
+    width: 80%;
+    display:inline-block;
+}

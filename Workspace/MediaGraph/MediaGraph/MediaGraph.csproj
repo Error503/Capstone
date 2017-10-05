@@ -449,6 +449,7 @@
     <Content Include="Scripts\myScripts\angular_scripts\databaseRequestManagerApp.js" />
     <Content Include="Scripts\myScripts\angular_scripts\nodeCreationApp.js" />
     <Content Include="Scripts\myScripts\angular_scripts\userManagerApp.js" />
+    <Content Include="Scripts\myScripts\edit\edit-form-script-query.js" />
     <Content Include="Scripts\myScripts\graph\graph-control.js" />
     <Content Include="Scripts\myScripts\menu.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script.js" />
@@ -520,6 +521,7 @@
     <Content Include="Views\Edit\AltIndex.cshtml" />
     <Content Include="Views\Edit\_CompanyInformationPartial.cshtml" />
     <Content Include="Views\Edit\_PersonInformationPartial.cshtml" />
+    <Content Include="Views\Edit\_RelationshipFormPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

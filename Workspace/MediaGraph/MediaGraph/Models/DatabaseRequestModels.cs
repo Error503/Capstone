@@ -26,7 +26,7 @@ namespace MediaGraph.Models
         // DatabaseRequest Data      
         [Key]
         public Guid Id { get; set; }
-        public string RequestType { get; set; }
+        //public string UpdateType { get; set; }
         //public RequestType UpdateType { get; set; }
         public string SubmitterRefId { get; set; }
         [ForeignKey("SubmitterRefId")]

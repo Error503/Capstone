@@ -2,7 +2,7 @@
     <h5 class="center-align">Media Information</h5>
     <div class="col s12 m6 l4">
         <div class="input-field">
-            <select name="media-type">
+            <select id="media-type" name="media-type">
                 <option value="" disabled selected>Media Type</option>
                 <option value="audio" disabled>Audio</option>
                 <option value="book">Book</option>
@@ -15,24 +15,24 @@
         <div class="input-field">
             <label for="release-date" class="active">First Release Date</label>
         </div>
-        <input name="release-date" type="text" class="datepicker" ng-model="node.releaseDate"/>
+        <input name="release-date" type="text" class="datepicker" model="releaseDate"/>
     </div>
     <div class="col s12 m6 l4">
         <div class="input-field">
             <label for="franchise-name">Franchise</label>
-            <input type="text" name="franchise-name" ng-model="node.franchiseName" />
+            <input type="text" name="franchise-name" model="franchiseName" />
         </div>
     </div>
     <div class="col s12 m6">
         <div class="input-field">
             <label for="common-name">Common English Name</label>
-            <input name="common-name" type="text" ng-model="node.commonName" />
+            <input name="common-name" type="text" model="commonName" />
         </div>
     </div>
     <div class="col s12 m6">
         <div class="input-field">
             <label for="other-name-chips">Other Names</label>
-            <div id="other-name-chips" class="chips"></div>
+            <div id="other-names" class="chips"></div>
         </div>
     </div>
     <div class="col s12">
