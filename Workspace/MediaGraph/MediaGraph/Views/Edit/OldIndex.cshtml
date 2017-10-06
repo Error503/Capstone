@@ -1,0 +1,136 @@
+﻿@{
+    ViewBag.Title = "Edit Node";
+}
+
+@section scripts {
+    <script src="~/Scripts/myScripts/editForm.js"></script>
+    <script src="~/Scripts/myScripts/angular_scripts/nodeCreationApp.js"></script>
+}
+@section css {
+    <link type="text/css" rel="stylesheet" href="~/Content/forms/formStyle.css" />    
+}
+<article id="page-content-wrapper" class="container">
+    <form id="nodeForm" name="editForm" autocomplete="off" ng-app="NodeApp" ng-controller="nodeController" data-ng-submit="submit()">
+        <h4 class="center">Node Information</h4>
+        <section class="row">
+            <div id="validationContent" class="col s12">
+
+            </div>
+        </section>
+        <section id="nodeFormContent">
+            <section id="node-information">
+                <div class="row">
+                    <div class="col s12">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab col s3"><a href="#node-general-tab">General Information</a></li>
+                            <li id="media-info-tab" class="tab col s3 disabled"><a href="#node-media-tab">Media Information</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <section id="node-general-tab" class="col s12">
+                    <input type="hidden" ng-model="data.node.id" />
+                    <div class="row">
+                        <div class="col s12 m6 input-field">
+                            <select id="content-type" ng-model="data.node.contentType">
+                                <option value="" disabled selected>Choose a content type</option>
+                                <option value="company">Company</option>
+                                <option value="person">Person</option>
+                                <option value="media">Media</option>
+                            </select>
+                            <label for="content-type">Content Type</label>
+                        </div>
+                        <div class="col s12 m6 input-field">
+                            <input type="text" id="title-field" ng-model="data.node.commonName" />
+                            <label for="title-field">Common Name</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 input-field">
+                            <label for="alternate-names-chips">Alternate Names</label>
+                            <div id="alternate-names-chips" class="chips names-chips-placeholder tooltipped" data-position="top" data-tooltip="Type an alternate name and then press enter"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12">
+                            <label for="related-date">Date</label>
+                            @* Include a tooltip on the date field - specifically for video games as I want the initial release date*@
+                            <input type="text" id="related-date" class="datepicker" ng-model="dateString" />
+                        </div>
+                    </div>
+                </section>
+                <section id="node-media-tab" class="col s12">
+                    <div class="row">
+                        <div class="col s12 m6 input-field">
+                            <select id="media-type" ng-model="data.node.mediaData.mediaType">
+                                <option value="" disabled selected>Choose a media type</option>
+                                <option value="audio">Audio</option>
+                                <option value="book">Book</option>
+                                <option value="video">Video</option>
+                                <option value="game">Video Game</option>
+                            </select>
+                            <label for="media-type">Media Type</label>
+                        </div>
+                        <div class="col s12 m6 input-field">
+                            <input type="text" id="franchise-field" ng-model="data.node.mediaData.franchiseName" />
+                            <label for="franchise-field">Franchise</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 input-field">
+                            <label for="media-genres-chips">Genres</label>
+                            <div id="media-genres-chips" class="chips genres-chips-placeholder tooltipped" data-position="bottom" data-tooltip="Type a genre and then press enter."></div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+            <div class="divider"></div>
+            <section id="relationship-information" class="row">
+                <div class="row">
+                    <div class="col s12 m7">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab col s3" ng-click="setGroup('companies')"><a>Companies</a></li>
+                            <li class="tab col s3" ng-click="setGroup('people')"><a>People</a></li>
+                            <li class="tab col s3" ng-click="setGroup('media')"><a>Media</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <section class="col s12 m7">
+                        <h5 class="center">
+                            Related {{headerText}}
+                            <button id="add-relationship-btn" type="button" class="btn-floating waves-effect waves-light red disabled tooltipped" ng-click="addRelationship()" data-position="right" data-delay="50" data-tooltip="Add Relationship"><i class="material-icons">add</i></button>
+                        </h5>
+                        <ul class="collection relationship-group" ng-hide="data.relationships[selectGroup].length == 0">
+                            @* TODO: Add styling for relationship entries that have not yet been filled out *@
+                            <li class="collection-item" ng-repeat="relation in data.relationships[selectedGroup]" ng-class="{'active': $index == selectedIndex}" ng-click="selectObject($index)">
+                                <div>
+                                    <span ng-bind="getRelationshipTitle($index)"></span>
+                                    <a class="secondary-content collection-link" ng-click="removeRelationship($index)"><i class="material-icons">close</i></a>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+                    <section class="col s12 m5">
+                        <div class="row">
+                            <div class="col s12">
+                                <h5 class="center">Entry Data</h5>
+                                <input type="hidden" id="relationship-target-name" ng-model="data.relationships[selectedGroup][selectedIndex].otherId" />
+                                <div class="input-field">
+                                    <input id="relationship-target-name" type="text" ng-model="data.relationships[selectedGroup][selectedIndex].otherName" />
+                                    <label for="relationship-target-name">Target Name</label>
+                                </div>
+                                <div class="input-field">
+                                    <label for="relationship-roles-chips">Roles</label>
+                                    <div id="relationship-roles-chips" class="chips roles-chips-placeholder tooltipped" data-position="bottom" data-tooltip="Type the role of this {{singularizeGroupName()}} and then press enter."></div>
+                                </div>
+                            </div>
+                            <div class="col s12 input-field">
+                                <button class="btn waves-effect waves-light" type="submit">Submit <i class="material-icons">send</i></button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </section>
+    </form>
+</article>

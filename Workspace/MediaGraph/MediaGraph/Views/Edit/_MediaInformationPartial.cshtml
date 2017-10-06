@@ -1,37 +1,43 @@
-﻿<section>
+﻿@model MediaGraph.ViewModels.Edit.MediaNodeViewModel
+
+<input type="hidden" name="ContentType" value="media" />
+<input type="hidden" name="Genres" />
+<section>
     <h5 class="center-align">Media Information</h5>
     <div class="col s12 m6 l4">
         <div class="input-field">
-            <select id="media-type" name="media-type">
-                <option value="" disabled selected>Media Type</option>
-                <option value="audio" disabled>Audio</option>
-                <option value="book">Book</option>
-                <option value="video">Video, Movie, Show</option>
-                <option value="game">Video Game</option>
-            </select>
+            @Html.LabelFor(x => x.MediaType, new { @class="active" })
+            @Html.DropDownListFor(x => x.MediaType, new List<SelectListItem>
+            {
+                new SelectListItem { Value = "", Text = "Media Type" },
+                new SelectListItem { Value = "audio", Disabled = true, Text = "Audio" },
+                new SelectListItem { Value = "book", Text = "Book" },
+                new SelectListItem { Value = "video", Text = "Video, Movie, Show" },
+                new SelectListItem { Value = "game", Text = "Video Game" }
+            })
         </div>
     </div>
     <div class="col s12 m6 l4">
         <div class="input-field">
-            <label for="release-date" class="active">First Release Date</label>
+            <label for="releaseDate" class="active">First Release Date</label>
         </div>
-        <input name="release-date" type="text" class="datepicker" model="releaseDate"/>
+        <input name="ReleaseDate" type="text" class="datepicker" value="@Model.GetDateValue(Model.ReleaseDate)" />
     </div>
     <div class="col s12 m6 l4">
         <div class="input-field">
-            <label for="franchise-name">Franchise</label>
-            <input type="text" name="franchise-name" model="franchiseName" />
+            @Html.LabelFor(x => x.FranchiseName)
+            @Html.TextBoxFor(x => x.FranchiseName)
         </div>
     </div>
     <div class="col s12 m6">
         <div class="input-field">
-            <label for="common-name">Common English Name</label>
-            <input name="common-name" type="text" model="commonName" />
+            @Html.LabelFor(x => x.CommonName)
+            @Html.TextBoxFor(x => x.CommonName)
         </div>
     </div>
     <div class="col s12 m6">
         <div class="input-field">
-            <label for="other-name-chips">Other Names</label>
+            <label for="other-names">Other Names</label>
             <div id="other-names" class="chips"></div>
         </div>
     </div>

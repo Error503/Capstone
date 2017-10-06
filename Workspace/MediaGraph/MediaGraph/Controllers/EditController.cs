@@ -25,72 +25,105 @@ namespace MediaGraph.Controllers
         // GET: Edit/Index/
         public ActionResult Index(string id)
         {
-            return View("AltIndex");
-        }
-
-        [HttpPost]
-        public ActionResult Index(NodeViewModel model)
-        {
-            ActionResult result = PartialView("_AcceptedPartial");
-
-            if (model == null || !ModelState.IsValid)
+            ActionResult result = View("Error");
+            if(!string.IsNullOrWhiteSpace(id))
             {
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                HttpContext.Response.StatusDescription = "Invalid model state";
-                result = PartialView("_ValidationSummaryPartial", model);
+                // We have been given an id of a node to edit
+                ViewBag.Title = "Edit Node Data";
+                // TODO: Get the Node information from the database
             }
             else
             {
-                // Give an id to the node
-                model.Node.Id = Guid.NewGuid();
-                // Create the DatabaseRequest
-                DatabaseRequest request = new DatabaseRequest
+                // We are creating a new node
+                ViewBag.Title = "Create New Node";
+                result = View(model: new BasicNodeViewModel { Id = Guid.NewGuid(), ContentType = "" });
+            }
+            return result;
+        }
+
+        // This action is called to edit a node from a database request
+        [HttpGet]
+        [Authorize(Roles = "admin,staff")]
+        public ActionResult EditRequest(Guid id) 
+        {
+            BasicNodeViewModel modelToEdit = null;
+            // Get the node to edit from the databsae rquests database
+            using (ApplicationDbContext context = ApplicationDbContext.Create())
+            {
+                // Find the request
+                DatabaseRequest request = context.Requests.Single(x => x.Id == id);
+                // Get the node to edit
+                modelToEdit = JsonConvert.DeserializeObject<BasicNodeViewModel>(request.NodeData) as BasicNodeViewModel;
+                // TODO: By adding the content type to the database request I can simplify this and not have to deserialize twice
+                // Check the content type
+                if(modelToEdit.ContentType == "company")
                 {
-                    Id = Guid.NewGuid(),
-                    SubmissionDate = DateTime.Now,
-                    NodeData = JsonConvert.SerializeObject(model),
-                    Reviewer = null,
-                    Reviewed = false,
-                    ReviewedDate = null,
-                    ApprovalDate = null,
-                    Approved = false,
-                    Notes = null
-                };
-                // The model state is valid, accept the request to the database requests table
-                using (ApplicationDbContext context = ApplicationDbContext.Create())
-                {
-                    request.Submitter = context.Users.Single(u => u.UserName == User.Identity.Name);
-                    context.Requests.Add(request);
-                    context.SaveChanges();
+                    modelToEdit = JsonConvert.DeserializeObject<CompanyNodeViewModel>(request.NodeData) as CompanyNodeViewModel;
                 }
+                else if(modelToEdit.ContentType == "media")
+                {
+                    modelToEdit = JsonConvert.DeserializeObject<MediaNodeViewModel>(request.NodeData) as MediaNodeViewModel;
+                }
+                else if(modelToEdit.ContentType == "person")
+                {
+                    modelToEdit = JsonConvert.DeserializeObject<PersonNodeViewModel>(request.NodeData) as PersonNodeViewModel;
+                }
+            }
+
+            return View("Index", modelToEdit);
+        }
+
+        [HttpPost]
+        public ActionResult SubmitCompany(CompanyNodeViewModel model)
+        { 
+            ActionResult result = View("Error");
+            // The model state is valid
+            if (ModelState.IsValid)
+            {
+                // TODO: Add to the database requests database - If a node exists in the Neo4j database then it is an update request 
+                result = RedirectToAction("Accepted");
+            }
+            else
+            {
+                // Return the view via the edit page
             }
 
             return result;
         }
 
         [HttpPost]
-        public ActionResult SubmitCompany(CompanyNodeViewModel model)
-        {
-            return View();
-        }
-
-        [HttpPost]
         public ActionResult SubmitMedia(MediaNodeViewModel model)
         {
+            if(ModelState.IsValid)
+            {
+
+            }
+            else
+            {
+                // Return the view via the edit page
+            }
+
             return View();
         }
 
         [HttpPost]
         public ActionResult SubmitPerson(PersonNodeViewModel model)
         {
-            return View();
+            ActionResult result = View("Index", model);
+
+            // If the model state is valid
+            if(ModelState.IsValid)
+            {
+                // Create the database request
+            }
+
+            return result;
         }
 
-        [HttpGet]
-        public ActionResult Edit(Guid id)
+        // Called when a request is accepted
+        private ActionResult Accepted()
         {
-            // TODO: Edit
-            return View("Error");
+            return View();
         }
 
         [HttpPost]
@@ -143,15 +176,15 @@ namespace MediaGraph.Controllers
             ActionResult result = Json(new { msg = $"Invalid type {type}" }, JsonRequestBehavior.AllowGet);
             if(type == "company")
             {
-                result = PartialView("_CompanyInformationPartial");
+                result = PartialView("_CompanyInformationPartial", new CompanyNodeViewModel());
             }
             else if(type == "media")
             {
-                result = PartialView("_MediaInformationPartial");
+                result = PartialView("_MediaInformationPartial", new MediaNodeViewModel());
             }
             else if(type == "person")
             {
-                result = PartialView("_PersonInformationPartial");
+                result = PartialView("_PersonInformationPartial", new PersonNodeViewModel());
             } 
             else
             {

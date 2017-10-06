@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace MediaGraph.ViewModels.Edit
 {
+    [Obsolete]
     public class NodeDescriptionViewModel : IValidatableObject
     {
         #region Properties

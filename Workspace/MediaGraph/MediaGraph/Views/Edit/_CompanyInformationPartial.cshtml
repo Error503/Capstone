@@ -1,9 +1,12 @@
-﻿<section>
+﻿@model MediaGraph.ViewModels.Edit.CompanyNodeViewModel
+
+<input type="hidden" name="ContentType" value="company" />
+<section>
     <h5 class="center-align">Company Information</h5>
     <div class="col s12 m6">
         <div class="input-field">
-            <label for="common-name">Common English Name</label>
-            <input id="node-common-name" type="text" name="common-name" model="commonName"/>
+            @Html.LabelFor(x => x.CommonName)
+            @Html.TextBoxFor(x => x.CommonName)
         </div>
     </div>
     <div class="col s12 m6">
@@ -13,11 +16,11 @@
         </div>
     </div>
     <div class="col s12 m6">
-        <label for="date-founded" class="active">Date Founded</label>
-        <input type="text" name="date-founded" class="datepicker" model="releaseDate"/>
+        <label for="ReleaseDate" class="active">Date Founded</label>
+        <input type="text" name="ReleaseDate" class="datepicker" value="@Model.GetDateValue(Model.ReleaseDate)"  />
     </div>
     <div class="col s12 m6">
-        <label for="date-disbanded" class="active">Date Disbanded</label>
-        <input type="text" name="date-disbanded" class="datepicker" model="deathDate" />
+        <label for="DeathDate" class="active">Date Disbanded</label>
+        <input type="text" name="DeathDate" class="datepicker" value="@Model.GetDateValue(Model.DeathDate)"/>
     </div>
 </section>

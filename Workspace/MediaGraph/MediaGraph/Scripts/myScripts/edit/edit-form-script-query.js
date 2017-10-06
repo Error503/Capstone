@@ -1,10 +1,45 @@
 ﻿$(document).ready(function () {
-    var model = new BasicNode();
+
+    var id = null;
+    var otherNames = [];
+    var genres = [];
+    var relatedLinks = [];
+    var relatedCompanies = [];
+    var relatedMedia = [];
+    var relatedPeople = [];
 
     var activeGroup = 'Companies';
-    var activeGroupArray = model.relatedCompanies;
     var activeIndex = -1;
+    var activeGroupArray = relatedCompanies ;
     var ignoreNextSelection = false;
+
+    if (document.forms['nodeForm']['ContentType'] != null) {
+        $('#node-content-type').attr('disabled', 'disabled');
+        $('#hidden-divider').show();
+        $('#node-info').show();
+        $('#add-relationship-button').removeClass('disabled');
+        $('#submission-section').find('button').removeClass('disabled');
+        // Bind the model
+        bindModel(document.forms['nodeForm']['ContentType'].value);
+        // Get the JSON values from the inputs
+        otherNames = JSON.parse(document.forms['nodeForm']['OtherNames'].value);
+        var otherNameChips = [];
+        for (var i = 0; i < otherNames.length; i++) {
+            otherNameChips.push({ tag: otherNames[i] });
+        }
+        $('#other-names').material_chip({ data: otherNameChips });
+        if (document.forms['nodeForm']['ContentType'].value == 'media') {
+            genres = JSON.parse(document.forms['nodeForm']['Genres'].value);
+            var genreChips = [];
+            for (var x = 0; x < genres.length; x++) {
+                genreChips.push({ tag: genres[x] });
+            }
+            $('#genres-chips').material_chip({ data: genreChips });
+        }
+        relatedCompanies = JSON.parse(document.forms['nodeForm']['RelatedCompanies'].value);
+        relatedMedia = JSON.parse(document.forms['nodeForm']['RelatedMedia'].value);
+        relatedPeople = JSON.parse(document.forms['nodeForm']['RelatedPeople'].value);
+    }
 
     // Set up materialize things
     $('select').material_select();
@@ -13,17 +48,18 @@
     // Wire up events to handle changes to the relationship chips   
     $('#relationship-chips').on('chip.add', function (e, chip) {
         activeGroupArray[activeIndex].roles.push(chip.tag);
+        document.forms['nodeForm']['Related' + activeGroup].value = JSON.stringify(activeGroupArray);
     });
 
     $('#relationship-chips').on('chip.delete', function (e, chip) {
         activeGroupArray[activeIndex].roles.splice(activeGroupArray[activeIndex].roles.indexOf(chip.tag), 1);
+        document.forms['nodeForm']['Related' + activeGroup].value = JSON.stringify(activeGroupArray);
     });
 
     // Set up events
     $('#node-content-type').on('change', function (event) {
         var value = $(this).val();
         if (value === 'company' || value === 'media' || value === 'person') {
-            model.contentType = value;
             getNodeInformation(value);
             $(this).siblings('input').attr('disabled', 'disabled');
             $('#add-relationship-button').removeClass('disabled');
@@ -37,7 +73,7 @@
 
     $('#add-relationship-button').on('click', function (event) {
         // Add the relationship
-        activeGroupArray.push(new Relationship(model.id));
+        activeGroupArray.push(new Relationship(id));
         // Populate the list
         populateRelationshipList();
         // Update the active index
@@ -47,26 +83,22 @@
     $('#relationship-name-entry').on('keyup', function (event) {
         // Update the value
         activeGroupArray[activeIndex].targetName = $(this).val();
+        // Update the input field
+        document.forms['nodeForm']['Related' + activeGroup].value = JSON.stringify(activeGroupArray);
         // Update the field value
         $($('.relationship-group > li')[activeIndex]).children('span').html(getDisplayName(activeGroupArray[activeIndex].targetName));
-        // Update the styling
-
     });
 
     $('#reset-button').on('click', function (event) {
         if (window.confirm('Are you sure you want to reset the form? All entered data will be lost.')) {
             $('#node-content-type').siblings('input').removeAttr('disabled');
             $('#hidden-divider').hide();
-            $('#type-specific-info').empty().hide();
+            $('#node-info').empty().hide();
             selectGroupItem(-1);
             $('#add-relationship-button').addClass('disabled');
             $('#submission-section').find('button').addClass('disabled');
             model = new BasicNode(model);
         }
-    });
-
-    $('#submit-button').on('click', function (event) {
-        console.log(model);
     });
 
     bindListEvents();
@@ -76,11 +108,11 @@
         $('#active-group-name').html(tab);
 
         if (tab === 'Companies') {
-            activeGroupArray = model.relatedCompanies;
+            activeGroupArray = relatedCompanies;
         } else if (tab === 'Media') {
-            activeGroupArray = model.relatedMedia;
+            activeGroupArray = relatedMedia;
         } else if (tab === 'People') {
-            activeGroupArray = model.relatedPeople;
+            activeGroupArray = relatedPeople;
         }
 
         // Poplulate the list
@@ -152,19 +184,13 @@
             method: 'GET',
             url: '/edit/getinformation?type=' + type,
             success: function (response) {
-                $('#type-specific-info').empty().append(response);
-                $('#type-specific-info').show();
+                $('#node-info').append(response);
+                $('#node-info').show();
                 $('#hidden-divider').show();
 
                 materializeSetup();
-                // Create the model
-                if (type === 'company') {
-                    model = new CompanyNode(model);
-                } else if (type === 'media') {
-                    model = new MediaNode(model);
-                } else if (type === 'person') {
-                    model = new PersonNode(model);
-                }
+                // Update the form action
+                $('#nodeForm').attr('action', '/edit/submit' + type);
                 // Bind the model
                 bindModel(type);
             },
@@ -175,39 +201,43 @@
     }
 
     function bindModel(type) {
-        var bindings = $('#type-specific-info').find('input[model]');
-        for (var i = 0; i < bindings.length; i++) {
-            $(bindings[i]).on('change', function (event) {
-                model[$(this).attr('model')] = $(this).val();
-            });
-        }
-
         if (type === 'media') {
-            $('#media-type').on('change', function (event) {
-                model.mediaType = $(this).val();
-            });
             // Set up the genre chips
             $('#genre-chips').on('chip.add', function (e, chip) {
-                model.genres.push(chip.tag);
+                genres.push(chip.tag);
+                // Update the input field
+                document.forms['nodeForm']['Genres'].value = JSON.stringify(genres);
             });
-            $('#genre-chpis').on('chip.delete', function (e, chip) {
-                model.genres.splice(model.genres.indexOf(chip.tag), 1);
+            $('#genre-chips').on('chip.delete', function (e, chip) {
+                genres.splice(genres.indexOf(chip.tag), 1);
+                document.forms['nodeForm']['Genres'].value = JSON.stringify(genres);
             });
         } else if (type === 'person') {
-            // Set up the status box
-            $('#person-status').on('change', function (event) {
-                model.status = $(this).val();
+            $('#given-name').add('#family-name').on('change', function (event) {
+                document.forms['nodeForm']['CommonName'] = document.forms['nodeForm']['GivenName'].value + ' ' + document.forms['nodeForm']['FamilyName'].value;
             });
         }
 
-        // Set up chips
+        // Get a reference to the id
+        id = document.forms['nodeForm']['Id'].value;
+        // Apply the 'active' class to all fields that have input 
+        var inputs = $('#node-info').find('input[type="text"]');
+        for (var i = 0; i < inputs.length; i++) {
+            if ($(inputs[i]).val() !== null && $(inputs[i]).val() !== '') {
+                $(inputs[i]).siblings('label').addClass('active');
+            }
+        }
+
+        // Set up other-names chips
         $('#other-names').on('chip.add', function (e, chip) {
-            model.otherNames.push(chip.tag);
-            console.log(model.otherNames);
+            otherNames.push(chip.tag);
+            // Update the input field
+            document.forms['nodeForm']['OtherNames'].value = JSON.stringify(otherNames);
         });
         $('#other-names').on('chip.delete', function (e, chip) {
-            model.otherNames.splice(model.otherNames.indexOf(chip.tag), 1);
-            console.log(model.otherNames);
+            otherNames.splice(otherNames.indexOf(chip.tag), 1);
+            // Update the input field
+            document.forms['nodeForm']['OtherNames'].value = JSON.stringify(otherNames);
         });
     }
 
@@ -258,49 +288,7 @@
         }
     }
 
-    // ===== Constructors =====
-    function BasicNode(definition) {
-        return {
-            id: definition ? definition.id : null,
-            contentType: definition ? definition.contentType : null,
-            commonName: definition ? definition.commonName : null,
-            otherNames: definition ? definition.otherNames : [],
-            releaseDate: definition ? definition.releaseDate : null,
-            relatedLinks: definition ? definition.relatedLinks : [],
-            relatedCompanies: definition ? definition.relatedCompanies : [],
-            relatedMedia: definition ? definition.relatedMedia : [],
-            relatedPeople: definition ? definition.relatedPeople : []
-        };
-    }
-
-    function CompanyNode(basic) {
-        var obj = new BasicNode(basic);
-        obj.deathDate = null;
-
-        return obj;
-    }
-
-    function MediaNode(basic) {
-        var obj = new BasicNode(basic);
-        obj.mediaType = null;
-        obj.franchiseName = null;
-        obj.genres = [];
-        //media.platforms = null;
-        //media.regionalReleaseDates = null;
-
-        return obj;
-    }
-
-    function PersonNode(basic) {
-        var obj = new BasicNode(basic);
-        obj.givenName = null;
-        obj.familyName = null;
-        obj.deathDate = null;
-        obj.status = null;
-        //obj.nationality = null;
-
-        return obj;
-    }
+    // ===== Relationship Constructor =====
 
     function Relationship(source) {
         return {
@@ -316,11 +304,45 @@
 
 // Sets up materialize plugin fields
 function materializeSetup() {
-    $('#type-specific-info').find('select').material_select();
-    $('#type-specific-info').find('.chips').material_chip();
+    $('#node-info').find('select').material_select();
+    $('#node-info').find('.chips').material_chip();
     $('.datepicker').pickadate({
         selectMonths: true,
         selectYears: 30,
         closeOnSelect: true
     });
+}
+
+function validate() {
+    var form = document.forms['nodeForm'];
+    var valid = true;
+
+    if (form['ContentType'].value !== 'person') {
+        if (form['CommonName'].value === null || form['CommonName'] === '') {
+            valid = false;
+        }
+    } else {
+        if (form['FamilyName'].value === null || form['FamilyName'].value === '' ||
+            form['GivenName'].value === null || form['GivenName'].value === '') {
+            valid = false;
+        }
+    }
+
+    if (form['ReleaseDate'].value === null) {
+        valid = false;
+    }
+
+    if (form['ContentType'].value === 'company' || form['ContentType'].value === 'person') {
+        var release = new Date(form['ReleaseDate']);
+        var death = new Date(form['DeathDate']);
+        // Death date cannot be before release date
+        if (death < release) {
+            valid = false;
+        }
+    }
+
+    if (valid) {
+        // Submit the form
+        document.forms['nodeForm'].submit();
+    }
 }

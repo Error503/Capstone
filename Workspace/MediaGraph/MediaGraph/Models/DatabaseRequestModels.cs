@@ -42,6 +42,7 @@ namespace MediaGraph.Models
         public DateTime? ApprovalDate { get; set; }
         public string Notes { get; set; }
 
+        //public string NodeDataType { get; set; }
         // Node Data
         public string NodeData { get; set; }
 
@@ -113,6 +114,7 @@ namespace MediaGraph.Models
                 RequestType = RequestType.Unknwon,
                 SubmissionDate = model.SubmissionDate,
                 NodeData = JsonConvert.DeserializeObject<NodeViewModel>(model.NodeData) as NodeViewModel,
+                //NodeDataType = NodeData.ContentType,
                 SubmitterId = model.SubmitterRefId,
                 SubmitterName = submitter != null ? submitter.UserName : null,
                 ReviewerId = model.ReviewerRefId,

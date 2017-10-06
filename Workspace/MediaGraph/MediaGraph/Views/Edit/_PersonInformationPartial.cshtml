@@ -1,51 +1,44 @@
 ﻿@model MediaGraph.ViewModels.Edit.PersonNodeViewModel
 
-@using (Html.BeginForm("SubmitPerson", "Edit", FormMethod.Post, new { onsumbit = "return validate();", id = "nodeForm" }))
-{
-    <section>
-        <h5 class="center-align">Person Information</h5>
-        <div class="col s12 m6">
-            <div class="input-field">
-                <label for="givenName">Given Name</label>
-                <input type="text" name="givenName" model="givenName" />
-            </div>
+<input type="hidden" name="ContentType" value="person" />
+<section>
+    <h5 class="center-align">Person Information</h5>
+    <div class="col s12 m6">
+        <div class="input-field">
+            @Html.LabelFor(x => x.GivenName)
+            @Html.TextBoxFor(x => x.GivenName)
         </div>
-        <div class="col s12 m6">
-            <div class="input-field">
-                <label for="familyName">Family name</label>
-                <input type="text" name="familyName" model="familyName" />
-            </div>
+    </div>
+    <div class="col s12 m6">
+        <div class="input-field">
+            @Html.LabelFor(x => x.FamilyName)
+            @Html.TextBoxFor(x => x.FamilyName)
         </div>
-        <div class="col s12">
-            <div class="input-field">
-                <label for="other-names">Other Names</label>
-                <div id="other-names" class="chips"></div>
-            </div>
+    </div>
+    <div class="col s12">
+        <div class="input-field">
+            <label for="other-names">Other Names</label>
+            <div id="other-names" class="chips"></div>
         </div>
-        <div class="col s12 m6">
-            <label for="releaseDate" class="active">Date of Birth</label>
-            <input type="text" name="releaseDate" class="datepicker" model="releaseDate" />
+    </div>
+    <div class="col s12 m6">
+        <label for="ReleaseDate" class="active">Date of Birth</label>
+        <input type="text" name="ReleaseDate" class="datepicker" value="@Model.GetDateValue(Model.ReleaseDate)" />
+    </div>
+    <div class="col s12 m6">
+        <label for="DeathDate" class="active">Date of Death</label>
+        <input type="text" name="DeathDate" class="datepicker" value="@Model.GetDateValue(Model.DeathDate)" />
+    </div>
+    <div class="col s12 m6 l4">
+        <div class="input-field">
+            @Html.LabelFor(x => x.Status, new { @class = "active" })
+            @Html.DropDownListFor(x => x.Status, new List<SelectListItem>
+            {
+                new SelectListItem { Value = "active", Text = "Active" },
+                new SelectListItem { Value = "inactive", Text = "Inactive" },
+                new SelectListItem { Value = "retired", Text = "Retired" },
+                new SelectListItem { Value = "deceased", Text = "Deceased" }
+            })
         </div>
-        <div class="col s12 m6">
-            <label for="deathDate" class="active">Date of Death</label>
-            <input type="text" name="deathDate" class="datepicker" model="deathDate" />
-        </div>
-        <div class="col s12 m6 l4">
-            <div class="input-field">
-                <label for="Status" class="active">Status</label>
-                <select id="person-status" name="Status">
-                    <option value="active" selected>Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="retired">Retired</option>
-                    <option value="deceased">Deceased</option>
-                </select>
-            </div>
-        </div>
-    </section>
-
-    <input type="hidden" name="contentType" value="person" />
-    <input type="hidden" name="otherNames" />
-    <input type="hidden" name="relatedCompanies" />
-    <input type="hidden" name="relatedMedia" />
-    <input type="hidden" name="relatedPeople" />
-}
+    </div>
+</section>

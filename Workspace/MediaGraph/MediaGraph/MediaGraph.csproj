@@ -319,8 +319,6 @@
     <Compile Include="ViewModels\FilterSettings.cs" />
     <Compile Include="ViewModels\NodeViewModel.cs" />
     <Compile Include="ViewModels\Edit\NodeDescriptionViewModel.cs" />
-    <Compile Include="ViewModels\Edit\RelationshipDescriptionViewModel.cs" />
-    <Compile Include="ViewModels\Edit\RelationshipEntryViewModel.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -450,6 +448,7 @@
     <Content Include="Scripts\myScripts\angular_scripts\nodeCreationApp.js" />
     <Content Include="Scripts\myScripts\angular_scripts\userManagerApp.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script-query.js" />
+    <Content Include="Scripts\myScripts\edit\node-edit.js" />
     <Content Include="Scripts\myScripts\graph\graph-control.js" />
     <Content Include="Scripts\myScripts\menu.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script.js" />
@@ -502,10 +501,10 @@
     <Content Include="Views\RelEdit\Index.cshtml" />
     <Content Include="Views\RelEdit\_RelationshipEntryPartialView.cshtml" />
     <Content Include="Views\Shared\_SearchPartialView.cshtml" />
-    <Content Include="Views\Edit\RequestAccepted.cshtml" />
+    <Content Include="Views\Edit\Accepted.cshtml" />
     <Content Include="Views\Shared\_MaterialLayout.cshtml" />
     <Content Include="Views\Shared\_NavBarPartial.cshtml" />
-    <Content Include="Views\Edit\Index.cshtml" />
+    <Content Include="Views\Edit\OldIndex.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
     <Content Include="Views\Edit\_MediaInformationPartial.cshtml" />
     <Content Include="Views\Edit\_ValidationSummaryPartial.cshtml" />
@@ -518,10 +517,11 @@
     <Content Include="Views\AdminTools\UserManagement.cshtml" />
     <Content Include="Views\AdminTools\DatabaseRequests.cshtml" />
     <Content Include="Views\AdminTools\ViewRequest.cshtml" />
-    <Content Include="Views\Edit\AltIndex.cshtml" />
+    <Content Include="Views\Edit\Index.cshtml" />
     <Content Include="Views\Edit\_CompanyInformationPartial.cshtml" />
     <Content Include="Views\Edit\_PersonInformationPartial.cshtml" />
     <Content Include="Views\Edit\_RelationshipFormPartial.cshtml" />
+    <Content Include="Views\Edit\_BasicInformationPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
