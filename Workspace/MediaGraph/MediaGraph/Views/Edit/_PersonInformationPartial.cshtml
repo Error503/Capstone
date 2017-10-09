@@ -1,6 +1,6 @@
 ﻿@model MediaGraph.ViewModels.Edit.PersonNodeViewModel
 
-<input type="hidden" name="ContentType" value="person" />
+@Html.HiddenFor(x => x.ContentType)
 <section>
     <h5 class="center-align">Person Information</h5>
     <div class="col s12 m6">
@@ -32,13 +32,7 @@
     <div class="col s12 m6 l4">
         <div class="input-field">
             @Html.LabelFor(x => x.Status, new { @class = "active" })
-            @Html.DropDownListFor(x => x.Status, new List<SelectListItem>
-            {
-                new SelectListItem { Value = "active", Text = "Active" },
-                new SelectListItem { Value = "inactive", Text = "Inactive" },
-                new SelectListItem { Value = "retired", Text = "Retired" },
-                new SelectListItem { Value = "deceased", Text = "Deceased" }
-            })
+            @Html.EnumDropDownListFor(x => x.Status, "Current Status")
         </div>
     </div>
 </section>

@@ -1,7 +1,7 @@
 ﻿@model MediaGraph.ViewModels.Edit.MediaNodeViewModel
 
-<input type="hidden" name="ContentType" value="media" />
-<input type="hidden" name="Genres" />
+@Html.HiddenFor(x => x.ContentType)
+<input type="hidden" name="Genres" value="@Model.GetGenresJson()" />
 <section>
     <h5 class="center-align">Media Information</h5>
     <div class="col s12 m6 l4">
@@ -10,10 +10,10 @@
             @Html.DropDownListFor(x => x.MediaType, new List<SelectListItem>
             {
                 new SelectListItem { Value = "", Text = "Media Type" },
-                new SelectListItem { Value = "audio", Disabled = true, Text = "Audio" },
-                new SelectListItem { Value = "book", Text = "Book" },
-                new SelectListItem { Value = "video", Text = "Video, Movie, Show" },
-                new SelectListItem { Value = "game", Text = "Video Game" }
+                new SelectListItem { Value = "1", Disabled = true, Text = "Audio" },
+                new SelectListItem { Value = "2", Text = "Book" },
+                new SelectListItem { Value = "4", Text = "Video, Movie, Show" },
+                new SelectListItem { Value = "8", Text = "Video Game" }
             })
         </div>
     </div>

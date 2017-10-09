@@ -1,4 +1,4 @@
-﻿using MediaGraph.Models.Component;
+﻿using MediaGraph.ViewModels.Edit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ namespace MediaGraph.Code
         /// </summary>
         /// <param name="node">The node description to add to the database system</param>
         /// <returns>Returns true if the node was inserted into the database system successfully</returns>
-        bool InsertNode(NodeDescription node);
+        bool InsertNode(BasicNodeViewModel node);
 
         /// <summary>
         /// Inserts the given relationship into the database system. This method controls

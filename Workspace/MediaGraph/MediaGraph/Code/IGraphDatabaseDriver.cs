@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using MediaGraph.Models;
 using Neo4j.Driver.V1;
+using MediaGraph.Models;
 using MediaGraph.Models.Component;
+using MediaGraph.ViewModels.Edit;
 
 namespace MediaGraph.Code
 {
@@ -17,16 +18,7 @@ namespace MediaGraph.Code
         /// <param name="id">The GUID of the node to return</param>
         /// <returns>The GraphNode with the specified GUID or null if
         /// no such node can be found</returns>
-        NodeDescription GetNode(Guid id);
-
-        /// <summary>
-        /// Gets the specified node and all of its relationships so that
-        /// it can be edited.
-        /// </summary>
-        /// <param name="id">The GUID of the node whose information to retreive</param>
-        /// <returns>An EditNode object containing the node and all of its direct 
-        /// relationship information</returns>
-        EditNode GetNodeForEdits(Guid id);
+        BasicNodeModel GetNode(Guid id);
 
         /// <summary>
         /// Gets the paths from the node with the given GUID.
@@ -40,7 +32,7 @@ namespace MediaGraph.Code
         /// </summary>
         /// <param name="node">The EditNode to add to the database</param>
         /// <returns>Returns true if the node was added successfully</returns>
-        bool AddNode(NodeDescription node);
+        bool AddNode(BasicNodeModel node);
 
         /// <summary>
         /// Attempts to update a node in the database by using a FullNode.
@@ -48,7 +40,7 @@ namespace MediaGraph.Code
         /// </summary>
         /// <param name="node">The updated node data</param>
         /// <returns>Returns true if the node was updated successfully</returns>
-        bool UpdateNode(FullNode node);
+        bool UpdateNode(BasicNodeViewModel node);
 
         /// <summary>
         /// Attempts to delete the node with the specified GUID from the database.

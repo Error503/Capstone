@@ -1,6 +1,6 @@
 ﻿@model MediaGraph.ViewModels.Edit.CompanyNodeViewModel
 
-<input type="hidden" name="ContentType" value="company" />
+@Html.HiddenFor(x => x.ContentType)
 <section>
     <h5 class="center-align">Company Information</h5>
     <div class="col s12 m6">

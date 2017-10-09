@@ -1,7 +1,6 @@
 ﻿using MediaGraph.Code;
 using MediaGraph.Models;
 using MediaGraph.Models.Component;
-using MediaGraph.ViewModels;
 using MediaGraph.ViewModels.Edit;
 using Neo4j.Driver.V1;
 using Newtonsoft.Json;
@@ -28,15 +27,29 @@ namespace MediaGraph.Controllers
             ActionResult result = View("Error");
             if(!string.IsNullOrWhiteSpace(id))
             {
-                // We have been given an id of a node to edit
-                ViewBag.Title = "Edit Node Data";
-                // TODO: Get the Node information from the database
+                // Try to parse the Guid string
+                Guid parsedId;
+                if(Guid.TryParse(id, out parsedId))
+                {
+                    // The string was parsed, find the node
+                    // We have been given an id of a node to edit
+                    ViewBag.Title = "Edit Node Data";
+                    // TODO: Get the node data from the database
+                    //NodeRelationshipModel nodeAndRelationships = databaseDriver.GetNodeAndDirectRelationships(parsedId);
+                    BasicNodeViewModel nodeToEdit = new BasicNodeViewModel();
+                    result = View(model: nodeToEdit);
+                }
+                else
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    Response.StatusDescription = $"Invalid id value: {id}";
+                }
             }
             else
             {
                 // We are creating a new node
                 ViewBag.Title = "Create New Node";
-                result = View(model: new BasicNodeViewModel { Id = Guid.NewGuid(), ContentType = "" });
+                result = View(model: new BasicNodeViewModel { Id = Guid.NewGuid(), ContentType = 0 });
             }
             return result;
         }
@@ -56,15 +69,15 @@ namespace MediaGraph.Controllers
                 modelToEdit = JsonConvert.DeserializeObject<BasicNodeViewModel>(request.NodeData) as BasicNodeViewModel;
                 // TODO: By adding the content type to the database request I can simplify this and not have to deserialize twice
                 // Check the content type
-                if(modelToEdit.ContentType == "company")
+                if(modelToEdit.ContentType == NodeContentType.Company)
                 {
                     modelToEdit = JsonConvert.DeserializeObject<CompanyNodeViewModel>(request.NodeData) as CompanyNodeViewModel;
                 }
-                else if(modelToEdit.ContentType == "media")
+                else if(modelToEdit.ContentType == NodeContentType.Media)
                 {
                     modelToEdit = JsonConvert.DeserializeObject<MediaNodeViewModel>(request.NodeData) as MediaNodeViewModel;
                 }
-                else if(modelToEdit.ContentType == "person")
+                else if(modelToEdit.ContentType == NodeContentType.Person)
                 {
                     modelToEdit = JsonConvert.DeserializeObject<PersonNodeViewModel>(request.NodeData) as PersonNodeViewModel;
                 }
@@ -75,17 +88,15 @@ namespace MediaGraph.Controllers
 
         [HttpPost]
         public ActionResult SubmitCompany(CompanyNodeViewModel model)
-        { 
-            ActionResult result = View("Error");
+        {
+            ActionResult result = View("Index", model);
             // The model state is valid
             if (ModelState.IsValid)
             {
-                // TODO: Add to the database requests database - If a node exists in the Neo4j database then it is an update request 
+                // Create the database request
+                CreateDatabaseRequest(model);
+                // Redirect to the accepted page
                 result = RedirectToAction("Accepted");
-            }
-            else
-            {
-                // Return the view via the edit page
             }
 
             return result;
@@ -94,13 +105,13 @@ namespace MediaGraph.Controllers
         [HttpPost]
         public ActionResult SubmitMedia(MediaNodeViewModel model)
         {
+            ActionResult result = View("Index", model);
             if(ModelState.IsValid)
             {
-
-            }
-            else
-            {
-                // Return the view via the edit page
+                // Create the database request
+                CreateDatabaseRequest(model);
+                // Redirect to the accepted page
+                result = RedirectToAction("Accepted");  
             }
 
             return View();
@@ -115,9 +126,35 @@ namespace MediaGraph.Controllers
             if(ModelState.IsValid)
             {
                 // Create the database request
+                CreateDatabaseRequest(model);
+                // Redirect to the accepted page
+                result = RedirectToAction("Accepted");
             }
 
             return result;
+        }
+
+        private void CreateDatabaseRequest(BasicNodeViewModel node)
+        {
+            RequestType requestType = databaseDriver.GetNode(node.Id) != null ? RequestType.Update : RequestType.Add;
+            using (ApplicationDbContext context = ApplicationDbContext.Create())
+            {
+                // Get the user that submitted the request
+                ApplicationUser submitter = context.Users.Single(x => x.UserName == User.Identity.Name);
+                // Create the request
+                DatabaseRequest request = new DatabaseRequest
+                {
+                    //RequestType = requestType,
+                    Id = Guid.NewGuid(),
+                    SubmissionDate = DateTime.Now,
+                    Submitter = submitter,
+                    //NodeContentType = node.ContentType,
+                    NodeData = node.SerializeToContentType(),
+                };
+                // Add the request to the database
+                context.Requests.Add(request);
+                context.SaveChanges();
+            }
         }
 
         // Called when a request is accepted
@@ -139,7 +176,7 @@ namespace MediaGraph.Controllers
                 {
                     Id = Guid.NewGuid(),
                     SubmissionDate = DateTime.Now,
-                    //RequestType = "Delete",
+                    //RequestType = RequestType.Delete,
                     NodeData = JsonConvert.SerializeObject(new { id = id }),
                     Approved = false,
                     ApprovalDate = null,
@@ -171,18 +208,19 @@ namespace MediaGraph.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetInformation(string type)
+        public ActionResult GetInformation(int type)
         {
+            NodeContentType contentType = (NodeContentType)type;
             ActionResult result = Json(new { msg = $"Invalid type {type}" }, JsonRequestBehavior.AllowGet);
-            if(type == "company")
+            if(contentType == NodeContentType.Company)
             {
                 result = PartialView("_CompanyInformationPartial", new CompanyNodeViewModel());
             }
-            else if(type == "media")
+            else if(contentType == NodeContentType.Media)
             {
                 result = PartialView("_MediaInformationPartial", new MediaNodeViewModel());
             }
-            else if(type == "person")
+            else if(contentType == NodeContentType.Person)
             {
                 result = PartialView("_PersonInformationPartial", new PersonNodeViewModel());
             } 

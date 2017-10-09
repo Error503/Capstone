@@ -1,5 +1,7 @@
 ﻿$(document).ready(function () {
 
+    var COMPANY_TYPE = 1, MEDIA_TYPE = 2, PERSON_TYPE = 3;
+
     var id = null;
     var otherNames = [];
     var genres = [];
@@ -10,15 +12,17 @@
 
     var activeGroup = 'Companies';
     var activeIndex = -1;
-    var activeGroupArray = relatedCompanies ;
+    var activeGroupArray = relatedCompanies;
     var ignoreNextSelection = false;
 
+    // If there is already form content, show and responed to that content
     if (document.forms['nodeForm']['ContentType'] != null) {
         $('#node-content-type').attr('disabled', 'disabled');
         $('#hidden-divider').show();
         $('#node-info').show();
         $('#add-relationship-button').removeClass('disabled');
         $('#submission-section').find('button').removeClass('disabled');
+        materializeSetup();
         // Bind the model
         bindModel(document.forms['nodeForm']['ContentType'].value);
         // Get the JSON values from the inputs
@@ -28,17 +32,24 @@
             otherNameChips.push({ tag: otherNames[i] });
         }
         $('#other-names').material_chip({ data: otherNameChips });
-        if (document.forms['nodeForm']['ContentType'].value == 'media') {
+        if (otherNameChips.length > 0) {
+            $('#other-names').siblings('label').addClass('active');
+        }
+        if (document.forms['nodeForm']['ContentType'].value == MEDIA_TYPE) {
             genres = JSON.parse(document.forms['nodeForm']['Genres'].value);
             var genreChips = [];
             for (var x = 0; x < genres.length; x++) {
                 genreChips.push({ tag: genres[x] });
             }
-            $('#genres-chips').material_chip({ data: genreChips });
+            $('#genre-chips').material_chip({ data: genreChips });
+            if (genreChips.length > 0) {
+                $('#genre-chips').siblings('label').addClass('active');
+            }
         }
         relatedCompanies = JSON.parse(document.forms['nodeForm']['RelatedCompanies'].value);
         relatedMedia = JSON.parse(document.forms['nodeForm']['RelatedMedia'].value);
         relatedPeople = JSON.parse(document.forms['nodeForm']['RelatedPeople'].value);
+        selectTab('Companies');
     }
 
     // Set up materialize things
@@ -59,7 +70,7 @@
     // Set up events
     $('#node-content-type').on('change', function (event) {
         var value = $(this).val();
-        if (value === 'company' || value === 'media' || value === 'person') {
+        if (value == COMPANY_TYPE || value == MEDIA_TYPE || value == PERSON_TYPE) {
             getNodeInformation(value);
             $(this).siblings('input').attr('disabled', 'disabled');
             $('#add-relationship-button').removeClass('disabled');
@@ -97,7 +108,14 @@
             selectGroupItem(-1);
             $('#add-relationship-button').addClass('disabled');
             $('#submission-section').find('button').addClass('disabled');
-            model = new BasicNode(model);
+            // Clear the model information
+            relatedCompanies = [];
+            relatedMedia = [];
+            relatedPeople = [];
+            relatedLinks = [];
+            genres = [];
+            otherNames = [];
+            selectTab('Companies');
         }
     });
 
@@ -201,7 +219,7 @@
     }
 
     function bindModel(type) {
-        if (type === 'media') {
+        if (type === MEDIA_TYPE) {
             // Set up the genre chips
             $('#genre-chips').on('chip.add', function (e, chip) {
                 genres.push(chip.tag);
@@ -212,7 +230,7 @@
                 genres.splice(genres.indexOf(chip.tag), 1);
                 document.forms['nodeForm']['Genres'].value = JSON.stringify(genres);
             });
-        } else if (type === 'person') {
+        } else if (type === PERSON_TYPE) {
             $('#given-name').add('#family-name').on('change', function (event) {
                 document.forms['nodeForm']['CommonName'] = document.forms['nodeForm']['GivenName'].value + ' ' + document.forms['nodeForm']['FamilyName'].value;
             });
@@ -317,7 +335,7 @@ function validate() {
     var form = document.forms['nodeForm'];
     var valid = true;
 
-    if (form['ContentType'].value !== 'person') {
+    if (form['ContentType'].value !== PERSON_TYPE) {
         if (form['CommonName'].value === null || form['CommonName'] === '') {
             valid = false;
         }
@@ -332,7 +350,7 @@ function validate() {
         valid = false;
     }
 
-    if (form['ContentType'].value === 'company' || form['ContentType'].value === 'person') {
+    if (form['ContentType'].value === COMPANY_TYPE || form['ContentType'].value === PERSON_TYPE) {
         var release = new Date(form['ReleaseDate']);
         var death = new Date(form['DeathDate']);
         // Death date cannot be before release date

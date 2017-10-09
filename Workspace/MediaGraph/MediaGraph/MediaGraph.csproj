@@ -289,7 +289,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Code\DatabaseDriver.cs" />
-    <Compile Include="Models\Component\NodeDescription.cs" />
+    <Compile Include="Models\Component\BasicNodeModel.cs" />
+    <Compile Include="Models\Component\NodeEnums.cs" />
     <Compile Include="Models\DatabaseRequestModels.cs" />
     <Compile Include="Models\GraphModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />

@@ -5,11 +5,10 @@ using System.Web;
 using Newtonsoft.Json;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using MediaGraph.Models.Component;
 
 namespace MediaGraph.ViewModels.Edit 
 {
-
-    // TODO: Server-side validation of node and relationship view models
 
     [JsonObject]
     public class BasicNodeViewModel : IValidatableObject
@@ -17,9 +16,11 @@ namespace MediaGraph.ViewModels.Edit
         [JsonProperty("id")]
         public Guid Id { get; set; }
         [JsonProperty("contentType")]
-        public string ContentType { get; set; }
+        public NodeContentType ContentType { get; set; }
         [JsonProperty("releaseDate")]
         public DateTime? ReleaseDate { get; set; } // Also "date of birth" or "date of founding"
+        [JsonProperty("deathDate")]
+        public DateTime? DeathDate { get; set; }
 
         [JsonProperty("commonName")]
         [Display(Name = "Common English Name")]
@@ -55,11 +56,14 @@ namespace MediaGraph.ViewModels.Edit
             if (Id == Guid.Empty)
                 errors.Add(new ValidationResult("An id has not been provided", new string[] { "Id" }));
             // Validate content type
-            if (ContentType == null || ContentType == "")
+            if (ContentType == 0)
                 errors.Add(new ValidationResult("A content type must be provided", new string[] { "ContentType" }));
             // Validate CommonName
             if (string.IsNullOrWhiteSpace(CommonName))
                 errors.Add(new ValidationResult("A common English name must be provided", new string[] { "CommonName" }));
+            // Validate that release date comes before death date
+            if (ReleaseDate.HasValue && DeathDate.HasValue && ReleaseDate.Value.CompareTo(DeathDate.Value) > 0)
+                errors.Add(new ValidationResult("Date founded must come before the date of death", new string[] { "ReleaseDate", "DeathDate" }));
 
             return errors;
         }
@@ -101,7 +105,7 @@ namespace MediaGraph.ViewModels.Edit
         /// <returns>The JSON value of the related media collection</returns>
         public string GetRelatedMediaJson()
         {
-            return JsonConvert.SerializeObject(RelatedPeopleList);
+            return JsonConvert.SerializeObject(RelatedMediaList);
         }
 
         /// <summary>
@@ -113,6 +117,22 @@ namespace MediaGraph.ViewModels.Edit
         {
             return JsonConvert.SerializeObject(RelatedPeopleList);
         }
+
+        /// <summary>
+        /// Serializes this node to a JSON string based on the content type of the node.
+        /// </summary>
+        /// <returns>The JSON string representing this node</returns>
+        public string SerializeToContentType()
+        {
+            string value = null;
+            if (ContentType == NodeContentType.Company)
+                value = JsonConvert.SerializeObject((CompanyNodeViewModel)this);
+            else if (ContentType == NodeContentType.Media)
+                value = JsonConvert.SerializeObject((MediaNodeViewModel)this);
+            else if (ContentType == NodeContentType.Person)
+                value = JsonConvert.SerializeObject((PersonNodeViewModel)this);
+            return value;
+        }
         #endregion
     }
 
@@ -121,7 +141,7 @@ namespace MediaGraph.ViewModels.Edit
     {
         [JsonProperty("mediaType")]
         [Display(Name = "Media Type")]
-        public string MediaType { get; set; }
+        public NodeMediaType MediaType { get; set; }
         [JsonProperty("franchiseName")]
         [Display(Name = "Franchise")]
         public string FranchiseName { get; set; }
@@ -139,7 +159,7 @@ namespace MediaGraph.ViewModels.Edit
             List<ValidationResult> errors = new List<ValidationResult>(base.Validate(validationContext));
 
             // Validate MediaType
-            if (string.IsNullOrWhiteSpace(MediaType))
+            if (MediaType == 0)
                 errors.Add(new ValidationResult("A media type must be provided", new string[] { "MediaType" }));
 
             return errors;
@@ -165,10 +185,8 @@ namespace MediaGraph.ViewModels.Edit
         [JsonProperty("familyName")]
         [Display(Name = "Family Name")]
         public string FamilyName { get; set; }
-        [JsonProperty("deathDate")]
-        public DateTime? DeathDate { get; set; }
         [JsonProperty("status")]
-        public string Status { get; set; }
+        public PersonStatus Status { get; set; }
 
         // public string Nationality { get; set; } // string could be replaced with a Nationalities enum? - might be too large
 
@@ -187,12 +205,9 @@ namespace MediaGraph.ViewModels.Edit
             if(string.IsNullOrWhiteSpace(CommonName))
                 CommonName = $"{GivenName} {FamilyName}";
 
-            // Validate that ReleaseDate comes before DeathDate
-            if (ReleaseDate.HasValue && DeathDate.HasValue && ReleaseDate.Value.CompareTo(DeathDate.Value) > 0)
-                errors.Add(new ValidationResult("Date of birth must come before date of death", new string[] { "ReleaseDate", "DeathDate" }));
             // Correct invalid status if the person has passed away
-            if (DeathDate.HasValue && Status != "deceased")
-                Status = "deceased";
+            if (DeathDate.HasValue && Status != PersonStatus.Deceased)
+                Status = PersonStatus.Deceased;
 
             // Call the base method
             errors.AddRange(base.Validate(validationContext));
@@ -204,20 +219,7 @@ namespace MediaGraph.ViewModels.Edit
     [JsonObject]
     public class CompanyNodeViewModel : BasicNodeViewModel
     {
-        // Other possible properties
-        [JsonProperty("deathDate")]
-        public DateTime? DeathDate { get; set; } // Date that the company ended
-
-        public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            List<ValidationResult> errors = new List<ValidationResult>(base.Validate(validationContext));
-
-            // Validate that release date comes before death date
-            if (ReleaseDate.HasValue && DeathDate.HasValue && ReleaseDate.Value.CompareTo(DeathDate.Value) > 0)
-                errors.Add(new ValidationResult("Date founded must come before the date of death", new string[] { "ReleaseDate", "DeathDate" }));
-
-            return errors;
-        }
+        // CompanyNodeViewModel adds nothing to the basic view model
     }
 
     [JsonObject]

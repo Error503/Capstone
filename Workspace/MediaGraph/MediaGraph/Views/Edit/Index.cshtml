@@ -1,8 +1,21 @@
 ﻿@using MediaGraph.ViewModels.Edit
+@using MediaGraph.Models.Component
 @model BasicNodeViewModel
 @{
     Layout = "~/Views/Shared/_ContainerLayout.cshtml";
-    string submissionRoute = "submit" + Model.ContentType != null ? Model.ContentType : "";
+    string submissionRoute = "submit";
+    switch(Model.ContentType)
+    {
+        case NodeContentType.Company:
+            submissionRoute += "company";
+            break;
+        case NodeContentType.Media:
+            submissionRoute += "media";
+            break;
+        case NodeContentType.Person:
+            submissionRoute += "person";
+            break;
+    }
 }
 <div>
     <article id="basic-node-info" class="row">
@@ -13,13 +26,7 @@
         </div>
         <div class="col s12 m6 l4">
             <div class="input-field">
-                @Html.DropDownListFor(x => x.ContentType, new List<SelectListItem>
-                {
-                    new SelectListItem { Value = "", Disabled = true, Text = "Content Type" },
-                    new SelectListItem { Value = "company", Text = "Company" },
-                    new SelectListItem { Value = "media", Text = "Media" },
-                    new SelectListItem { Value = "person", Text = "Person" }
-                }, new { id = "node-content-type" })
+                @Html.EnumDropDownListFor(x => x.ContentType, "Content Type", new { id = "node-content-type" })
             </div>
         </div>
     </article>
@@ -29,19 +36,19 @@
         {
             @Html.Partial("_BasicInformationPartial", Model)
             <section id="node-info" style="display:none;">
-                @if (Model.ContentType != null)
+                @if (Model.ContentType != 0)
                 {
-                    if (Model.ContentType == "company")
+                    if (Model.ContentType == NodeContentType.Company)
                     {
-                        Html.Partial("_CompanyInformationPartial", (CompanyNodeViewModel)Model);
+                        @Html.Partial("_CompanyInformationPartial", (CompanyNodeViewModel)Model)
                     }
-                    else if (Model.ContentType == "media")
+                    else if (Model.ContentType == NodeContentType.Media)
                     {
-                        Html.Partial("_MediaInformationPartial", (MediaNodeViewModel)Model);
+                        @Html.Partial("_MediaInformationPartial", (MediaNodeViewModel)Model)
                     }
-                    else if (Model.ContentType == "person")
+                    else if (Model.ContentType == NodeContentType.Person)
                     {
-                        Html.Partial("_PersonInformationPartial", (PersonNodeViewModel)Model);
+                       @Html.Partial("_PersonInformationPartial", (PersonNodeViewModel)Model)
                     }
                 }
             </section>

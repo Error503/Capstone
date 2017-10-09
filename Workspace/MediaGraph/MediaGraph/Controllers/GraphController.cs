@@ -33,16 +33,7 @@ namespace MediaGraph.Controllers
         [HttpPost]
         public ActionResult GetNodeData(Guid id)
         {
-            FullNode node = null;
-            // Get the node from the database
-            NodeDescription result = databaseDriver.GetNode(id);
-            // If the node exists,
-            if(result != null)
-            {
-
-            }
-
-            return Json(node);
+            return View();
         }
 
         [HttpPost]

@@ -6,6 +6,7 @@ using MediaGraph.Models;
 using Neo4j.Driver.V1;
 using MediaGraph.Models.Util;
 using MediaGraph.Models.Component;
+using MediaGraph.ViewModels.Edit;
 
 namespace MediaGraph.Code
 {
@@ -24,9 +25,9 @@ namespace MediaGraph.Code
         /// Adds the given node to the graph. 
         /// PRECONDITION: The node must be valid
         /// </summary>
-        /// <param name="node">The NodeDefinition of the node to add to the graph</param>
+        /// <param name="node">The BasicNodeModel of the node to add to the graph</param>
         /// <returns>Returns true if the node was added to the graph successfully</returns>
-        public bool AddNode(NodeDescription node)
+        public bool AddNode(BasicNodeModel node)
         {
             IStatementResult result;
             using (IDriver driver = GetDatabaseConnection())
@@ -36,11 +37,16 @@ namespace MediaGraph.Code
                 {
                     // Run the statement
                     // TODO: Implement transactions for safer editing
-                    result = session.Run(new Statement(string.Format(kNodeCreationStatement, node.ContentType.ToLabelString(), kNodeParameters), node.GetParameterMap()));
+                    result = session.Run(new Statement(string.Format(kNodeCreationStatement, node.ContentType, node.SerializeToJson())));
                 }
             }
 
             return result.Summary.Counters.NodesCreated > 0;
+        }
+
+        public bool UpdateNode(BasicNodeViewModel model)
+        {
+            throw new NotImplementedException();
         }
 
         public int AddRelationships(object relationships)
@@ -69,7 +75,7 @@ namespace MediaGraph.Code
             return result.Summary.Counters.NodesDeleted > 0;
         }
 
-        public NodeDescription GetNode(Guid id)
+        public BasicNodeModel GetNode(Guid id)
         {
             IStatementResult result;
 
@@ -81,7 +87,7 @@ namespace MediaGraph.Code
                 }
             }
 
-            return NodeDescription.FromINode(result.First()[0].As<INode>());
+            return BasicNodeModel.FromINode(result.First()[0].As<INode>());
         }
 
         public IEnumerable<IRelationship> GetNodeRelationships(Guid id)
@@ -114,16 +120,6 @@ namespace MediaGraph.Code
             queryResult.Consume();
             // Return the result
             return pathsList;
-        }
-
-        public EditNode GetNodeForEdits(Guid id)
-        {
-            return null;
-        }
-
-        public bool UpdateNode(FullNode node)
-        {
-            throw new NotImplementedException();
         }
 
         #region Helper Methods
