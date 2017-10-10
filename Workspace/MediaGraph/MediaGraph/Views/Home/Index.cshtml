@@ -11,11 +11,11 @@
         <section class="col s12 m4 card-panel teal lighten-2">
             <h4 class="white-text center">Admin Tools</h4>
             <ul>
-                <li>@Html.ActionLink("Manage Edit Requests", "Index", "RequestManager", null, new { @class = "white-text" })</li>
+                <li>@Html.ActionLink("Manage Edit Requests", "DatabaseRequests", "AdminTools", null, new { @class = "white-text" })</li>
                 <li>@Html.ActionLink("Upload Node File", "Upload", "Edit", null, new { @class = "white-text" })</li>
                 @if (User.IsInRole("staff"))
                 {
-                    <li>@Html.ActionLink("Manage Users", "Index", "UserManager", null, new { @class = "white-text" })</li>
+                    <li>@Html.ActionLink("Manage Users", "UserManagement", "AdminTools", null, new { @class = "white-text" })</li>
                 }
             </ul>
         </section>

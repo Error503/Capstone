@@ -18,8 +18,6 @@ namespace MediaGraph.Controllers
     [Authorize]
     public class EditController : Controller
     {
-        private static IGraphDatabaseDriver databaseDriver = new Neo4jGraphDatabaseDriver();
-
         [HttpGet]
         // GET: Edit/Index/
         public ActionResult Index(string id)
@@ -34,10 +32,18 @@ namespace MediaGraph.Controllers
                     // The string was parsed, find the node
                     // We have been given an id of a node to edit
                     ViewBag.Title = "Edit Node Data";
-                    // TODO: Get the node data from the database
-                    //NodeRelationshipModel nodeAndRelationships = databaseDriver.GetNodeAndDirectRelationships(parsedId);
-                    BasicNodeViewModel nodeToEdit = new BasicNodeViewModel();
-                    result = View(model: nodeToEdit);
+                    BasicNodeViewModel viewModel = null;
+                    // Get the node to edit
+                    using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+                    {
+                        BasicNodeModel model = driver.GetNodeAndRelationships(parsedId);
+                        viewModel = BasicNodeViewModel.FromModel(model);
+                    }
+                    // Return a view
+                    if(viewModel != null)
+                    {
+                        result = View(model: viewModel);
+                    }
                 }
                 else
                 {
@@ -54,89 +60,60 @@ namespace MediaGraph.Controllers
             return result;
         }
 
-        // This action is called to edit a node from a database request
-        [HttpGet]
-        [Authorize(Roles = "admin,staff")]
-        public ActionResult EditRequest(Guid id) 
-        {
-            BasicNodeViewModel modelToEdit = null;
-            // Get the node to edit from the databsae rquests database
-            using (ApplicationDbContext context = ApplicationDbContext.Create())
-            {
-                // Find the request
-                DatabaseRequest request = context.Requests.Single(x => x.Id == id);
-                // Get the node to edit
-                modelToEdit = JsonConvert.DeserializeObject<BasicNodeViewModel>(request.NodeData) as BasicNodeViewModel;
-                // TODO: By adding the content type to the database request I can simplify this and not have to deserialize twice
-                // Check the content type
-                if(modelToEdit.ContentType == NodeContentType.Company)
-                {
-                    modelToEdit = JsonConvert.DeserializeObject<CompanyNodeViewModel>(request.NodeData) as CompanyNodeViewModel;
-                }
-                else if(modelToEdit.ContentType == NodeContentType.Media)
-                {
-                    modelToEdit = JsonConvert.DeserializeObject<MediaNodeViewModel>(request.NodeData) as MediaNodeViewModel;
-                }
-                else if(modelToEdit.ContentType == NodeContentType.Person)
-                {
-                    modelToEdit = JsonConvert.DeserializeObject<PersonNodeViewModel>(request.NodeData) as PersonNodeViewModel;
-                }
-            }
-
-            return View("Index", modelToEdit);
-        }
-
+        #region Submission Methods
         [HttpPost]
         public ActionResult SubmitCompany(CompanyNodeViewModel model)
         {
-            ActionResult result = View("Index", model);
-            // The model state is valid
-            if (ModelState.IsValid)
-            {
-                // Create the database request
-                CreateDatabaseRequest(model);
-                // Redirect to the accepted page
-                result = RedirectToAction("Accepted");
-            }
+            return CheckModelAndMakeRequest(model, DatabaseRequestType.Add);
+        }
 
-            return result;
+        [HttpPost]
+        public ActionResult EditCompany(CompanyNodeViewModel model)
+        {
+            return CheckModelAndMakeRequest(model, DatabaseRequestType.Update);
         }
 
         [HttpPost]
         public ActionResult SubmitMedia(MediaNodeViewModel model)
         {
-            ActionResult result = View("Index", model);
-            if(ModelState.IsValid)
-            {
-                // Create the database request
-                CreateDatabaseRequest(model);
-                // Redirect to the accepted page
-                result = RedirectToAction("Accepted");  
-            }
+            return CheckModelAndMakeRequest(model, DatabaseRequestType.Add);
+        }
 
-            return View();
+        [HttpPost]
+        public ActionResult EditMedia(MediaNodeViewModel model)
+        {
+            return CheckModelAndMakeRequest(model, DatabaseRequestType.Update);
         }
 
         [HttpPost]
         public ActionResult SubmitPerson(PersonNodeViewModel model)
         {
-            ActionResult result = View("Index", model);
+            return CheckModelAndMakeRequest(model, DatabaseRequestType.Add);
+        }
 
-            // If the model state is valid
+        [HttpPost]
+        public ActionResult EditPerson(PersonNodeViewModel model)
+        {
+            return CheckModelAndMakeRequest(model, DatabaseRequestType.Update);
+        }
+
+        private ActionResult CheckModelAndMakeRequest(BasicNodeViewModel model, DatabaseRequestType type)
+        {
+            ActionResult result = View("Index", model);
+            // If the model state is valid,
             if(ModelState.IsValid)
             {
                 // Create the database request
-                CreateDatabaseRequest(model);
+                CreateDatabaseRequest(model, type);
                 // Redirect to the accepted page
-                result = RedirectToAction("Accepted");
+                result = RedirectToAction("Accepted", "Edit", null);
             }
 
             return result;
         }
 
-        private void CreateDatabaseRequest(BasicNodeViewModel node)
-        {
-            RequestType requestType = databaseDriver.GetNode(node.Id) != null ? RequestType.Update : RequestType.Add;
+        private void CreateDatabaseRequest(BasicNodeViewModel model, DatabaseRequestType type)
+        { 
             using (ApplicationDbContext context = ApplicationDbContext.Create())
             {
                 // Get the user that submitted the request
@@ -144,21 +121,22 @@ namespace MediaGraph.Controllers
                 // Create the request
                 DatabaseRequest request = new DatabaseRequest
                 {
-                    //RequestType = requestType,
+                    RequestType = type,
                     Id = Guid.NewGuid(),
                     SubmissionDate = DateTime.Now,
                     Submitter = submitter,
-                    //NodeContentType = node.ContentType,
-                    NodeData = node.SerializeToContentType(),
+                    NodeDataType = model.ContentType,
+                    NodeData = model.SerializeToContentType(),
                 };
                 // Add the request to the database
                 context.Requests.Add(request);
                 context.SaveChanges();
             }
         }
+        #endregion
 
         // Called when a request is accepted
-        private ActionResult Accepted()
+        public ActionResult Accepted()
         {
             return View();
         }
@@ -168,15 +146,22 @@ namespace MediaGraph.Controllers
         {
             string message = "An error occurred. The node was not flagged";
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            bool foundNodeToDelete = false;
+
+            using(Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            {
+                foundNodeToDelete = driver.GetNode(id) != null;
+            }
 
             // If the node with the given id is not null,
-            if (databaseDriver.GetNode(id) != null)
+            if (foundNodeToDelete)
             {
                 DatabaseRequest request = new DatabaseRequest
                 {
                     Id = Guid.NewGuid(),
                     SubmissionDate = DateTime.Now,
-                    //RequestType = RequestType.Delete,
+                    RequestType = DatabaseRequestType.Delete,
+                    NodeDataType = 0,
                     NodeData = JsonConvert.SerializeObject(new { id = id }),
                     Approved = false,
                     ApprovalDate = null,

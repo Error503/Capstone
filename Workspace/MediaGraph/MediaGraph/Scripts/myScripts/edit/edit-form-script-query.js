@@ -1,6 +1,6 @@
-﻿$(document).ready(function () {
+﻿ var COMPANY_TYPE = 1, MEDIA_TYPE = 2, PERSON_TYPE = 3;
+$(document).ready(function () {
 
-    var COMPANY_TYPE = 1, MEDIA_TYPE = 2, PERSON_TYPE = 3;
 
     var id = null;
     var otherNames = [];
@@ -10,6 +10,7 @@
     var relatedMedia = [];
     var relatedPeople = [];
 
+    var baseFormAction = $('#nodeForm').attr('editting') ? '/edit/edit' : '/edit/submit';
     var activeGroup = 'Companies';
     var activeIndex = -1;
     var activeGroupArray = relatedCompanies;
@@ -35,7 +36,7 @@
         if (otherNameChips.length > 0) {
             $('#other-names').siblings('label').addClass('active');
         }
-        if (document.forms['nodeForm']['ContentType'].value == MEDIA_TYPE) {
+        if (document.forms['nodeForm']['ContentType'].value == 'Media') {
             genres = JSON.parse(document.forms['nodeForm']['Genres'].value);
             var genreChips = [];
             for (var x = 0; x < genres.length; x++) {
@@ -69,13 +70,10 @@
 
     // Set up events
     $('#node-content-type').on('change', function (event) {
-        var value = $(this).val();
-        if (value == COMPANY_TYPE || value == MEDIA_TYPE || value == PERSON_TYPE) {
-            getNodeInformation(value);
-            $(this).siblings('input').attr('disabled', 'disabled');
-            $('#add-relationship-button').removeClass('disabled');
-            $('#submission-section').find('button').removeClass('disabled');
-        } 
+        getNodeInformation($(this).val());
+        $(this).siblings('input').attr('disabled', 'disabled');
+        $('#add-relationship-button').removeClass('disabled');
+        $('#submission-section').find('button').removeClass('disabled');
     });
 
     $('.tab').on('click', function (event) {
@@ -94,10 +92,12 @@
     $('#relationship-name-entry').on('keyup', function (event) {
         // Update the value
         activeGroupArray[activeIndex].targetName = $(this).val();
-        // Update the input field
-        document.forms['nodeForm']['Related' + activeGroup].value = JSON.stringify(activeGroupArray);
         // Update the field value
         $($('.relationship-group > li')[activeIndex]).children('span').html(getDisplayName(activeGroupArray[activeIndex].targetName));
+    });
+    $('#relationship-name-entry').on('change', function (event) {
+        // Update the input field
+        document.forms['nodeForm']['Related' + activeGroup].value = JSON.stringify(activeGroupArray);
     });
 
     $('#reset-button').on('click', function (event) {
@@ -185,6 +185,8 @@
         $('.remove-relationship-button').on('click', function (event) {
             // Remove the item
             activeGroupArray.splice(Number.parseInt($(this).attr('rel-index')), 1);
+            // Update the input field
+            document.forms['nodeForm']['Related' + activeGroup].value = JSON.stringify(activeGroupArray);
             // Ignore the next selection (effectively saying select index -1)
             ignoreNextSelection = true;
             // Update the list
@@ -208,7 +210,7 @@
 
                 materializeSetup();
                 // Update the form action
-                $('#nodeForm').attr('action', '/edit/submit' + type);
+                $('#nodeForm').attr('action', baseFormAction + type);
                 // Bind the model
                 bindModel(type);
             },
@@ -344,10 +346,6 @@ function validate() {
             form['GivenName'].value === null || form['GivenName'].value === '') {
             valid = false;
         }
-    }
-
-    if (form['ReleaseDate'].value === null) {
-        valid = false;
     }
 
     if (form['ContentType'].value === COMPANY_TYPE || form['ContentType'].value === PERSON_TYPE) {

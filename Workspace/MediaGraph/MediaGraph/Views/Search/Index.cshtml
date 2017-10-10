@@ -1,33 +1,26 @@
-﻿@model MediaGraph.ViewModels.SearchViewModel
-@{
+﻿@{ 
+    Layout = "~/Views/Shared/_ContainerLayout.cshtml";
     ViewBag.Title = "Search";
-    AjaxOptions options = new AjaxOptions
+}
+
+<article class="row">
+    @using (Html.BeginForm("Search", "Search", FormMethod.Get))
     {
-        UpdateTargetId = "advanced-search-section",
-        InsertionMode = InsertionMode.Replace,
-        Url = Url.Action("GetAdvancedSearchFields")
-    };
-}
-@section css {
-    <link rel="stylesheet" type="text/css" href="~/Content/mediaPageStyle.css" />
-}
-@section headScripts {
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>    
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script src="~/Scripts/myScripts/searchScript.js"></script>
-}
-
-<h2>Search</h2>
-
-<article>
-    <section class="search-form">
-        @Html.Partial("_SearchFormPartial", Model)
-        <section class="other-search-options">
-            <h4>Other Search Options</h4>
-            <ul>
-                <li>Shortest Path Search</li>
-            </ul>
+        <section class="col s12">
+            <div class="input-field">
+                <label for="idField" class="active">Search By Name</label>
+                <select name="id">
+                    <option value="" disabled selected>Choose an option</option>
+                    <option value="00000000-0000-0000-0000-000000000000">Tales of Xillia 2</option>
+                    <option value="00000000-0000-0000-0000-000000000001">Bandai Namco</option>
+                </select>
+            </div>
         </section>
-    </section>
+        <section class="col s12">
+            <button type="submit" class="waves-effect waves-light btn">Search</button>
+        </section>
+    }
 </article>
-
+@section scripts {
+    <script src="~/Scripts/myScripts/searchScript.js"></script>    
+}

@@ -1,12 +1,13 @@
-﻿using MediaGraph.ViewModels;
+﻿using MediaGraph.Models.Component;
+using MediaGraph.ViewModels.Edit;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
-using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MediaGraph.Models
 {
@@ -18,16 +19,15 @@ namespace MediaGraph.Models
          * Foreign Key added to reviewer
          * Added ReviewedDate
          * 
-         * Migration: "AddUpdateType"
-         * Added Update type field to define what type of update the request defines
-         * Added Foreign Key to an enum table of update types
+         * Migration: "RequestAndNodeType" TO BE ADDED
+         * Added RequestType 
+         * Added NodeDataType 
          */
 
         // DatabaseRequest Data      
         [Key]
         public Guid Id { get; set; }
-        //public string UpdateType { get; set; }
-        //public RequestType UpdateType { get; set; }
+        public DatabaseRequestType RequestType  { get; set; }
         public string SubmitterRefId { get; set; }
         [ForeignKey("SubmitterRefId")]
         public ApplicationUser Submitter { get; set; }
@@ -42,54 +42,58 @@ namespace MediaGraph.Models
         public DateTime? ApprovalDate { get; set; }
         public string Notes { get; set; }
 
-        //public string NodeDataType { get; set; }
-        // Node Data
+        // Node data
+        public NodeContentType NodeDataType { get; set; }
         public string NodeData { get; set; }
 
-        public NodeViewModel parseModel()
+        /// <summary>
+        /// Parses the node data string
+        /// </summary>
+        /// <returns>The </returns>
+        public BasicNodeViewModel ParseModel()
         {
-            return JsonConvert.DeserializeObject<NodeViewModel>(NodeData) as NodeViewModel;
+            BasicNodeViewModel viewModel = null;
+            if(NodeDataType == NodeContentType.Company)
+            {
+                viewModel = JsonConvert.DeserializeObject<CompanyNodeViewModel>(NodeData) as CompanyNodeViewModel;
+            }
+            else if(NodeDataType == NodeContentType.Media)
+            {
+                viewModel = JsonConvert.DeserializeObject<MediaNodeViewModel>(NodeData) as MediaNodeViewModel;
+            }
+            else if(NodeDataType == NodeContentType.Person)
+            {
+                viewModel = JsonConvert.DeserializeObject<PersonNodeViewModel>(NodeData) as PersonNodeViewModel;
+            }
+
+            return viewModel;
         }
     }
 
-    public enum RequestType : int
+    public enum DatabaseRequestType : byte
     {
-        Unknwon = 0,
+        Unknown = 0,
         Add = 1,
         Update = 2,
         Delete = 3
     }
 
-    [JsonObject]
     public class DatabaseRequestViewModel
     {
-        [JsonProperty("id")]
         public Guid Id { get; set; }
-        [JsonProperty("requestType")]
-        public RequestType RequestType { get; set; }
-        [JsonProperty("submissionDate")]
+        public DatabaseRequestType RequestType { get; set; }
         public DateTime SubmissionDate { get; set; }
-        [JsonProperty("nodeData")]
-        public NodeViewModel NodeData { get; set; }
+        public BasicNodeViewModel NodeData { get; set; }
 
-        [JsonProperty("submitterId")]
         public string SubmitterId { get; set; }
-        [JsonProperty("submitterName")]
         public string SubmitterName { get; set; }
 
-        [JsonProperty("reviewerId")]
         public string ReviewerId { get; set; }
-        [JsonProperty("reviewerName")]
         public string ReviewerName { get; set; }
-        [JsonProperty("reviewDate")]
         public DateTime? ReviewDate { get; set; }
-        [JsonProperty("reviewed")]
         public bool Reviewed { get; set; }
-        [JsonProperty("approvalDate")]
         public DateTime? ApprovalDate { get; set; }
-        [JsonProperty("approved")]
         public bool Approved { get; set; }
-        [JsonProperty("notes")]
         public string Notes { get; set; }
 
         /// <summary>
@@ -111,10 +115,10 @@ namespace MediaGraph.Models
             return new DatabaseRequestViewModel
             {
                 Id = model.Id,
-                RequestType = RequestType.Unknwon,
+                RequestType = DatabaseRequestType.Unknown,
                 SubmissionDate = model.SubmissionDate,
-                NodeData = JsonConvert.DeserializeObject<NodeViewModel>(model.NodeData) as NodeViewModel,
-                //NodeDataType = NodeData.ContentType,
+                NodeData = model.ParseModel(),
+                //NodeDataType = model.NodeDataType,
                 SubmitterId = model.SubmitterRefId,
                 SubmitterName = submitter != null ? submitter.UserName : null,
                 ReviewerId = model.ReviewerRefId,

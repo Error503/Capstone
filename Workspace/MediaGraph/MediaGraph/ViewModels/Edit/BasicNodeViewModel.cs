@@ -28,21 +28,21 @@ namespace MediaGraph.ViewModels.Edit
         [JsonIgnore]
         public string OtherNames { get; set; }
         [JsonProperty("otherNames")]
-        public IEnumerable<string> OtherNamesList { get; set; }
+        public IEnumerable<string> OtherNamesList { get; set; } = new List<string>();
 
         // NOTE: When adding to the Neo4j database, use NodeType in this class to determine relationship direction
         [JsonIgnore]
         public string RelatedCompanies { get; set; }
         [JsonProperty("relatedCompanies")]
-        public IEnumerable<RelationshipViewModel> RelatedCompaniesList { get; set; }
+        public IEnumerable<RelationshipViewModel> RelatedCompaniesList { get; set; } = new List<RelationshipViewModel>();
         [JsonIgnore]
         public string RelatedMedia { get; set; }
         [JsonProperty("relatedMedia")]
-        public IEnumerable<RelationshipViewModel> RelatedMediaList { get; set; }
+        public IEnumerable<RelationshipViewModel> RelatedMediaList { get; set; } = new List<RelationshipViewModel>();
         [JsonIgnore]
         public string RelatedPeople { get; set; }
         [JsonProperty("relatedPeople")]
-        public IEnumerable<RelationshipViewModel> RelatedPeopleList { get; set; }
+        public IEnumerable<RelationshipViewModel> RelatedPeopleList { get; set; } = new List<RelationshipViewModel>();
 
         // Other possible properties
         //[JsonProperty("links")]
@@ -134,6 +134,82 @@ namespace MediaGraph.ViewModels.Edit
             return value;
         }
         #endregion
+
+        /// <summary>
+        /// Constructs a node view model from the given node model.
+        /// </summary>
+        /// <param name="model">The node model for which to create a view model</param>
+        /// <returns>The created view model</returns>
+        public static BasicNodeViewModel FromModel(BasicNodeModel model)
+        {
+            BasicNodeViewModel result = null;
+            if(model.ContentType == NodeContentType.Company)
+            {
+                result = new CompanyNodeViewModel
+                {
+                    Id = model.Id,
+                    ContentType = model.ContentType,
+                    CommonName = model.CommonName,
+                    OtherNamesList = model.OtherNames,
+                    ReleaseDate = model.ReleaseDate,
+                    DeathDate = model.DeathDate
+                };
+            }
+            else if(model.ContentType == NodeContentType.Media)
+            {
+                result = new MediaNodeViewModel
+                {
+                    Id = model.Id,
+                    ContentType = model.ContentType,
+                    CommonName = model.CommonName,
+                    OtherNamesList = model.OtherNames,
+                    ReleaseDate = model.ReleaseDate,
+                    DeathDate = model.DeathDate,
+                    MediaType = ((MediaNodeModel)model).MediaType,
+                    FranchiseName = ((MediaNodeModel)model).FranchiseName,
+                    Genres = ((MediaNodeModel)model).Genres,
+                };
+            } 
+            else if(model.ContentType == NodeContentType.Person)
+            {
+                result = new PersonNodeViewModel
+                {
+                    Id = model.Id,
+                    ContentType = model.ContentType,
+                    CommonName = model.CommonName,
+                    OtherNamesList = model.OtherNames,
+                    ReleaseDate = model.ReleaseDate,
+                    DeathDate = model.DeathDate,
+                    GivenName = ((PersonNodeModel)model).GivenName,
+                    FamilyName = ((PersonNodeModel)model).FamilyName,
+                    Status = ((PersonNodeModel)model).Status
+                };
+            }
+
+            // Add the relationships
+            result.RelatedCompaniesList = ConvertRelationships(model.RelatedCompanies);
+            result.RelatedMediaList = ConvertRelationships(model.RelatedMedia);
+            result.RelatedPeopleList = ConvertRelationships(model.RelatedPeople);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Converts a collection of relationship models into a collection of relationship view models.
+        /// </summary>
+        /// <param name="relationships">The collection of relationship models</param>
+        /// <returns>A collection of relationship view models</returns>
+        private static List<RelationshipViewModel> ConvertRelationships(IEnumerable<RelationshipModel> relationships)
+        {
+            List<RelationshipViewModel> result = new List<RelationshipViewModel>();
+
+            foreach(RelationshipModel model in relationships)
+            {
+                result.Add(RelationshipViewModel.FromModel(model));
+            }
+
+            return result;
+        }
     }
 
     [JsonObject]
@@ -249,6 +325,22 @@ namespace MediaGraph.ViewModels.Edit
 
             // Remove the trailing space and comma before returning
             return builder.ToString().TrimEnd(' ', ',');
+        }
+
+        /// <summary>
+        /// Creates a relationship view model from the given relationship model.
+        /// </summary>
+        /// <param name="model">The relationship model</param>
+        /// <returns>The created relationship view model</returns>
+        public static RelationshipViewModel FromModel(RelationshipModel model)
+        {
+            return new RelationshipViewModel
+            {
+                SourceId = model.SourceId,
+                TargetId = model.TargetId,
+                TargetName = model.TargetName,
+                Roles = model.Roles
+            };
         }
     }
 }

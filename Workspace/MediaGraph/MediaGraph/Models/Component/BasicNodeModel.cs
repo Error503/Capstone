@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace MediaGraph.Models.Component
@@ -25,13 +26,33 @@ namespace MediaGraph.Models.Component
         //[JsonProperty("links")]
         //public Dictionary<string, string> Links { get; set; }
 
+        public List<RelationshipModel> RelatedCompanies { get; set; } = new List<RelationshipModel>();
+        public List<RelationshipModel> RelatedMedia { get; set; } = new List<RelationshipModel>();
+        public List<RelationshipModel> RelatedPeople { get; set; } = new List<RelationshipModel>();
+
         /// <summary>
         /// Returns the string represtation of this node's labels.
         /// </summary>
         /// <returns>The string represenation of this node's labels</returns>
         public virtual string GetNodeLabels()
         {
-            return ContentType.ToString();
+            return Enum.GetName(typeof(NodeContentType), ContentType);
+        }
+
+        /// <summary>
+        /// Creates and returns the property map for the node
+        /// </summary>
+        /// <returns>The property map for the node</returns>
+        public virtual Dictionary<string, object> GetPropertyMap()
+        {
+            return new Dictionary<string, object>
+            {
+                { "id", Id.ToString() },
+                { "commonName", CommonName },
+                { "otherNames", OtherNames },
+                { "releaseDate", ReleaseDate?.ToShortDateString() },
+                { "deathDate", DeathDate?.ToShortDateString() }
+            };
         }
 
         /// <summary>
@@ -44,24 +65,105 @@ namespace MediaGraph.Models.Component
         }
 
         /// <summary>
-        /// Dserializes the given string to the provided type
+        /// Creates a BasicNodeModel based on the given INode.
         /// </summary>
-        /// <typeparam name="T">The BasicNodeType to which to deserialize</typeparam>
-        /// <param name="json">The JSON string</param>
-        /// <returns>A node of the specified type parsed from the given string</returns>
-        public static T DeserializeAsType<T>(string json)
-        {
-            return JsonConvert.DeserializeObject<T>(json);
-        }
-
+        /// <exception cref="ArgumentException">If the INode could not be parsed</exception>
+        /// <param name="node">The INode from which to create the BasicNodeModel</param>
+        /// <returns>The created BasicNodeModel or null if an error occurred</returns>
         public static BasicNodeModel FromINode(INode node)
         {
             BasicNodeModel result = null;
-            NodeContentType contentType = (NodeContentType)node.Properties["contentType"].As<int>();
 
-            // TODO: Parsing of the Neo4j model
+            try
+            {
+                NodeContentType contentType = (NodeContentType)Enum.Parse(typeof(NodeContentType), node.Labels[0]);
+                if (contentType == NodeContentType.Company)
+                {
+                    result = new CompanyNodeModel
+                    {
+                        Id = Guid.Parse(node.Properties["id"].As<string>()),
+                        ContentType = contentType,
+                        ReleaseDate = node.Properties.ContainsKey("releaseDate") ? DateTime.Parse(node.Properties["releaseDate"].As<string>()) : default(DateTime?),
+                        DeathDate = node.Properties.ContainsKey("deathDate") ? DateTime.Parse(node.Properties["deathDate"].As<string>()) : default(DateTime?),
+                        CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null,
+                        OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>()
+                    };
+                }
+                else if (contentType == NodeContentType.Media)
+                {
+                    result = new MediaNodeModel
+                    {
+                        Id = Guid.Parse(node.Properties["id"].As<string>()),
+                        ContentType = contentType,
+                        ReleaseDate = node.Properties.ContainsKey("releaseDate") ? DateTime.Parse(node.Properties["releaseDate"].As<string>()) : default(DateTime?),
+                        DeathDate = node.Properties.ContainsKey("deathDate") ? DateTime.Parse(node.Properties["deathDate"].As<string>()) : default(DateTime?),
+                        CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null,
+                        OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>(),
+                        // Media properties
+                        MediaType = (NodeMediaType)Enum.Parse(typeof(NodeMediaType), node.Labels[1]),
+                        FranchiseName = node.Properties.ContainsKey("franchise") ? node.Properties["franchise"].As<string>() : null,
+                        Genres = node.Properties.ContainsKey("genres") ? node.Properties["genres"].As<List<string>>() : new List<string>()
+                    };
+                }
+                else if (contentType == NodeContentType.Person)
+                {
+                    result = new PersonNodeModel
+                    {
+                        Id = Guid.Parse(node.Properties["id"].As<string>()),
+                        ContentType = contentType,
+                        ReleaseDate = node.Properties.ContainsKey("releaseDate") ? DateTime.Parse(node.Properties["releaseDate"].As<string>()) : default(DateTime?),
+                        DeathDate = node.Properties.ContainsKey("deathDate") ? DateTime.Parse(node.Properties["deathDate"].As<string>()) : default(DateTime?),
+                        CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null,
+                        OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>(),
+                        // Person properties
+                        FamilyName = node.Properties.ContainsKey("familyName") ? node.Properties["familyName"].As<string>() : null,
+                        GivenName = node.Properties.ContainsKey("givenName") ? node.Properties["givenName"].As<string>() : null,
+                        Status = node.Properties.ContainsKey("status") ? (PersonStatus)Enum.Parse(typeof(PersonStatus), node.Properties["status"].As<string>()) : 0
+                    };
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Failed to parse the given node: (Type: " + node.Labels[0] + " Id: " + node.Properties["id"].As<string>(), e);
+            }
 
             return result;
+        }
+
+        /// <summary>
+        /// Adds the given relationship to this node.
+        /// </summary>
+        /// <param name="relationship">The relationship to add</param>
+        /// <param name="relatedNode">The related node</param>
+        public void AddRelationship(IRelationship relationship, INode relatedNode)
+        {
+            NodeContentType relatedType;
+            Guid relatedId;
+            if(Guid.TryParse(relatedNode["id"].As<string>(), out relatedId) && Enum.TryParse<NodeContentType>(relatedNode.Labels[0], out relatedType))
+            {
+                // Create the relationship
+                RelationshipModel relModel = new RelationshipModel
+                {
+                    SourceId = Id,
+                    TargetId = relatedId,
+                    TargetName = relatedNode["commonName"].As<string>(),
+                    Roles = relationship["roles"].As<List<string>>()
+                };
+
+                // Add the relationship to the correct list
+                if (relatedType == NodeContentType.Company)
+                {
+                    RelatedCompanies.Add(relModel);
+                }
+                else if (relatedType == NodeContentType.Media)
+                {
+                    RelatedMedia.Add(relModel);
+                }
+                else if (relatedType == NodeContentType.Person)
+                {
+                    RelatedPeople.Add(relModel);
+                }
+            }
         }
     }
 
@@ -92,7 +194,7 @@ namespace MediaGraph.Models.Component
         /// <returns>The string representation of this node's label</returns>
         public override string GetNodeLabels()
         {
-            return $"{base.GetNodeLabels()}:{MediaType.ToString()}";
+            return $"{base.GetNodeLabels()}:{Enum.GetName(typeof(NodeMediaType), MediaType)}";
         }
     }
 
@@ -107,5 +209,13 @@ namespace MediaGraph.Models.Component
         public PersonStatus Status { get; set; }
         //[JsonProperty("nationality")]
         //public string Nationality { get; set; }
+    }
+
+    public class RelationshipModel
+    {
+        public Guid SourceId { get; set; }
+        public Guid TargetId { get; set; }
+        public string TargetName { get; set; }
+        public IEnumerable<string> Roles { get; set; }
     }
 }

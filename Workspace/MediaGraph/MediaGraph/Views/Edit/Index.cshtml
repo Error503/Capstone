@@ -3,7 +3,7 @@
 @model BasicNodeViewModel
 @{
     Layout = "~/Views/Shared/_ContainerLayout.cshtml";
-    string submissionRoute = "submit";
+    string submissionRoute = Model.ContentType != 0 ? "edit" : "submit";
     switch(Model.ContentType)
     {
         case NodeContentType.Company:
@@ -32,7 +32,7 @@
     </article>
     <div id="hidden-divider" class="divider" style="display:none;"></div>
     <article class="row">
-        @using (Html.BeginForm(submissionRoute, "Edit", FormMethod.Post, new { id = "nodeForm" }))
+        @using (Html.BeginForm(submissionRoute, "Edit", FormMethod.Post, new { id = "nodeForm", editting = "" + (Model.ContentType != 0) }))
         {
             @Html.Partial("_BasicInformationPartial", Model)
             <section id="node-info" style="display:none;">
