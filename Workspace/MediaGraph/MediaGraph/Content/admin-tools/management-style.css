@@ -1,0 +1,11 @@
+﻿#request-list {
+    overflow-y: scroll;
+    min-height: 54vh;
+    max-height: 54vh;
+}
+
+#page-selection-box {
+    width: 50px;
+    text-align: center;
+    border-radius: 5px;
+}

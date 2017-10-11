@@ -172,37 +172,54 @@ namespace MediaGraph.Controllers
         // GET: AdminTools/DatabaseRequests
         public ActionResult DatabaseRequests()
         {
-            return View();
+            return View(model: GetRequestPage(new DatabaseRequestFilter()));
         }
 
-        // GET: AdminTools/RequestPage
-        [HttpGet]
-        public ActionResult RequestPage(int requestType, string commonName, int page = 1, int resultsPerPage = 25)
+        public ActionResult RequestPage(DatabaseRequestFilter filter)
         {
-            ActionResult result = Json(new { success = false, requests = new List<DatabaseRequest>() });
+            return Json(GetRequestPage(filter));
+        }
+
+        private DatabaseRequestPage GetRequestPage(DatabaseRequestFilter filter)
+        {
+            DatabaseRequestPage result = new DatabaseRequestPage();
             using (ApplicationDbContext context = ApplicationDbContext.Create())
             {
-                List<DatabaseRequest> requests = context.Requests.OrderBy(x => x.SubmissionDate).ToList();
-                List<DatabaseRequest> resultRequests = null;
+                List<DatabaseRequest> requests = (from req in context.Requests
+                                                  where (filter.RequestType == 0 || filter.RequestType == req.RequestType) &&
+                                                  ((filter.SubmittedBy == null || filter.SubmittedBy.Length == 0) || req.Submitter.UserName.Contains(filter.SubmittedBy)) &&
+                                                  (!filter.LowerBoundDate.HasValue || filter.LowerBoundDate.Value.CompareTo(req.SubmissionDate) <= 0) &&
+                                                  (!filter.UpperBoundDate.HasValue || filter.UpperBoundDate.Value.CompareTo(req.SubmissionDate) >= 0)
+                                                  orderby req.SubmissionDate
+                                                  select req
+                                                 ).ToList();
+                List<DatabaseRequestViewModel> resultRequests = null;
                 // TODO: I could add search functionality to this
-                int offset = (page - 1) * resultsPerPage;
+                int offset = (filter.PageNumber - 1) * filter.ResultsPerPage;
                 // If there are enough results to make a page
-                if(requests.Count - offset >= resultsPerPage)
+                if(requests.Count - offset >= filter.ResultsPerPage)
                 {
-                    resultRequests = requests.Skip(offset).Take(resultsPerPage).ToList();
+                    resultRequests = requests.Select(y => DatabaseRequestViewModel.FromModel(y)).Where(x => ((filter.NodeName == null || filter.NodeName == "") || x.NodeData.CommonName.Contains(filter.NodeName)))
+                        .Skip(offset).Take(filter.ResultsPerPage).ToList();
                 } 
                 else
                 {
-                    resultRequests = requests.Skip(offset).ToList();
+                    resultRequests = requests.Select(y => DatabaseRequestViewModel.FromModel(y)).Where(x => ((filter.NodeName == null || filter.NodeName == "") || x.NodeData.CommonName.Contains(filter.NodeName)))
+                        .Skip(offset).ToList();
                 }
 
-                result = Json(new { totalPages = (int)Math.Ceiling(requests.Count / (double)resultsPerPage), requests = resultRequests }, JsonRequestBehavior.AllowGet);
+                result = new DatabaseRequestPage
+                {
+                    TotalPages = (int)Math.Ceiling(requests.Count / (double)filter.ResultsPerPage),
+                    CurrentPage = filter.PageNumber,
+                    Requests = resultRequests
+                };
             }
 
             return result;
         }
 
-        // GET: AdminTools/ViewRequest?id=
+        // GET: AdminTools/ViewRequest/id
         [HttpGet]
         public ActionResult ViewRequest(Guid id)
         {

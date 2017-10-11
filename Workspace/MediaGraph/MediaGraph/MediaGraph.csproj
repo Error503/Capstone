@@ -260,15 +260,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Code\CypherQueryBuilder.cs" />
+    <Compile Include="Code\CustomDateBinder.cs" />
     <Compile Include="Code\DatabaseInterface.cs" />
-    <Compile Include="Code\EnumerableExtensions.cs" />
     <Compile Include="Code\IGraphDatabaseDriver.cs" />
     <Compile Include="Code\Neo4jGraphDatabaseDriver.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminToolsController.cs" />
     <Compile Include="Controllers\Api\AutocompleteController.cs" />
-    <Compile Include="Controllers\DataReviewController.cs" />
     <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Controllers\GraphController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -318,11 +316,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\AdminTools\DatabaseRequestViewModels.cs" />
     <Compile Include="ViewModels\AdminTools\UserViewModel.cs" />
     <Compile Include="ViewModels\AutocompleteLabel.cs" />
     <Compile Include="ViewModels\Edit\BasicNodeViewModel.cs" />
-    <Compile Include="ViewModels\FilterSettings.cs" />
-    <Compile Include="ViewModels\Edit\NodeDescriptionViewModel.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -340,6 +337,7 @@
     <Content Include="bower_components\svg.js\dist\svg.js" />
     <Content Include="bower_components\svg.js\dist\svg.min.js" />
     <Content Include="bower_components\svg.js\LICENSE.txt" />
+    <Content Include="Content\admin-tools\management-style.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\form.css" />
@@ -510,9 +508,6 @@
     <Content Include="Views\Edit\OldIndex.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
     <Content Include="Views\Edit\_MediaInformationPartial.cshtml" />
-    <Content Include="Views\DataReview\Index.cshtml" />
-    <Content Include="Views\DataReview\_FilterFormPartial.cshtml" />
-    <Content Include="Views\DataReview\_RequestViewPartial.cshtml" />
     <Content Include="Views\Shared\_NodeEditPartial.cshtml" />
     <Content Include="Views\AdminTools\Index.cshtml" />
     <Content Include="Views\Shared\_ContainerLayout.cshtml" />
@@ -524,6 +519,7 @@
     <Content Include="Views\Edit\_PersonInformationPartial.cshtml" />
     <Content Include="Views\Edit\_RelationshipFormPartial.cshtml" />
     <Content Include="Views\Edit\_BasicInformationPartial.cshtml" />
+    <Content Include="Views\AdminTools\_DatabaseRequestFilterPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

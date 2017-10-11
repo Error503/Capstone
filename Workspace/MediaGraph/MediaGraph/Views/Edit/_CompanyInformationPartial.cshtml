@@ -3,24 +3,32 @@
 @Html.HiddenFor(x => x.ContentType)
 <section>
     <h5 class="center-align">Company Information</h5>
-    <div class="col s12 m6">
-        <div class="input-field">
-            @Html.LabelFor(x => x.CommonName)
-            @Html.TextBoxFor(x => x.CommonName)
+    <section class="row">
+        <div class="col s12 m6">
+            <div class="input-field">
+                @Html.LabelFor(x => x.CommonName)
+                @Html.TextBoxFor(x => x.CommonName)
+            </div>
         </div>
-    </div>
-    <div class="col s12 m6">
-        <div class="input-field">
-            <label for="other-names">Other Names</label>
-            <div id="other-names" class="chips"></div>
+        <div class="col s12 m6">
+            <div class="input-field">
+                <label for="other-names">Other Names</label>
+                <div id="other-names" class="chips"></div>
+            </div>
         </div>
-    </div>
-    <div class="col s12 m6">
-        <label for="ReleaseDate" class="active">Date Founded</label>
-        <input type="text" name="ReleaseDate" class="datepicker" value="@Model.GetDateValue(Model.ReleaseDate)"  />
-    </div>
-    <div class="col s12 m6">
-        <label for="DeathDate" class="active">Date Disbanded</label>
-        <input type="text" name="DeathDate" class="datepicker" value="@Model.GetDateValue(Model.DeathDate)"/>
-    </div>
+    </section>
+    <section class="row">
+        <div class="col s12 m6">
+            <div class="input-field">
+                <label for="ReleaseDate" class="active">Date Founded</label>
+            </div>
+            <input type="text" name="ReleaseDate" class="datepicker" value="@Model.GetDateValue(Model.ReleaseDate)"  />
+        </div>
+        <div class="col s12 m6">
+            <div class="input-field">
+                <label for="DeathDate" class="active">Date Disbanded</label>
+            </div>
+            <input type="text" name="DeathDate" class="datepicker" value="@Model.GetDateValue(Model.DeathDate)" />
+        </div>
+    </section>
 </section>

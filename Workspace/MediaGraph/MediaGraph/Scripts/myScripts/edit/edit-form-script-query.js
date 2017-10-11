@@ -10,7 +10,7 @@ $(document).ready(function () {
     var relatedMedia = [];
     var relatedPeople = [];
 
-    var baseFormAction = $('#nodeForm').attr('editting') ? '/edit/edit' : '/edit/submit';
+    var baseFormAction = $('#nodeForm').attr('editting') === 'True' ? '/edit/edit' : '/edit/submit';
     var activeGroup = 'Companies';
     var activeIndex = -1;
     var activeGroupArray = relatedCompanies;
@@ -210,7 +210,7 @@ $(document).ready(function () {
 
                 materializeSetup();
                 // Update the form action
-                $('#nodeForm').attr('action', baseFormAction + type);
+                $('#nodeForm').attr('action', baseFormAction + $('#node-content-type > option[value="' + type + '"]').html());
                 // Bind the model
                 bindModel(type);
             },
@@ -327,6 +327,7 @@ function materializeSetup() {
     $('#node-info').find('select').material_select();
     $('#node-info').find('.chips').material_chip();
     $('.datepicker').pickadate({
+        format: 'yyyy-mm-dd',
         selectMonths: true,
         selectYears: 30,
         closeOnSelect: true
@@ -349,8 +350,8 @@ function validate() {
     }
 
     if (form['ContentType'].value === COMPANY_TYPE || form['ContentType'].value === PERSON_TYPE) {
-        var release = new Date(form['ReleaseDate']);
-        var death = new Date(form['DeathDate']);
+        var release = new Date(form['ReleaseDate'].value);
+        var death = new Date(form['DeathDate'].value);
         // Death date cannot be before release date
         if (death < release) {
             valid = false;

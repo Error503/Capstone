@@ -19,7 +19,7 @@ namespace MediaGraph.Models
          * Foreign Key added to reviewer
          * Added ReviewedDate
          * 
-         * Migration: "RequestAndNodeType" TO BE ADDED
+         * Migration: "RequestAndNodeType"
          * Added RequestType 
          * Added NodeDataType 
          */
@@ -72,7 +72,6 @@ namespace MediaGraph.Models
 
     public enum DatabaseRequestType : byte
     {
-        Unknown = 0,
         Add = 1,
         Update = 2,
         Delete = 3
@@ -83,6 +82,7 @@ namespace MediaGraph.Models
         public Guid Id { get; set; }
         public DatabaseRequestType RequestType { get; set; }
         public DateTime SubmissionDate { get; set; }
+        public NodeContentType NodeDataType { get; set; }
         public BasicNodeViewModel NodeData { get; set; }
 
         public string SubmitterId { get; set; }
@@ -115,10 +115,10 @@ namespace MediaGraph.Models
             return new DatabaseRequestViewModel
             {
                 Id = model.Id,
-                RequestType = DatabaseRequestType.Unknown,
+                RequestType = model.RequestType,
                 SubmissionDate = model.SubmissionDate,
                 NodeData = model.ParseModel(),
-                //NodeDataType = model.NodeDataType,
+                NodeDataType = model.NodeDataType,
                 SubmitterId = model.SubmitterRefId,
                 SubmitterName = submitter != null ? submitter.UserName : null,
                 ReviewerId = model.ReviewerRefId,
@@ -129,6 +129,15 @@ namespace MediaGraph.Models
                 Approved = model.Approved,
                 Notes = model.Notes
             };
+        }
+
+        /// <summary>
+        /// Returns the string representation of the request type.
+        /// </summary>
+        /// <returns>The string representation of this request's type</returns>
+        public string GetRequestTypeString()
+        {
+            return RequestType == 0 ? "Unknown" : Enum.GetName(typeof(DatabaseRequestType), RequestType);
         }
     }
 }

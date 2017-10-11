@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MediaGraph.Code;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,6 +19,12 @@ namespace MediaGraph
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+
+            // Add a custom model binder for DateTimes
+            //CustomDateBinder binder = new CustomDateBinder();
+            //ModelBinders.Binders.Add(typeof(DateTime), binder);
+            //ModelBinders.Binders.Add(typeof(DateTime?), binder);
         }
     }
 }

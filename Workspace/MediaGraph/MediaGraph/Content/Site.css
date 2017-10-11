@@ -22,13 +22,3 @@ main {
     max-height: 200px;
     overflow-y: scroll;
 }
-#request-list {
-    overflow-y: scroll;
-    max-height: 50vh
-}
-
-#page-selection-box {
-    width: 50px;
-    text-align: center;
-    border-radius: 5px;
-}

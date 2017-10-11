@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
 using MediaGraph.Models.Component;
+using System.Web.Http.ModelBinding;
+using MediaGraph.Code;
 
 namespace MediaGraph.ViewModels.Edit 
 {
@@ -30,7 +32,6 @@ namespace MediaGraph.ViewModels.Edit
         [JsonProperty("otherNames")]
         public IEnumerable<string> OtherNamesList { get; set; } = new List<string>();
 
-        // NOTE: When adding to the Neo4j database, use NodeType in this class to determine relationship direction
         [JsonIgnore]
         public string RelatedCompanies { get; set; }
         [JsonProperty("relatedCompanies")]
@@ -76,7 +77,7 @@ namespace MediaGraph.ViewModels.Edit
         /// <returns>The formatted date value as a string</returns>
         public string GetDateValue(DateTime? date)
         {
-            return date.HasValue ? date.Value.ToShortDateString() : "";
+            return date.HasValue ? date.Value.ToString("yyyy-mm-dd") : "";
         }
 
         /// <summary>
@@ -212,13 +213,12 @@ namespace MediaGraph.ViewModels.Edit
         }
     }
 
-    [JsonObject]
     public class MediaNodeViewModel : BasicNodeViewModel
     {
         [JsonProperty("mediaType")]
         [Display(Name = "Media Type")]
         public NodeMediaType MediaType { get; set; }
-        [JsonProperty("franchiseName")]
+        [JsonProperty("franchise")]
         [Display(Name = "Franchise")]
         public string FranchiseName { get; set; }
         [JsonProperty("genres")]
@@ -251,7 +251,6 @@ namespace MediaGraph.ViewModels.Edit
         }
     }
 
-    [JsonObject]
     public class PersonNodeViewModel : BasicNodeViewModel
     {
         // Other possible properties
@@ -292,22 +291,16 @@ namespace MediaGraph.ViewModels.Edit
         }
     }
 
-    [JsonObject]
     public class CompanyNodeViewModel : BasicNodeViewModel
     {
         // CompanyNodeViewModel adds nothing to the basic view model
     }
 
-    [JsonObject]
     public class RelationshipViewModel
     {
-        [JsonProperty("sourceId")]
         public Guid SourceId { get; set; }
-        [JsonProperty("targetId")]
         public Guid? TargetId { get; set; }
-        [JsonProperty("targetName")]
         public string TargetName { get; set; }
-        [JsonProperty("roles")]
         public IEnumerable<string> Roles { get; set; }
 
         /// <summary>
