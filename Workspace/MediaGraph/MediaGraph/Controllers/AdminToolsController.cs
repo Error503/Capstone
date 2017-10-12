@@ -28,60 +28,54 @@ namespace MediaGraph.Controllers
         [Authorize(Roles = "staff")]
         public ActionResult UserManagement()
         {
-            return View();
+            return View(model: GetUserPage(new UserManagementFilter()));
         }
 
-        // POST: AdminTools/UserPage
-        [HttpGet]
-        public ActionResult UserPage(string userName, string userEmail, int page = 1, int resultsPerPage = 25)
+        [HttpPost]
+        public ActionResult UserPage(UserManagementFilter filter)
         {
-            ActionResult result = PartialView("_UserPagePartial", new List<ApplicationUser>());
+            return Json(GetUserPage(filter));
+        }
+
+        private UserPage GetUserPage(UserManagementFilter filter)
+        {
+            UserPage result = new ViewModels.AdminTools.UserPage { CurrentPage = 0, TotalPages = 0, Users = new List<UserViewModel>() };
             using (ApplicationDbContext context = ApplicationDbContext.Create())
             {
-                // TODO: User search functionality could be refined
-                // Filter the users
+                // Filter the users by user email (user name)
                 List<ApplicationUser> matchingUsers = (from user in context.Users
-                                                      where (userName == null && userEmail == null) ||
-                                                            (userName == null || user.UserName.Contains(userName)) ||
-                                                            (userEmail == null || user.Email.Contains(userEmail))
-                                                      orderby user.UserName
+                                                      where ((filter.Email == null || filter.Email == "") || user.Email.Contains(filter.Email)) &&
+                                                      (!kExcludedUsers.Contains(user.Id))
                                                       select user).ToList();
+
+                List<UserViewModel> resultUsers = new List<UserViewModel>();
+
+                // Filter the users by role
+                foreach(ApplicationUser user in matchingUsers)
+                {
+                    string role = user.Roles.Single().RoleId;
+                    if(string.IsNullOrEmpty(filter.Role) || role == filter.Role)
+                    {
+                        resultUsers.Add(new UserViewModel { Id = user.Id, Email = user.Email, Username = user.UserName, Role = role });
+                    }
+                }
+
                 // Get the result page
-                int offset = (page - 1) * resultsPerPage;
-                int pages = (int)Math.Ceiling(matchingUsers.Count / (double)resultsPerPage);
+                int offset = (filter.PageNumber - 1) * filter.ResultsPerPage;
+                int pages = (int)Math.Ceiling(resultUsers.Count / (double)filter.ResultsPerPage);
                 // If there are enough results to make a page,
-                if(matchingUsers.Count - offset >= resultsPerPage)
+                if(matchingUsers.Count - offset >= filter.ResultsPerPage)
                 {
                     // Get a full page
-                    matchingUsers = matchingUsers.Skip(offset).Take(resultsPerPage).ToList();
+                    resultUsers = resultUsers.Skip(offset).Take(filter.ResultsPerPage).ToList();
                 }
                 else
                 {
                     // Get the remaining users
-                    matchingUsers = matchingUsers.Skip(offset).ToList();
+                    resultUsers = resultUsers.Skip(offset).ToList();
                 }
 
-                List<UserViewModel> resultUsers = new List<UserViewModel>();
-                // Convert the result to user view models
-                for(int i = 0; i < matchingUsers.Count; i++)
-                {
-                    // Get the roles 
-                    List<string> userRoles = new List<string>();
-                    foreach (IdentityUserRole role in matchingUsers[i].Roles.OrderBy(role => role.RoleId))
-                    {
-                        userRoles.Add(context.Roles.Single(x => x.Id == role.RoleId).Name);
-                    }
-
-                    resultUsers.Add(new UserViewModel
-                    {
-                        Id = matchingUsers[i].Id,
-                        Email = matchingUsers[i].Email,
-                        Username = matchingUsers[i].UserName,
-                        Role = userRoles[0]
-                    });
-                }
-
-                result = PartialView("_UserPagePartial", resultUsers);
+                result = new UserPage { CurrentPage = filter.PageNumber, TotalPages = pages, Users = resultUsers };
             }
 
             return result;
@@ -139,28 +133,36 @@ namespace MediaGraph.Controllers
 
         // AdminTools/UpdateUser
         [HttpPost]
-        public ActionResult UpdateUser(string userId, string role)
+        public ActionResult UpdateUser(string id, string role)
         {
-            ActionResult result = Json(new { success = false, message = "Update failed" });
+            ActionResult result = new HttpStatusCodeResult(HttpStatusCode.InternalServerError);
             using (ApplicationDbContext context = ApplicationDbContext.Create())
             {
                 // Find the user
-                ApplicationUser toUpdate = context.Users.SingleOrDefault(x => x.Id == userId);
+                ApplicationUser toUpdate = context.Users.SingleOrDefault(x => x.Id == id);
                 // If the user was found
                 if(toUpdate != null)
                 {
-                    // Clear the user roles to ensure that no role is added twice
-                    // This will also ensure than any roles removed will be removed
-                    toUpdate.Roles.Clear();
-                    IdentityUserRole userRole = new IdentityUserRole { RoleId = context.Roles.Single(x => x.Name == role).Id, UserId = userId };
-                    // Add the user to the roles
-                    toUpdate.Roles.Add(userRole);
-                    context.SaveChanges();
-                    result = Json(new { success = true, message = "User updated" });
+                    // Make sure that the role is 
+                    if(toUpdate.Roles.Single().RoleId != role)
+                    {
+                        // Clear the user roles to ensure that no role is added twice
+                        // This will also ensure than any roles removed will be removed
+                        toUpdate.Roles.Clear();
+                        IdentityUserRole userRole = new IdentityUserRole { RoleId = context.Roles.Single(x => x.Id == role).Id, UserId = id };
+                        // Add the user to the roles
+                        toUpdate.Roles.Add(userRole);
+                        context.SaveChanges();
+                        result = new HttpStatusCodeResult(HttpStatusCode.Accepted);
+                    }
+                    else
+                    {
+                        result = new HttpStatusCodeResult(HttpStatusCode.NotModified);
+                    }
                 }
                 else
                 {
-                    result = Json(new { success = false, message = "Failed to find the specified user" });
+                    result = new HttpStatusCodeResult(HttpStatusCode.NotFound);
                 }
             }
 
@@ -194,7 +196,6 @@ namespace MediaGraph.Controllers
                                                   select req
                                                  ).ToList();
                 List<DatabaseRequestViewModel> resultRequests = null;
-                // TODO: I could add search functionality to this
                 int offset = (filter.PageNumber - 1) * filter.ResultsPerPage;
                 // If there are enough results to make a page
                 if(requests.Count - offset >= filter.ResultsPerPage)

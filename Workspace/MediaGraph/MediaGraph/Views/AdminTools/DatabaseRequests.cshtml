@@ -1,5 +1,5 @@
-﻿@using MediaGraph.Models
-@model MediaGraph.ViewModels.AdminTools.DatabaseRequestPage
+﻿@using MediaGraph.ViewModels.AdminTools
+@model DatabaseRequestPage
 @{
     ViewBag.Title = "Database Requests";
 }
@@ -15,7 +15,7 @@
         <section class="col s12 m7">
             <div id="request-list-container" class="col s12">
                 <h5 class="center-align">Requests</h5>
-                <div id="request-list" class="collection">
+                <div id="request-list" class="collection list">
                     @foreach (DatabaseRequestViewModel request in Model.Requests)
                     {
 

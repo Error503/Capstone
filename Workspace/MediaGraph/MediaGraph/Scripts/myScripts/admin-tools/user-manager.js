@@ -1,49 +1,79 @@
-﻿function displayPreLoader() {
-    $('#user-table').hide();
-    $('#preloader').show();
+﻿var currentPage = 0;
+var totalPages = 0;
+
+function searchStarted() {
+
 }
 
-function hidePreloader() {
-    $("#preloader").hide();
-    $("#user-table").show();
+function searchCompleted() {
+
 }
 
-function userPageReceieved(response) {
-    // Replace the content
-    $("#user-list").append(response);
-    // Initialize all select fields
+function searchSuccessful(response) {
+    console.log(response);
+    currentPage = response.CurrentPage;
+    totalPages = response.TotalPages == 0 ? 1 : response.TotalPages;
+    updateDisplay(response.Users);
+    updateSytling();
+}
+
+function searchFailed(response) {
+    console.error(response);
+}
+
+function materializeSetup() {
     $('select').material_select();
 }
 
-function errorReceived(response) {
-    console.log(response);
-    alert("Error retrieving user page");
+function updateUser(user, role) {
+    $.ajax({
+        method: 'POST',
+        url: '/admintools/updateUser',
+        data: { id: user, role: role },
+        success: function () {
+            Materialize.toast('User updated!', 2250);
+        },
+        error: searchFailed
+    });
 }
 
-function updateUser(userId) {
-    // Get the roles
-    var roles = null;
-    $.ajax({
-        method: "POST",
-        url: "/admintools/updateuser",
-        data: { userId: userId, role: document.forms['user-form-' + userId]['roles'].value },
-        success: function (response) {
-            console.log("User updated");
-        },
-        error: function (response) {
-            console.log(response);
-            alert("Error while updating user");
+function updateDisplay(list) {
+    $('#user-list').empty();
+
+    if (list.length > 0) {
+        // Populate the list
+        for (var i = 0; i < list.length; i++) {
+            $('#user-list').append('<tr>' +
+                '<td>' + list[i].Username + '</td>' +
+                '<td>' + getSelectList(list[i]) + '</td>' +
+                '<td><button type="button" data-user="' + list[i].Id + '" class="waves-effect waves-blue btn-flat update-button">Update</button></td>' +
+                '</tr>');
         }
+    } else {
+        $('#user-list').append('<tr><td></td><td>No Results</td><td></td></tr>');
+    }
+
+    function getSelectList(user) {
+        var input = '<select id="user-role-' + user.Id + '">' +
+            '<option value="0"' + (user.Role === "0" ? "selected" : "") + '>Member</option>' +
+            '<option value="1"' + (user.Role === "1" ? "selected" : "") + '>Admin</option>' +
+            '<option value="2"' + (user.Role === "2" ? "selected" : "") + '>Staff</option>' +
+            '</select>';
+        return input;
+    }
+
+    $('select').material_select();
+    $('.update-button').on('click', function (event) {
+        var userId = $(this).attr('data-user');
+        var role = $('#user-role-' + userId).val();
+        updateUser(userId, role);
     });
 }
 
 $(document).ready(function () {
-    $.ajax({
-        method: "GET",
-        url: "/admintools/userpage?username=&useremail=&page=1&resultsperpage=25",
-        beforeSend: displayPreLoader,
-        complete: hidePreloader,
-        success: userPageReceieved,
-        failure: errorReceived,
+    $('.update-button').on('click', function (event) {
+        var userId = $(this).attr('data-user');
+        var role = $('#user-role-' + userId).val();
+        updateUser(userId, role);
     });
-})
+});

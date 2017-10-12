@@ -1,0 +1,44 @@
+﻿@model MediaGraph.ViewModels.AdminTools.UserManagementFilter
+@{
+    AjaxOptions options = new AjaxOptions
+    {
+        HttpMethod = "post",
+        OnBegin = "searchStarted",
+        OnComplete = "searchCompleted",
+        OnSuccess = "searchSuccessful",
+        OnFailure = "searchFailed"
+    };
+}
+<div class="container">
+    @using (Ajax.BeginForm("UserPage", "AdminTools", null, options, new { id = "filterForm", autocomplete = "off" }))
+    {
+        @Html.HiddenFor(x => x.PageNumber)
+        <div class="input-field">
+            @Html.LabelFor(x => x.Email)
+            @Html.TextBoxFor(x => x.Email)
+        </div>
+        <div class="input-field">
+            @Html.LabelFor(x => x.Role, new { @class = "active" })
+            @Html.DropDownListFor(x => x.Role, new List<SelectListItem>
+            {
+                new SelectListItem { Value = "", Text = "Any Role" },
+                new SelectListItem { Value = "0", Text = "Member" },
+                new SelectListItem { Value = "1", Text = "Admin" },
+                new SelectListItem { Value = "2", Text = "Staff" }
+            })
+        </div>
+        <div class="input-field">
+            @Html.LabelFor(x => x.ResultsPerPage, new { @class = "active" })
+            @Html.DropDownListFor(x => x.ResultsPerPage, new List<SelectListItem>
+            {
+                new SelectListItem { Value = "5", Text = "5" },
+                new SelectListItem { Value = "10", Text = "10" },
+                new SelectListItem { Value = "25", Text = "25" },
+                new SelectListItem { Value = "50", Text = "50" }
+            })
+        </div>
+        <div class="center">
+            <button type="submit" class="waves-effect waves-light btn">Filter <i class="material-icons">filter_list</i></button>
+        </div>
+    }
+</div>

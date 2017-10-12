@@ -317,7 +317,7 @@
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AdminTools\DatabaseRequestViewModels.cs" />
-    <Compile Include="ViewModels\AdminTools\UserViewModel.cs" />
+    <Compile Include="ViewModels\AdminTools\UserManagementViewModels.cs" />
     <Compile Include="ViewModels\AutocompleteLabel.cs" />
     <Compile Include="ViewModels\Edit\BasicNodeViewModel.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
@@ -444,7 +444,9 @@
     <Content Include="Scripts\materialize\materialize.js" />
     <Content Include="Scripts\materialize\materialize.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\myScripts\admin-tools\request-base.js" />
     <Content Include="Scripts\myScripts\admin-tools\request-manager.js" />
+    <Content Include="Scripts\myScripts\admin-tools\review-page.js" />
     <Content Include="Scripts\myScripts\admin-tools\user-manager.js" />
     <Content Include="Scripts\myScripts\angular_scripts\databaseRequestManagerApp.js" />
     <Content Include="Scripts\myScripts\angular_scripts\nodeCreationApp.js" />
@@ -498,28 +500,24 @@
     <Content Include="Views\Search\_SearchFormPartial.cshtml" />
     <Content Include="Views\Search\_AdvancedSearchFormPartial.cshtml" />
     <Content Include="Views\Graph\Index.cshtml" />
-    <Content Include="Views\RelEdit\_RelationshipGroupPartialView.cshtml" />
-    <Content Include="Views\RelEdit\Index.cshtml" />
-    <Content Include="Views\RelEdit\_RelationshipEntryPartialView.cshtml" />
-    <Content Include="Views\Shared\_SearchPartialView.cshtml" />
     <Content Include="Views\Edit\Accepted.cshtml" />
     <Content Include="Views\Shared\_MaterialLayout.cshtml" />
     <Content Include="Views\Shared\_NavBarPartial.cshtml" />
     <Content Include="Views\Edit\OldIndex.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
-    <Content Include="Views\Edit\_MediaInformationPartial.cshtml" />
-    <Content Include="Views\Shared\_NodeEditPartial.cshtml" />
+    <Content Include="Views\Shared\_MediaInformationPartial.cshtml" />
     <Content Include="Views\AdminTools\Index.cshtml" />
     <Content Include="Views\Shared\_ContainerLayout.cshtml" />
     <Content Include="Views\AdminTools\UserManagement.cshtml" />
     <Content Include="Views\AdminTools\DatabaseRequests.cshtml" />
     <Content Include="Views\AdminTools\ViewRequest.cshtml" />
     <Content Include="Views\Edit\Index.cshtml" />
-    <Content Include="Views\Edit\_CompanyInformationPartial.cshtml" />
-    <Content Include="Views\Edit\_PersonInformationPartial.cshtml" />
-    <Content Include="Views\Edit\_RelationshipFormPartial.cshtml" />
-    <Content Include="Views\Edit\_BasicInformationPartial.cshtml" />
+    <Content Include="Views\Shared\_CompanyInformationPartial.cshtml" />
+    <Content Include="Views\Shared\_PersonInformationPartial.cshtml" />
+    <Content Include="Views\Shared\_RelationshipFormPartial.cshtml" />
+    <Content Include="Views\Shared\_BasicInformationPartial.cshtml" />
     <Content Include="Views\AdminTools\_DatabaseRequestFilterPartial.cshtml" />
+    <Content Include="Views\AdminTools\_UserManagementFilterPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
