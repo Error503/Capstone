@@ -60,51 +60,25 @@ namespace MediaGraph.Controllers
             return result;
         }
 
-        #region Submission Methods
         [HttpPost]
-        public ActionResult SubmitCompany(CompanyNodeViewModel model)
+        public ActionResult Index(BasicNodeViewModel model)
         {
-            return CheckModelAndMakeRequest(model, DatabaseRequestType.Add);
+            return CheckModelAndMakeRequest(model);
         }
 
-        [HttpPost]
-        public ActionResult EditCompany(CompanyNodeViewModel model)
-        {
-            return CheckModelAndMakeRequest(model, DatabaseRequestType.Update);
-        }
-
-        [HttpPost]
-        public ActionResult SubmitMedia(MediaNodeViewModel model)
-        {
-            return CheckModelAndMakeRequest(model, DatabaseRequestType.Add);
-        }
-
-        [HttpPost]
-        public ActionResult EditMedia(MediaNodeViewModel model)
-        {
-            return CheckModelAndMakeRequest(model, DatabaseRequestType.Update);
-        }
-
-        [HttpPost]
-        public ActionResult SubmitPerson(PersonNodeViewModel model)
-        {
-            return CheckModelAndMakeRequest(model, DatabaseRequestType.Add);
-        }
-
-        [HttpPost]
-        public ActionResult EditPerson(PersonNodeViewModel model)
-        {
-            return CheckModelAndMakeRequest(model, DatabaseRequestType.Update);
-        }
-
-        private ActionResult CheckModelAndMakeRequest(BasicNodeViewModel model, DatabaseRequestType type)
+        private ActionResult CheckModelAndMakeRequest(BasicNodeViewModel model)
         {
             ActionResult result = View("Index", model);
             // If the model state is valid,
             if(ModelState.IsValid)
             {
+                DatabaseRequestType requestType = 0;
+                using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+                {
+                    requestType = driver.GetNode(model.Id) != null ? DatabaseRequestType.Update : DatabaseRequestType.Add;
+                }
                 // Create the database request
-                CreateDatabaseRequest(model, type);
+                CreateDatabaseRequest(model, requestType);
                 // Redirect to the accepted page
                 result = RedirectToAction("Accepted", "Edit", null);
             }
@@ -113,7 +87,7 @@ namespace MediaGraph.Controllers
         }
 
         private void CreateDatabaseRequest(BasicNodeViewModel model, DatabaseRequestType type)
-        { 
+        {
             using (ApplicationDbContext context = ApplicationDbContext.Create())
             {
                 // Get the user that submitted the request
@@ -133,7 +107,6 @@ namespace MediaGraph.Controllers
                 context.SaveChanges();
             }
         }
-        #endregion
 
         // Called when a request is accepted
         public ActionResult Accepted()

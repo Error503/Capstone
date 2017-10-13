@@ -215,11 +215,11 @@ namespace MediaGraph.Code
                 result = session.ReadTransaction(action =>
                 {
                     IStatementResult statementResult = action.Run(kMatchNodeQuery, new Dictionary<string, object> { { "id", id.ToString() } });
-                    return statementResult.Single()[0].As<INode>();
+                    return statementResult.Count() > 0 ? statementResult.Single()[0].As<INode>() : null;
                 });
             }
 
-            return BasicNodeModel.FromINode(result);
+            return result != null ? BasicNodeModel.FromINode(result) : null;
         }
 
         public BasicNodeModel GetNodeAndRelationships(Guid id)

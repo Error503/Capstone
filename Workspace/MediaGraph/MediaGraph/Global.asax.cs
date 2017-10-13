@@ -1,4 +1,5 @@
 ﻿using MediaGraph.Code;
+using MediaGraph.ViewModels.Edit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,10 @@ namespace MediaGraph
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
 
-            // Add a custom model binder for DateTimes
+            // Add custom model binders
+            ModelBinders.Binders.Add(typeof(BasicNodeViewModel), new NodeModelBinder());
+            ModelBinders.Binders.Add(typeof(IEnumerable<RelationshipViewModel>), new RelationshipCollectionBinder());
+            ModelBinders.Binders.Add(typeof(IEnumerable<string>), new StringCollectionBinder());
             //CustomDateBinder binder = new CustomDateBinder();
             //ModelBinders.Binders.Add(typeof(DateTime), binder);
             //ModelBinders.Binders.Add(typeof(DateTime?), binder);

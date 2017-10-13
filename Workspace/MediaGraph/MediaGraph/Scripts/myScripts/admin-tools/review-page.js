@@ -14,6 +14,7 @@
         selectYears: 30,
         closeOnSelect: true
     });
+    Materialize.updateTextFields();
     // Grab the data
     grabData();
 

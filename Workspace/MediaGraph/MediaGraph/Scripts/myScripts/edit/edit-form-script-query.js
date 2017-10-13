@@ -10,7 +10,6 @@ $(document).ready(function () {
     var relatedMedia = [];
     var relatedPeople = [];
 
-    var baseFormAction = $('#nodeForm').attr('editting') === 'True' ? '/edit/edit' : '/edit/submit';
     var activeGroup = 'Companies';
     var activeIndex = -1;
     var activeGroupArray = relatedCompanies;
@@ -56,6 +55,7 @@ $(document).ready(function () {
     // Set up materialize things
     $('select').material_select();
     $('#relationship-chips').material_chip();
+    Materialize.updateTextFields();
     $('#relationship-chips').find('input').attr('disabled', 'disabled');
     // Wire up events to handle changes to the relationship chips   
     $('#relationship-chips').on('chip.add', function (e, chip) {
@@ -70,10 +70,12 @@ $(document).ready(function () {
 
     // Set up events
     $('#node-content-type').on('change', function (event) {
-        getNodeInformation($(this).val());
-        $(this).siblings('input').attr('disabled', 'disabled');
-        $('#add-relationship-button').removeClass('disabled');
-        $('#submission-section').find('button').removeClass('disabled');
+        if ($(this).val() !== "") {
+            getNodeInformation($(this).val());
+            $(this).siblings('input').attr('disabled', 'disabled');
+            $('#add-relationship-button').removeClass('disabled');
+            $('#submission-section').find('button').removeClass('disabled');
+        }
     });
 
     $('.tab').on('click', function (event) {
@@ -209,8 +211,6 @@ $(document).ready(function () {
                 $('#hidden-divider').show();
 
                 materializeSetup();
-                // Update the form action
-                $('#nodeForm').attr('action', baseFormAction + $('#node-content-type > option[value="' + type + '"]').html());
                 // Bind the model
                 bindModel(type);
             },
@@ -221,7 +221,7 @@ $(document).ready(function () {
     }
 
     function bindModel(type) {
-        if (type === MEDIA_TYPE) {
+        if (type === MEDIA_TYPE || type === "Media") {
             // Set up the genre chips
             $('#genre-chips').on('chip.add', function (e, chip) {
                 genres.push(chip.tag);
@@ -232,7 +232,7 @@ $(document).ready(function () {
                 genres.splice(genres.indexOf(chip.tag), 1);
                 document.forms['nodeForm']['Genres'].value = JSON.stringify(genres);
             });
-        } else if (type === PERSON_TYPE) {
+        } else if (type === PERSON_TYPE || type == "Person") {
             $('#given-name').add('#family-name').on('change', function (event) {
                 document.forms['nodeForm']['CommonName'] = document.forms['nodeForm']['GivenName'].value + ' ' + document.forms['nodeForm']['FamilyName'].value;
             });

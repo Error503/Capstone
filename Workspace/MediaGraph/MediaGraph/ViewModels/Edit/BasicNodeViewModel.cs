@@ -27,23 +27,15 @@ namespace MediaGraph.ViewModels.Edit
         [JsonProperty("commonName")]
         [Display(Name = "Common English Name")]
         public string CommonName { get; set; }
-        [JsonIgnore]
-        public string OtherNames { get; set; }
         [JsonProperty("otherNames")]
-        public IEnumerable<string> OtherNamesList { get; set; } = new List<string>();
+        public IEnumerable<string> OtherNames { get; set; } = new List<string>();
 
-        [JsonIgnore]
-        public string RelatedCompanies { get; set; }
         [JsonProperty("relatedCompanies")]
-        public IEnumerable<RelationshipViewModel> RelatedCompaniesList { get; set; } = new List<RelationshipViewModel>();
-        [JsonIgnore]
-        public string RelatedMedia { get; set; }
+        public IEnumerable<RelationshipViewModel> RelatedCompanies { get; set; } = new List<RelationshipViewModel>();
         [JsonProperty("relatedMedia")]
-        public IEnumerable<RelationshipViewModel> RelatedMediaList { get; set; } = new List<RelationshipViewModel>();
-        [JsonIgnore]
-        public string RelatedPeople { get; set; }
+        public IEnumerable<RelationshipViewModel> RelatedMedia { get; set; } = new List<RelationshipViewModel>();
         [JsonProperty("relatedPeople")]
-        public IEnumerable<RelationshipViewModel> RelatedPeopleList { get; set; } = new List<RelationshipViewModel>();
+        public IEnumerable<RelationshipViewModel> RelatedPeople { get; set; } = new List<RelationshipViewModel>();
 
         // Other possible properties
         //[JsonProperty("links")]
@@ -77,7 +69,7 @@ namespace MediaGraph.ViewModels.Edit
         /// <returns>The formatted date value as a string</returns>
         public string GetDateValue(DateTime? date)
         {
-            return date.HasValue ? date.Value.ToString("yyyy-mm-dd") : "";
+            return date.HasValue ? date.Value.ToString("yyyy-MM-dd") : "";
         }
 
         /// <summary>
@@ -86,7 +78,7 @@ namespace MediaGraph.ViewModels.Edit
         /// <returns>The JSON value of the other names collection</returns>
         public string GetOtherNamesJson()
         {
-            return JsonConvert.SerializeObject(OtherNamesList);
+            return JsonConvert.SerializeObject(OtherNames);
         }
 
         /// <summary>
@@ -96,7 +88,7 @@ namespace MediaGraph.ViewModels.Edit
         /// <returns>The JSON value of the related companies collection</returns>
         public string GetRelatedCompaniesJson()
         {
-            return JsonConvert.SerializeObject(RelatedCompaniesList);
+            return JsonConvert.SerializeObject(RelatedCompanies);
         }
 
         /// <summary>
@@ -106,7 +98,7 @@ namespace MediaGraph.ViewModels.Edit
         /// <returns>The JSON value of the related media collection</returns>
         public string GetRelatedMediaJson()
         {
-            return JsonConvert.SerializeObject(RelatedMediaList);
+            return JsonConvert.SerializeObject(RelatedMedia);
         }
 
         /// <summary>
@@ -116,7 +108,7 @@ namespace MediaGraph.ViewModels.Edit
         /// <returns>The JSON value of the related people collection</returns>
         public string GetRelatedPeopleJson()
         {
-            return JsonConvert.SerializeObject(RelatedPeopleList);
+            return JsonConvert.SerializeObject(RelatedPeople);
         }
 
         /// <summary>
@@ -151,7 +143,7 @@ namespace MediaGraph.ViewModels.Edit
                     Id = model.Id,
                     ContentType = model.ContentType,
                     CommonName = model.CommonName,
-                    OtherNamesList = model.OtherNames,
+                    OtherNames = model.OtherNames,
                     ReleaseDate = model.ReleaseDate,
                     DeathDate = model.DeathDate
                 };
@@ -163,7 +155,7 @@ namespace MediaGraph.ViewModels.Edit
                     Id = model.Id,
                     ContentType = model.ContentType,
                     CommonName = model.CommonName,
-                    OtherNamesList = model.OtherNames,
+                    OtherNames = model.OtherNames,
                     ReleaseDate = model.ReleaseDate,
                     DeathDate = model.DeathDate,
                     MediaType = ((MediaNodeModel)model).MediaType,
@@ -178,7 +170,7 @@ namespace MediaGraph.ViewModels.Edit
                     Id = model.Id,
                     ContentType = model.ContentType,
                     CommonName = model.CommonName,
-                    OtherNamesList = model.OtherNames,
+                    OtherNames = model.OtherNames,
                     ReleaseDate = model.ReleaseDate,
                     DeathDate = model.DeathDate,
                     GivenName = ((PersonNodeModel)model).GivenName,
@@ -188,9 +180,9 @@ namespace MediaGraph.ViewModels.Edit
             }
 
             // Add the relationships
-            result.RelatedCompaniesList = ConvertRelationships(model.RelatedCompanies);
-            result.RelatedMediaList = ConvertRelationships(model.RelatedMedia);
-            result.RelatedPeopleList = ConvertRelationships(model.RelatedPeople);
+            result.RelatedCompanies = ConvertRelationships(model.RelatedCompanies);
+            result.RelatedMedia = ConvertRelationships(model.RelatedMedia);
+            result.RelatedPeople = ConvertRelationships(model.RelatedPeople);
 
             return result;
         }
@@ -227,6 +219,8 @@ namespace MediaGraph.ViewModels.Edit
         // Other possible properties
         //public Dictionary<string, DateTime> RegionalReleaseDates { get; set; } // string key could be replaced with Region enum
         //public IEnumerable<string> Platforms { get; set; } // string could be replaced with a Platforms enum
+
+        public MediaNodeViewModel() : base() { ContentType = NodeContentType.Media; }
 
 
         public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -265,6 +259,8 @@ namespace MediaGraph.ViewModels.Edit
 
         // public string Nationality { get; set; } // string could be replaced with a Nationalities enum? - might be too large
 
+        public PersonNodeViewModel() : base() { ContentType = NodeContentType.Person; }
+
         public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             List<ValidationResult> errors = new List<ValidationResult>();
@@ -294,6 +290,7 @@ namespace MediaGraph.ViewModels.Edit
     public class CompanyNodeViewModel : BasicNodeViewModel
     {
         // CompanyNodeViewModel adds nothing to the basic view model
+        public CompanyNodeViewModel() : base() { ContentType = NodeContentType.Company; }
     }
 
     public class RelationshipViewModel

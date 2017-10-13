@@ -44,17 +44,17 @@ namespace MediaGraph.Controllers
             {
                 // Filter the users by user email (user name)
                 List<ApplicationUser> matchingUsers = (from user in context.Users
-                                                      where ((filter.Email == null || filter.Email == "") || user.Email.Contains(filter.Email)) &&
-                                                      (!kExcludedUsers.Contains(user.Id))
-                                                      select user).ToList();
+                                                       where ((filter.Email == null || filter.Email == "") || user.Email.Contains(filter.Email)) &&
+                                                       (!kExcludedUsers.Contains(user.Id))
+                                                       select user).ToList();
 
                 List<UserViewModel> resultUsers = new List<UserViewModel>();
 
                 // Filter the users by role
-                foreach(ApplicationUser user in matchingUsers)
+                foreach (ApplicationUser user in matchingUsers)
                 {
                     string role = user.Roles.Single().RoleId;
-                    if(string.IsNullOrEmpty(filter.Role) || role == filter.Role)
+                    if (string.IsNullOrEmpty(filter.Role) || role == filter.Role)
                     {
                         resultUsers.Add(new UserViewModel { Id = user.Id, Email = user.Email, Username = user.UserName, Role = role });
                     }
@@ -64,7 +64,7 @@ namespace MediaGraph.Controllers
                 int offset = (filter.PageNumber - 1) * filter.ResultsPerPage;
                 int pages = (int)Math.Ceiling(resultUsers.Count / (double)filter.ResultsPerPage);
                 // If there are enough results to make a page,
-                if(matchingUsers.Count - offset >= filter.ResultsPerPage)
+                if (matchingUsers.Count - offset >= filter.ResultsPerPage)
                 {
                     // Get a full page
                     resultUsers = resultUsers.Skip(offset).Take(filter.ResultsPerPage).ToList();
@@ -141,10 +141,10 @@ namespace MediaGraph.Controllers
                 // Find the user
                 ApplicationUser toUpdate = context.Users.SingleOrDefault(x => x.Id == id);
                 // If the user was found
-                if(toUpdate != null)
+                if (toUpdate != null)
                 {
                     // Make sure that the role is 
-                    if(toUpdate.Roles.Single().RoleId != role)
+                    if (toUpdate.Roles.Single().RoleId != role)
                     {
                         // Clear the user roles to ensure that no role is added twice
                         // This will also ensure than any roles removed will be removed
@@ -198,11 +198,11 @@ namespace MediaGraph.Controllers
                 List<DatabaseRequestViewModel> resultRequests = null;
                 int offset = (filter.PageNumber - 1) * filter.ResultsPerPage;
                 // If there are enough results to make a page
-                if(requests.Count - offset >= filter.ResultsPerPage)
+                if (requests.Count - offset >= filter.ResultsPerPage)
                 {
                     resultRequests = requests.Select(y => DatabaseRequestViewModel.FromModel(y)).Where(x => ((filter.NodeName == null || filter.NodeName == "") || x.NodeData.CommonName.Contains(filter.NodeName)))
                         .Skip(offset).Take(filter.ResultsPerPage).ToList();
-                } 
+                }
                 else
                 {
                     resultRequests = requests.Select(y => DatabaseRequestViewModel.FromModel(y)).Where(x => ((filter.NodeName == null || filter.NodeName == "") || x.NodeData.CommonName.Contains(filter.NodeName)))

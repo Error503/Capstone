@@ -3,36 +3,27 @@
 @model BasicNodeViewModel
 @{
     Layout = "~/Views/Shared/_ContainerLayout.cshtml";
-    string submissionRoute = Model.ContentType != 0 ? "edit" : "submit";
-    switch(Model.ContentType)
-    {
-        case NodeContentType.Company:
-            submissionRoute += "company";
-            break;
-        case NodeContentType.Media:
-            submissionRoute += "media";
-            break;
-        case NodeContentType.Person:
-            submissionRoute += "person";
-            break;
-    }
 }
 <div>
+    @Html.ValidationSummary()
     <article id="basic-node-info" class="row">
-        <div class="col s12 m6 offset-l2 l4">
-            <div class="valign-wrapper">
-                <h5>What are you adding?</h5>
-            </div>
-        </div>
-        <div class="col s12 m6 l4">
-            <div class="input-field">
-                @Html.EnumDropDownListFor(x => x.ContentType, "Content Type", new { id = "node-content-type" })
+        <div class="valign-wrapper">
+            <div class="col s12 center-align">
+                <span class="title-text">What are you adding?</span>
+                <div class="inline input-field">
+                    <select id="node-content-type">
+                        <option value="" selected disabled>Content Type</option>
+                        <option value="1" >Company</option>
+                        <option value="2">Media</option>
+                        <option value="3">Person</option>
+                    </select>
+                </div>
             </div>
         </div>
     </article>
     <div id="hidden-divider" class="divider" style="display:none;"></div>
     <article class="row">
-        @using (Html.BeginForm(submissionRoute, "Edit", FormMethod.Post, new { id = "nodeForm", editting = "" + (Model.ContentType != 0) }))
+        @using (Html.BeginForm("Index", "Edit", FormMethod.Post, new { id = "nodeForm", autocomplete = "off" }))
         {
             @Html.Partial("_BasicInformationPartial", Model)
             <section id="node-info" style="display:none;">

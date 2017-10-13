@@ -31,11 +31,11 @@
     </div>
     <div class="col s12 m6">
         <div class="input-field">
-            @Html.LabelFor(x => x.CommonName)
-            @Html.TextBoxFor(x => x.CommonName)
+            @Html.LabelFor(x => x.CommonName, new Dictionary<string, object> { { "data-error", "Invalid name" } } )
+            @Html.TextBoxFor(x => x.CommonName, new { @class = "validate", pattern = ".+" })
         </div>
     </div>
-    <div class="col s12 m6">
+    <div class="col s12 l6">
         <div class="input-field">
             <label for="other-names">Other Names</label>
             <div id="other-names" class="chips"></div>
