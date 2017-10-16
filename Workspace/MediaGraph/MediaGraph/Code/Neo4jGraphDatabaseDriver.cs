@@ -100,7 +100,7 @@ namespace MediaGraph.Code
                 // Start the properties section
                 builder.Append('{');
                 // Append the properties
-                if (relModel.TargetId != Guid.Empty)
+                if (relModel.TargetId != null && relModel.TargetId != Guid.Empty)
                     // We have the id
                     builder.AppendFormat("id:'{0}'", relModel.TargetId.ToString());
                 else
@@ -121,31 +121,14 @@ namespace MediaGraph.Code
             }
         }
 
-        public bool UpdateNode(BasicNodeModel node, IEnumerable<RelationshipModel> updatedRelationships, IEnumerable<RelationshipModel> deletedRelationships)
+        public bool UpdateNode(BasicNodeModel model)
         {
-            int nodesUpdated = 0;
-            int relsUpdated = 0;
-            int relsDeleted = 0;
-            using (ISession session = driver.Session())
+            bool result = false;
+            if(DeleteNode(model.Id))
             {
-                // Start a transaction
-                session.WriteTransaction(action =>
-                {
-                    // Update the node
-                    IStatementResult nodeResult = action.Run(string.Format(kUpdateNodeQuery, node.GetNodeLabels(), "{id:'" + node.Id.ToString() + "'}"),
-                        new Dictionary<string, object>
-                        {
-                            { "props", node.GetPropertyMap() }
-                        });
-                    nodesUpdated += nodeResult.Summary.Counters.PropertiesSet > 0 ? 1 : 0;
-                    // Update the relationships
-                    relsUpdated = UpdateRelationships(action, updatedRelationships);
-                    // Delete the removed relationships
-                    relsDeleted = DeleteRelationships(action, deletedRelationships);
-                });
+                result = AddNode(model);
             }
-
-            return nodesUpdated > 0;
+            return result;
         }
 
         private int UpdateRelationships(ITransaction transaction, IEnumerable<RelationshipModel> updated)

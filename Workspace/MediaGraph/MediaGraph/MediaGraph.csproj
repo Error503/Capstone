@@ -452,6 +452,7 @@
     <Content Include="Scripts\myScripts\angular_scripts\nodeCreationApp.js" />
     <Content Include="Scripts\myScripts\angular_scripts\userManagerApp.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script-query.js" />
+    <Content Include="Scripts\myScripts\edit\relationship-form-script.js" />
     <Content Include="Scripts\myScripts\graph\graph-control.js" />
     <Content Include="Scripts\myScripts\menu.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script.js" />

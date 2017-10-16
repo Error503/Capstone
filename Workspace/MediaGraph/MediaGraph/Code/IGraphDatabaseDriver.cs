@@ -39,7 +39,7 @@ namespace MediaGraph.Code
         /// </summary>
         /// <param name="node">The updated node data</param>
         /// <returns>Returns true if the node was updated successfully</returns>
-        bool UpdateNode(BasicNodeModel node, IEnumerable<RelationshipModel> updatedRelationships, IEnumerable<RelationshipModel> deletedRelationships);
+        bool UpdateNode(BasicNodeModel node);
 
         /// <summary>
         /// Attempts to delete the node with the specified GUID from the database.

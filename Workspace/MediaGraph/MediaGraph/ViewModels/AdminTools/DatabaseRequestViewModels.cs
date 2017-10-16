@@ -38,18 +38,14 @@ namespace MediaGraph.ViewModels.AdminTools
     {
         public Guid Id { get; set; }
         public DatabaseRequestType RequestType { get; set; }
-        public DateTime SubmissionDate { get; set; }
         public NodeContentType NodeDataType { get; set; }
         public BasicNodeViewModel NodeData { get; set; }
 
         public string SubmitterId { get; set; }
         public string SubmitterName { get; set; }
+        public DateTime SubmissionDate { get; set; }
 
-        public string ReviewerId { get; set; }
-        public string ReviewerName { get; set; }
-        public DateTime? ReviewDate { get; set; }
-        public bool Reviewed { get; set; }
-        public DateTime? ApprovalDate { get; set; }
+        public bool Reviewed { get; set; } 
         public bool Approved { get; set; }
         public string Notes { get; set; }
 
@@ -78,11 +74,7 @@ namespace MediaGraph.ViewModels.AdminTools
                 NodeDataType = model.NodeDataType,
                 SubmitterId = model.SubmitterRefId,
                 SubmitterName = submitter != null ? submitter.UserName : null,
-                ReviewerId = model.ReviewerRefId,
-                ReviewerName = reviewer != null ? reviewer.UserName : null,
-                ReviewDate = model.ReviewedDate,
                 Reviewed = model.Reviewed,
-                ApprovalDate = model.ApprovalDate,
                 Approved = model.Approved,
                 Notes = model.Notes
             };
@@ -96,5 +88,16 @@ namespace MediaGraph.ViewModels.AdminTools
         {
             return RequestType == 0 ? "Unknown" : Enum.GetName(typeof(DatabaseRequestType), RequestType);
         }
+    }
+
+    public class RequestReviewViewModel
+    {
+        public Guid RequestId { get; set; }
+        public DatabaseRequestType RequestType { get; set; }
+        public NodeContentType NodeDataType { get; set; }
+        public BasicNodeViewModel NodeData { get; set; }
+
+        public string Notes { get; set; }
+        public bool Approved { get; set; }
     }
 }

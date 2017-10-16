@@ -9,10 +9,10 @@
 .picker__header select {
     display: inline-block !important;
 }
-#relationship-chips.disabled {
+.custom-chips.disabled {
     border-bottom-style: dotted;
 }
-#relationship-chips input {
+#relationship-chips input, #genre-chips input, #other-names input {
     border-bottom:none;
 }
 .relationship-group li {

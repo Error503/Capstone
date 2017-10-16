@@ -214,7 +214,7 @@ namespace MediaGraph.Models.Component
     public class RelationshipModel
     {
         public Guid SourceId { get; set; }
-        public Guid TargetId { get; set; }
+        public Guid? TargetId { get; set; }
         public string TargetName { get; set; }
         public IEnumerable<string> Roles { get; set; }
     }

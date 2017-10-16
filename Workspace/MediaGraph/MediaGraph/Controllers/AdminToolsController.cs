@@ -1,6 +1,10 @@
-﻿using MediaGraph.Models;
+﻿using MediaGraph.Code;
+using MediaGraph.Models;
+using MediaGraph.Models.Component;
 using MediaGraph.ViewModels.AdminTools;
+using MediaGraph.ViewModels.Edit;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -236,6 +240,88 @@ namespace MediaGraph.Controllers
             }
 
             return result;
+        }
+
+        [HttpPost]
+        public ActionResult ViewRequest(RequestReviewViewModel request)
+        {
+            // TODO: Editing that results in an invalid node
+            ActionResult result = View("Error");
+            if (request != null)
+            {
+                DatabaseRequest fromDatabase;
+                bool shouldCommitChanges = false;
+                // Get the data from the request database
+                using (ApplicationDbContext context = ApplicationDbContext.Create())
+                {
+                    fromDatabase = context.Requests.Single(x => x.Id == request.NodeData.Id);
+                    shouldCommitChanges = !fromDatabase.Reviewed && request.Approved;
+                    // Update the information in the database
+                    fromDatabase.Reviewed = true;
+                    fromDatabase.ReviewedDate = DateTime.Now;
+                    fromDatabase.Approved = request.Approved;
+                    if (request.Approved)
+                        fromDatabase.ApprovalDate = DateTime.Now;
+                    // Save the changes
+                    context.SaveChanges();
+                }
+
+                // If the request has not been reviewed,
+                if (shouldCommitChanges)
+                {
+                    // Commit the changes to the database
+                    CheckRequestsAndCommitChanges(request.NodeData, fromDatabase);
+                }
+
+                result = RedirectToAction("DatabaseRequests");
+            }
+
+            return result;
+        }
+
+        private void CheckRequestsAndCommitChanges(BasicNodeViewModel fromForm, DatabaseRequest fromDatabase)
+        {
+            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            {
+                if(fromDatabase.RequestType == DatabaseRequestType.Add)
+                {
+                    driver.AddNode(fromForm.ToModel());
+                }
+                else if(fromDatabase.RequestType == DatabaseRequestType.Update)
+                {
+                    driver.UpdateNode(fromForm.ToModel());
+                }
+                else if(fromDatabase.RequestType == DatabaseRequestType.Delete)
+                {
+                    driver.DeleteNode(fromForm.Id);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a BasicNodeModel that contains the updated data.
+        /// </summary>
+        /// <param name="updated">The updated node</param>
+        /// <param name="existing">The existing node from the database</param>
+        /// <returns>The BasicNodeModel containing the updates</returns>
+        private BasicNodeModel GetNodeDelta(BasicNodeViewModel updated, BasicNodeViewModel existing)
+        {
+            if(updated.Id != existing.Id)
+            {
+                throw new Exception("Id mismatch in delta comparison");
+            }
+
+            BasicNodeModel model = new BasicNodeModel
+            {
+                Id = existing.Id,
+                ContentType = existing.ContentType,
+                CommonName = updated.CommonName,
+                OtherNames = updated.OtherNames,
+                ReleaseDate = updated.ReleaseDate,
+                DeathDate = updated.DeathDate,
+            };
+
+            return model;
         }
         #endregion
     }

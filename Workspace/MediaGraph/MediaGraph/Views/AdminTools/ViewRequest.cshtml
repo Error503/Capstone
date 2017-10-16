@@ -20,9 +20,13 @@
     </div>
     <div class="divider"></div>
 </article>
-<article class="row">
-    <section class="col s12">
-        <form id="nodeForm" contenteditable="false">
+<form action="/admintools/viewrequest" method="post" id="nodeForm">
+    <article class="row">
+        <section class="col s12">
+            <input type="hidden" name="RequestId" value="@Model.Id.ToString()"/>
+            <input type="hidden" name="RequestType" value="@Html.ValueFor(x => x.RequestType)" />
+            <input type="hidden" name="NodeDataType" value="@Html.ValueFor(x => x.NodeDataType)" />
+            <input type="hidden" name="Approved" />
             @Html.Partial("_BasicInformationPartial", Model.NodeData)
             @{
                 if (Model.NodeDataType == NodeContentType.Company)
@@ -38,42 +42,43 @@
                     @Html.Partial("_PersonInformationPartial", (PersonNodeViewModel)Model.NodeData)
                 }
             }
-        </form>
-    </section>
-</article>
-<article class="row">
-    <section class="col s12">
-        @Html.Partial("_RelationshipFormPartial")
-    </section>
-</article>
-<article class="row">
-    <div class="valign-wrapper">
-        <section class="col s12 m6">
-            <h5 class="center-align">Submission Details</h5>
-            <p>Submitted by: @Model.SubmitterName</p>
-            <p>Submission date: @Model.SubmissionDate.ToLongTimeString()</p>
         </section>
-        <section class="col s12 m6">
-            <div class="input-field">
-                <textarea id="Notes" class="materialize-textarea"></textarea>
-                <label for="Notes">Notes</label>
-            </div>
-            <div class="row">
-                <div class="col s6">
-                    <button type="button" class="waves-effect waves-light btn red accent-2">Reject</button>
-                </div>
-                <div class="col s6">
-                    <button type="button" class="right waves-effect waves-light btn green accent-2">Approve</button>
-                </div>
-            </div>
+    </article>
+    <article class="row">
+        <section class="col s12">
+            @Html.Partial("_RelationshipFormPartial")
         </section>
-    </div>
-</article>
+    </article>
+    <article class="row">
+        <div class="valign-wrapper">
+            <section class="col s12 m6">
+                <h5 class="center-align">Submission Details</h5>
+                <p>Submitted by: @Model.SubmitterName</p>
+                <p>Submission date: @Model.SubmissionDate.ToLongDateString() at @Model.SubmissionDate.ToLongTimeString()</p>
+            </section>
+            <section class="col s12 m6">
+                <div class="input-field">
+                    <textarea name="Notes" class="materialize-textarea"></textarea>
+                    <label for="Notes">Notes</label>
+                </div>
+                <div class="row">
+                    <div class="col s6">
+                        <button id="reject-button" type="button" class="waves-effect waves-light btn red accent-2">Reject</button>
+                    </div>
+                    <div class="col s6">
+                        <button id="approve-button" type="button" class="right waves-effect waves-light btn green accent-2">Approve</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </article>
+</form>
 
 @section css {
     <link rel="stylesheet" type="text/css" href="~/Content/admin-tools/management-style.css" />
     <link rel="stylesheet" type="text/css" href="~/Content/forms/formStyle.css" />
 }
 @section scripts {
+    <script src="~/Scripts/myScripts/edit/relationship-form-script.js"></script>
     <script src="~/Scripts/myScripts/admin-tools/review-page.js"></script>    
 }

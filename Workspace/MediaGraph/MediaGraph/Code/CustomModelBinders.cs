@@ -1,4 +1,6 @@
-﻿using MediaGraph.Models.Component;
+﻿using MediaGraph.Models;
+using MediaGraph.Models.Component;
+using MediaGraph.ViewModels.AdminTools;
 using MediaGraph.ViewModels.Edit;
 using Newtonsoft.Json;
 using System;
@@ -11,82 +13,26 @@ using System.Web.Mvc;
 
 namespace MediaGraph.Code
 {
-    public class CustomDateBinder : IModelBinder
-    {
-
-        public object BindModel(ControllerContext actionContext, ModelBindingContext bindingContext)
-        {
-            if (bindingContext == null)
-            {
-                throw new ArgumentNullException("bindingContext");
-            }
-
-            DateTime? dateTimeValue = null;
-            DateTime parsed;
-            // If the value was retreived
-            if (!DateTime.TryParse(bindingContext.ValueProvider.GetValue(bindingContext.ModelName).AttemptedValue, out parsed))
-            {
-                // Attempt a manual parsing
-                string rawInput = bindingContext.ValueProvider.GetValue(bindingContext.ModelName).AttemptedValue;
-                string[] split = rawInput.Split('-');
-                int year = 0, month = 0, day = 0;
-
-                if (int.TryParse(split[0], out year) && int.TryParse(split[1], out month) && int.TryParse(split[2], out day))
-                {
-                    dateTimeValue = new DateTime(year, month, day);
-                }
-            } 
-            else
-            {
-                dateTimeValue = parsed;
-            }
-
-            return dateTimeValue;
-        }
-    }
-
-    public class RelationshipCollectionBinder : IModelBinder
-    {
-        public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-        {
-            // Attempt to parse the value as a collection of relationship view models
-            IEnumerable<RelationshipViewModel> result = JsonConvert.DeserializeObject<List<RelationshipViewModel>>(
-                bindingContext.ValueProvider.GetValue(bindingContext.ModelName).AttemptedValue) as List<RelationshipViewModel>;
-
-            // Return an empty collection if parsing failed
-            return result ?? new List<RelationshipViewModel>();
-        }
-    }
-
-    public class StringCollectionBinder : IModelBinder
-    {
-        public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
-        {
-            // Attempt to parse the value as a collection of string
-            IEnumerable<string> result = JsonConvert.DeserializeObject<IEnumerable<string>>(
-                bindingContext.ValueProvider.GetValue(bindingContext.ModelName).AttemptedValue) as IEnumerable<string>;
-
-            // Return an empty collection if parsing failed
-            return result ?? new List<string>();
-        }
-    }
-
     public class NodeModelBinder : IModelBinder
     {
         public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
+            if (bindingContext == null)
+            {
+                throw new ArgumentNullException("Binding context is null", "bindingContext");
+            }
             HttpRequestBase request = controllerContext.HttpContext.Request;
             BasicNodeViewModel result = null;
 
             NodeContentType contentType = (NodeContentType)Enum.Parse(typeof(NodeContentType), request.Form["ContentType"]);
             DateTime? releaseDate = ParseDateTime(bindingContext.ValueProvider.GetValue("ReleaseDate").AttemptedValue);
-            DateTime? deathDate = ParseDateTime(bindingContext.ValueProvider.GetValue("DeathDate").AttemptedValue);
+            DateTime? deathDate = contentType == NodeContentType.Media ? null : ParseDateTime(bindingContext.ValueProvider.GetValue("DeathDate").AttemptedValue);
 
-            if(contentType == NodeContentType.Company)
+            if (contentType == NodeContentType.Company)
             {
                 result = new CompanyNodeViewModel();
             }
-            else if(contentType == NodeContentType.Media)
+            else if (contentType == NodeContentType.Media)
             {
                 result = new MediaNodeViewModel
                 {
@@ -95,7 +41,7 @@ namespace MediaGraph.Code
                     FranchiseName = request.Form["FranchiseName"]
                 };
             }
-            else if(contentType == NodeContentType.Person)
+            else if (contentType == NodeContentType.Person)
             {
                 result = new PersonNodeViewModel
                 {
@@ -176,6 +122,60 @@ namespace MediaGraph.Code
         private T ParseFromJson<T>(string value)
         {
             return JsonConvert.DeserializeObject<T>(value);
+        }
+    }
+
+    public class RequestReviewModelBinder : IModelBinder
+    {
+        public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        {
+            if(bindingContext == null)
+            {
+                throw new ArgumentNullException("Binding context is null", "bindingContext");
+            }
+
+            RequestReviewViewModel result = new RequestReviewViewModel();
+            Guid requestId;
+            DatabaseRequestType requestType;
+            NodeContentType nodeDataType;
+            bool approved;
+            BasicNodeViewModel nodeViewModel = (new NodeModelBinder()).BindModel(controllerContext, bindingContext) as BasicNodeViewModel;
+
+            if(!Guid.TryParse(GetAttemptedValue(bindingContext, "RequestId"), out requestId)) {
+                bindingContext.ModelState.AddModelError("RequestId", "Invalid request id");
+            }
+            if(!Enum.TryParse<DatabaseRequestType>(GetAttemptedValue(bindingContext, "RequestType"), out requestType))
+            {
+                bindingContext.ModelState.AddModelError("RequestType", "Invalid request type");
+            }
+            if(!Enum.TryParse<NodeContentType>(GetAttemptedValue(bindingContext, "NodeDataType"), out nodeDataType))
+            {
+                bindingContext.ModelState.AddModelError("NodeDataType", "Invalid node data type");
+            }
+            if(!bool.TryParse(GetAttemptedValue(bindingContext, "Approved"), out approved))
+            {
+                bindingContext.ModelState.AddModelError("Approved", "Invalid approval state");
+            }
+
+            if(bindingContext.ModelState.IsValid)
+            {
+                result = new RequestReviewViewModel
+                {
+                    RequestId = requestId,
+                    RequestType = requestType,
+                    NodeDataType = nodeDataType,
+                    NodeData = nodeViewModel,
+                    Notes = GetAttemptedValue(bindingContext, "Notes"),
+                    Approved = approved
+                };
+            }
+
+            return result;
+        }
+
+        private string GetAttemptedValue(ModelBindingContext context, string key)
+        {
+            return context.ValueProvider.GetValue(key).AttemptedValue;
         }
     }
 }

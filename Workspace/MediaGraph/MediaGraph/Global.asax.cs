@@ -1,4 +1,5 @@
 ﻿using MediaGraph.Code;
+using MediaGraph.ViewModels.AdminTools;
 using MediaGraph.ViewModels.Edit;
 using System;
 using System.Collections.Generic;
@@ -24,8 +25,7 @@ namespace MediaGraph
 
             // Add custom model binders
             ModelBinders.Binders.Add(typeof(BasicNodeViewModel), new NodeModelBinder());
-            ModelBinders.Binders.Add(typeof(IEnumerable<RelationshipViewModel>), new RelationshipCollectionBinder());
-            ModelBinders.Binders.Add(typeof(IEnumerable<string>), new StringCollectionBinder());
+            ModelBinders.Binders.Add(typeof(RequestReviewViewModel), new RequestReviewModelBinder());
             //CustomDateBinder binder = new CustomDateBinder();
             //ModelBinders.Binders.Add(typeof(DateTime), binder);
             //ModelBinders.Binders.Add(typeof(DateTime?), binder);

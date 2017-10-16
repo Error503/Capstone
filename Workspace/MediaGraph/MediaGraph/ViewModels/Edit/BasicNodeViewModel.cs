@@ -187,6 +187,7 @@ namespace MediaGraph.ViewModels.Edit
             return result;
         }
 
+
         /// <summary>
         /// Converts a collection of relationship models into a collection of relationship view models.
         /// </summary>
@@ -203,6 +204,42 @@ namespace MediaGraph.ViewModels.Edit
 
             return result;
         }
+
+        #region ToModel Method
+        public virtual BasicNodeModel ToModel()
+        {
+            return new BasicNodeModel
+            {
+                Id = this.Id,
+                ContentType = this.ContentType,
+                CommonName = this.CommonName,
+                OtherNames = this.OtherNames,
+                ReleaseDate = this.ReleaseDate,
+                DeathDate = this.DeathDate,
+                RelatedCompanies = ConvertRelationshipsToModel(this.RelatedCompanies),
+                RelatedMedia = ConvertRelationshipsToModel(this.RelatedMedia),
+                RelatedPeople = ConvertRelationshipsToModel(this.RelatedPeople)
+            };
+        }
+
+        protected List<RelationshipModel> ConvertRelationshipsToModel(IEnumerable<RelationshipViewModel> viewModel)
+        {
+            List<RelationshipModel> relationships = new List<RelationshipModel>();
+
+            foreach(RelationshipViewModel vm in viewModel)
+            {
+                relationships.Add(new RelationshipModel
+                {
+                    SourceId = vm.SourceId,
+                    TargetId = vm.TargetId,
+                    TargetName = vm.TargetName,
+                    Roles = vm.Roles
+                });
+            }
+
+            return relationships;
+        }
+        #endregion
     }
 
     public class MediaNodeViewModel : BasicNodeViewModel
@@ -242,6 +279,25 @@ namespace MediaGraph.ViewModels.Edit
         public string GetGenresJson()
         {
             return JsonConvert.SerializeObject(Genres);
+        }
+
+        public override BasicNodeModel ToModel()
+        {
+            return new MediaNodeModel
+            {
+                Id = this.Id,
+                ContentType = this.ContentType,
+                CommonName = this.CommonName,
+                OtherNames = this.OtherNames,
+                ReleaseDate = this.ReleaseDate,
+                DeathDate = this.DeathDate,
+                MediaType = this.MediaType,
+                FranchiseName = this.FranchiseName,
+                Genres = this.Genres,
+                RelatedCompanies = ConvertRelationshipsToModel(this.RelatedCompanies),
+                RelatedMedia = ConvertRelationshipsToModel(this.RelatedMedia),
+                RelatedPeople = ConvertRelationshipsToModel(this.RelatedPeople)
+            };
         }
     }
 
@@ -284,6 +340,25 @@ namespace MediaGraph.ViewModels.Edit
             errors.AddRange(base.Validate(validationContext));
 
             return errors;
+        }
+
+        public override BasicNodeModel ToModel()
+        {
+            return new PersonNodeModel
+            {
+                Id = this.Id,
+                ContentType = this.ContentType,
+                CommonName = this.CommonName,
+                OtherNames = this.OtherNames,
+                ReleaseDate = this.ReleaseDate,
+                DeathDate = this.DeathDate,
+                FamilyName = this.FamilyName,
+                GivenName = this.FamilyName,
+                Status = this.Status,
+                RelatedCompanies = ConvertRelationshipsToModel(this.RelatedCompanies),
+                RelatedMedia = ConvertRelationshipsToModel(this.RelatedMedia),
+                RelatedPeople = ConvertRelationshipsToModel(this.RelatedPeople)
+            };
         }
     }
 

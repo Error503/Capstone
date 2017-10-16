@@ -16,29 +16,36 @@
             <div id="request-list-container" class="col s12">
                 <h5 class="center-align">Requests</h5>
                 <div id="request-list" class="collection list">
-                    @foreach (DatabaseRequestViewModel request in Model.Requests)
+                    @if (Model.Requests.Count() > 0)
                     {
+                        foreach (DatabaseRequestViewModel request in Model.Requests)
+                        {
 
-                        <a href="/admintools/viewrequest/@request.Id" class="collection-item">
-                            @{
-                                if (!request.Reviewed)
-                                {
-                                    <span class="new badge"></span>
-                                }
-                                else
-                                {
-                                    if (request.Approved)
+                            <a href="/admintools/viewrequest/@request.Id" class="collection-item">
+                                @{
+                                    if (!request.Reviewed)
                                     {
-                                        <span class="new badge green" data-badge-caption="approved"></span>
+                                        <span class="new badge"></span>
                                     }
                                     else
                                     {
-                                        <span class="new badge red" data-badge-caption="rejected"></span>
+                                        if (request.Approved)
+                                        {
+                                            <span class="new badge green" data-badge-caption="approved"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="new badge red" data-badge-caption="rejected"></span>
+                                        }
                                     }
                                 }
-                            }
-                            [@request.GetRequestTypeString()] @request.NodeData.CommonName
-                        </a>
+                                [@request.GetRequestTypeString()] @request.NodeData.CommonName
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <div class="center-align">No Results</div>
                     }
                 </div>
             </div>
@@ -47,13 +54,14 @@
     <article class="row">
         <section class="col s12 offset-m5 m7 center">
             <button id="previous-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_left</i></button>
-            <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@Model.CurrentPage" /> of <span id="total-pages">@Model.TotalPages</span></span>
+            <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@(Model.TotalPages == 0 ? 0 : Model.CurrentPage)" /> of <span id="total-pages">@Model.TotalPages</span></span>
             <button id="next-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_right</i></button>
         </section>
     </article>
 </div>
 
 @section scripts {
+    <script src="~/Scripts/myScripts/admin-tools/request-base.js"></script>
     <script src="~/Scripts/myScripts/admin-tools/request-manager.js"></script>
 }
 @section css {

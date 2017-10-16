@@ -1,5 +1,5 @@
 ﻿function updateSytling() {
-    if (currentPage === 1) {
+    if (currentPage <= 1) {
         $('#previous-page-button').addClass('disabled');
     } else {
         $('#previous-page-button').removeClass('disabled');
