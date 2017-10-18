@@ -138,26 +138,12 @@ namespace MediaGraph.ViewModels.Edit
             BasicNodeViewModel result = null;
             if(model.ContentType == NodeContentType.Company)
             {
-                result = new CompanyNodeViewModel
-                {
-                    Id = model.Id,
-                    ContentType = model.ContentType,
-                    CommonName = model.CommonName,
-                    OtherNames = model.OtherNames,
-                    ReleaseDate = model.ReleaseDate,
-                    DeathDate = model.DeathDate
-                };
+                result = new CompanyNodeViewModel();
             }
             else if(model.ContentType == NodeContentType.Media)
             {
                 result = new MediaNodeViewModel
                 {
-                    Id = model.Id,
-                    ContentType = model.ContentType,
-                    CommonName = model.CommonName,
-                    OtherNames = model.OtherNames,
-                    ReleaseDate = model.ReleaseDate,
-                    DeathDate = model.DeathDate,
                     MediaType = ((MediaNodeModel)model).MediaType,
                     FranchiseName = ((MediaNodeModel)model).FranchiseName,
                     Genres = ((MediaNodeModel)model).Genres,
@@ -167,18 +153,18 @@ namespace MediaGraph.ViewModels.Edit
             {
                 result = new PersonNodeViewModel
                 {
-                    Id = model.Id,
-                    ContentType = model.ContentType,
-                    CommonName = model.CommonName,
-                    OtherNames = model.OtherNames,
-                    ReleaseDate = model.ReleaseDate,
-                    DeathDate = model.DeathDate,
                     GivenName = ((PersonNodeModel)model).GivenName,
                     FamilyName = ((PersonNodeModel)model).FamilyName,
                     Status = ((PersonNodeModel)model).Status
                 };
             }
-
+            // Add basic information
+            result.Id = model.Id;
+            result.ContentType = model.ContentType;
+            result.CommonName = model.CommonName;
+            result.OtherNames = model.OtherNames;
+            result.ReleaseDate = model.ReleaseDate.HasValue ? DateValueConverter.ToDateTime(model.ReleaseDate.Value) : default(DateTime?);
+            result.DeathDate = model.DeathDate.HasValue ? DateValueConverter.ToDateTime(model.DeathDate.Value) : default(DateTime?);
             // Add the relationships
             result.RelatedCompanies = ConvertRelationships(model.RelatedCompanies);
             result.RelatedMedia = ConvertRelationships(model.RelatedMedia);
@@ -214,8 +200,8 @@ namespace MediaGraph.ViewModels.Edit
                 ContentType = this.ContentType,
                 CommonName = this.CommonName,
                 OtherNames = this.OtherNames,
-                ReleaseDate = this.ReleaseDate,
-                DeathDate = this.DeathDate,
+                ReleaseDate = this.ReleaseDate.HasValue ? DateValueConverter.ToLongValue(this.ReleaseDate.Value) : default(long?),
+                DeathDate = this.DeathDate.HasValue ? DateValueConverter.ToLongValue(this.DeathDate.Value) : default(long?),
                 RelatedCompanies = ConvertRelationshipsToModel(this.RelatedCompanies),
                 RelatedMedia = ConvertRelationshipsToModel(this.RelatedMedia),
                 RelatedPeople = ConvertRelationshipsToModel(this.RelatedPeople)
@@ -289,8 +275,8 @@ namespace MediaGraph.ViewModels.Edit
                 ContentType = this.ContentType,
                 CommonName = this.CommonName,
                 OtherNames = this.OtherNames,
-                ReleaseDate = this.ReleaseDate,
-                DeathDate = this.DeathDate,
+                ReleaseDate = this.ReleaseDate.HasValue ? DateValueConverter.ToLongValue(this.ReleaseDate.Value) : default(long?),
+                DeathDate = this.DeathDate.HasValue ? DateValueConverter.ToLongValue(this.DeathDate.Value) : default(long?),
                 MediaType = this.MediaType,
                 FranchiseName = this.FranchiseName,
                 Genres = this.Genres,
@@ -350,8 +336,8 @@ namespace MediaGraph.ViewModels.Edit
                 ContentType = this.ContentType,
                 CommonName = this.CommonName,
                 OtherNames = this.OtherNames,
-                ReleaseDate = this.ReleaseDate,
-                DeathDate = this.DeathDate,
+                ReleaseDate = this.ReleaseDate.HasValue ? DateValueConverter.ToLongValue(this.ReleaseDate.Value) : default(long?),
+                DeathDate = this.DeathDate.HasValue ? DateValueConverter.ToLongValue(this.DeathDate.Value) : default(long?),
                 FamilyName = this.FamilyName,
                 GivenName = this.FamilyName,
                 Status = this.Status,

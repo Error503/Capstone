@@ -58,21 +58,25 @@ $(document).ready(function () {
     });
 
     $('.relationship-tab').on('click', function (event) {
-        activeGroup = $(this).attr('tab-value');
-        $('#active-group-name').html(activeGroup);
-
-        if (activeGroup === 'Companies') {
-            activeGroupArray = relatedCompanies;
-        } else if (activeGroup === 'Media') {
-            activeGroupArray = relatedMedia;
-        } else if (activeGroup === 'People') {
-            activeGroupArray = relatedPeople;
-        }
-
-        // Populate the list
-        populateRelationshipList();
+        selectTab($(this).attr('tab-value'));
     });
 });
+
+function selectTab(tab) {
+    activeGroup = tab
+    $('#active-group-name').html(activeGroup);
+
+    if (activeGroup === 'Companies') {
+        activeGroupArray = relatedCompanies;
+    } else if (activeGroup === 'Media') {
+        activeGroupArray = relatedMedia;
+    } else if (activeGroup === 'People') {
+        activeGroupArray = relatedPeople;
+    }
+
+    // Populate the list
+    populateRelationshipList();
+}
 
 
 function selectGroupItem(index) {

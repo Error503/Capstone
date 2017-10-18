@@ -262,6 +262,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Code\CustomModelBinders.cs" />
     <Compile Include="Code\DatabaseInterface.cs" />
+    <Compile Include="Code\DateValueConverter.cs" />
     <Compile Include="Code\IGraphDatabaseDriver.cs" />
     <Compile Include="Code\Neo4jGraphDatabaseDriver.cs" />
     <Compile Include="Controllers\AccountController.cs" />

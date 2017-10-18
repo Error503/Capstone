@@ -245,6 +245,10 @@ namespace MediaGraph.Controllers
         [HttpPost]
         public ActionResult ViewRequest(RequestReviewViewModel request)
         {
+            if(!ModelState.IsValid)
+            {
+                return Json(ModelState.ToList());
+            }
             // TODO: Editing that results in an invalid node
             ActionResult result = View("Error");
             if (request != null)
@@ -254,7 +258,7 @@ namespace MediaGraph.Controllers
                 // Get the data from the request database
                 using (ApplicationDbContext context = ApplicationDbContext.Create())
                 {
-                    fromDatabase = context.Requests.Single(x => x.Id == request.NodeData.Id);
+                    fromDatabase = context.Requests.Single(x => x.Id == request.RequestId);
                     shouldCommitChanges = !fromDatabase.Reviewed && request.Approved;
                     // Update the information in the database
                     fromDatabase.Reviewed = true;

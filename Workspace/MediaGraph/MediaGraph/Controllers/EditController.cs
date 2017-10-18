@@ -119,23 +119,23 @@ namespace MediaGraph.Controllers
         {
             string message = "An error occurred. The node was not flagged";
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            bool foundNodeToDelete = false;
+            BasicNodeModel toDelete = null;
 
             using(Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
             {
-                foundNodeToDelete = driver.GetNode(id) != null;
+                toDelete = driver.GetNode(id);
             }
 
             // If the node with the given id is not null,
-            if (foundNodeToDelete)
+            if (toDelete != null)
             {
                 DatabaseRequest request = new DatabaseRequest
                 {
                     Id = Guid.NewGuid(),
-                    SubmissionDate = DateTime.Now,
                     RequestType = DatabaseRequestType.Delete,
-                    NodeDataType = 0,
-                    NodeData = JsonConvert.SerializeObject(new { id = id }),
+                    SubmissionDate = DateTime.Now,
+                    NodeDataType = toDelete.ContentType,
+                    NodeData = JsonConvert.SerializeObject(toDelete),
                     Approved = false,
                     ApprovalDate = null,
                     Notes = null,

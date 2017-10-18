@@ -15,3 +15,16 @@
 .timeline-display {
 
 }
+#context-popup {
+    width: 150px;
+    height: auto;
+    z-index: 10000;
+    position: absolute;
+}
+#context-popup.inactive {
+    display: none;
+}
+
+#context-popup.active {
+    display: flex;
+}

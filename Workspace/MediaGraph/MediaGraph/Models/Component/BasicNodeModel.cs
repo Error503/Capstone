@@ -20,9 +20,9 @@ namespace MediaGraph.Models.Component
         [JsonProperty("otherNames")]
         public IEnumerable<string> OtherNames { get; set; }
         [JsonProperty("releaseDate")]
-        public DateTime? ReleaseDate { get; set; }
+        public long? ReleaseDate { get; set; }
         [JsonProperty("deathDate")]
-        public DateTime? DeathDate { get; set; }
+        public long? DeathDate { get; set; }
         //[JsonProperty("links")]
         //public Dictionary<string, string> Links { get; set; }
 
@@ -39,16 +39,6 @@ namespace MediaGraph.Models.Component
             return Enum.GetName(typeof(NodeContentType), ContentType);
         }
 
-        public long GetLongReleaseDate()
-        {
-            return ReleaseDate.HasValue ? long.Parse(ReleaseDate.Value.ToString("yyyyMMdd")) : 0;
-        }
-
-        public long GetLongDeathDate()
-        {
-            return DeathDate.HasValue ? long.Parse(DeathDate.Value.ToString("yyyyMMdd")) : 0;
-        }
-
         /// <summary>
         /// Creates and returns the property map for the node
         /// </summary>
@@ -60,18 +50,9 @@ namespace MediaGraph.Models.Component
                 { "id", Id.ToString() },
                 { "commonName", CommonName },
                 { "otherNames", OtherNames },
-                { "releaseDate", ulong.Parse(ReleaseDate?.ToString("yyyyMMdd")) },
-                { "deathDate", ulong.Parse(DeathDate?.ToString("yyyyMMdd")) }
+                { "releaseDate", ReleaseDate },
+                { "deathDate", DeathDate }
             };
-        }
-
-        /// <summary>
-        /// Serializes the node to a JSON object to be put into the database.
-        /// </summary>
-        /// <returns>The JSON string of this node</returns>
-        public string SerializeToJson()
-        {
-            return JsonConvert.SerializeObject(this);
         }
 
         /// <summary>
@@ -96,7 +77,7 @@ namespace MediaGraph.Models.Component
                     result = new MediaNodeModel
                     {
                         // Media properties
-                        MediaType = (NodeMediaType)Enum.Parse(typeof(NodeMediaType), node.Labels[1]),
+                        MediaType = node.Labels.Count > 2 ? (NodeMediaType)Enum.Parse(typeof(NodeMediaType), node.Labels[1]) : 0,
                         FranchiseName = node.Properties.ContainsKey("franchise") ? node.Properties["franchise"].As<string>() : null,
                         Genres = node.Properties.ContainsKey("genres") ? node.Properties["genres"].As<List<string>>() : new List<string>()
                     };
@@ -114,8 +95,8 @@ namespace MediaGraph.Models.Component
                 // Basic properties
                 result.Id = Guid.Parse(node.Properties["id"].As<string>());
                 result.ContentType = contentType;
-                result.ReleaseDate = node.Properties.ContainsKey("releaseDate") ? DateTime.ParseExact(node.Properties["releaseDate"].As<string>(), "yyyyMMdd", null) : default(DateTime?);
-                result.DeathDate = node.Properties.ContainsKey("deathDate") ? DateTime.ParseExact(node.Properties["deathDate"].As<string>(), "yyyyMMdd", null) : default(DateTime?);
+                result.ReleaseDate = node.Properties.ContainsKey("releaseDate") ? node.Properties["releaseDate"].As<long>() : default(long?);
+                result.DeathDate = node.Properties.ContainsKey("deathDate") ? node.Properties["deathDate"].As<long>() : default(long?);
                 result.CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null;
                 result.OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>();
             }

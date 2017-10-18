@@ -122,9 +122,11 @@ namespace MediaGraph.Code
 
                 // Append the creation statement for the relationship
                 string relProps = "{roles: " + JsonConvert.SerializeObject(relModel.Roles) + "}";
-                if (sourceType != targetType)
+                if (sourceType == NodeContentType.Media && sourceType != targetType)
+                    // We are media note contecting to a non-media node: Relationship goes them to us
                     builder.AppendFormat(kCreateRelationshipStatement, identifier, label, relProps, "n");
                 else
+                    // We are a non-media node or a media node relating to media: Relationship goes us to them
                     builder.AppendFormat(kCreateRelationshipStatement, "n", label, relProps, identifier);
 
                 // Incremenet targetIndex
@@ -318,7 +320,11 @@ namespace MediaGraph.Code
                 session.ReadTransaction(action =>
                 {
                     IStatementResult result = action.Run("MATCH (n) WHERE n.releaseDate >= $lowerBound AND n.releaseDate <= $upperBound", 
-                        new Dictionary<string, object> { { "lowerBound", long.Parse(start.ToString("yyyyMMdd")) }, { "upperBound", long.Parse(end.ToString("yyyyMMdd")) } });
+                        new Dictionary<string, object>
+                        {
+                            { "lowerBound", DateValueConverter.ToLongValue(start) },
+                            { "upperBound", DateValueConverter.ToLongValue(end) }
+                        });
                 });
             }
 

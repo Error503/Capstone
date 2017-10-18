@@ -25,7 +25,6 @@ namespace MediaGraph.ViewModels.Graph
         public string Id { get; set; }
         public NodeContentType DataType { get; set; }
         public string CommonName { get; set; }
-        public long ReleaseDate { get; set; }
 
         // These will be null on the source node
         public string RelationType { get; set; }

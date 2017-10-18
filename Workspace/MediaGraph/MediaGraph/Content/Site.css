@@ -6,9 +6,6 @@
 main {
     flex: 1 0 auto;
 }
-input[type=search] {
-    height: 64px !important;
-}
 .active-item {
     font-size: 1.5em;
 }
@@ -23,4 +20,7 @@ input[type=search] {
     height: 200px;
     max-height: 200px;
     overflow-y: scroll;
+}
+.pointer-item { 
+    cursor: pointer;
 }

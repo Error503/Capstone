@@ -53,7 +53,7 @@ namespace MediaGraph.Code
 
             result.Id = Guid.Parse(request.Form["Id"]);
             result.ContentType = contentType;
-            result.CommonName = request.Form["CommonName"].Trim().ToLower();
+            result.CommonName = contentType == NodeContentType.Person ? $"{((PersonNodeViewModel)result).GivenName} {((PersonNodeViewModel)result).FamilyName}" : request.Form["CommonName"].Trim().ToLower();
             result.OtherNames = ParseFromJson<IEnumerable<string>>(request.Form["OtherNames"]);
             result.ReleaseDate = releaseDate;
             result.DeathDate = deathDate;

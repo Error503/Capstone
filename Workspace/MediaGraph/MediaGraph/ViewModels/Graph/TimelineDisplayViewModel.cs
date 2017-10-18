@@ -11,7 +11,7 @@ namespace MediaGraph.ViewModels.Graph
         public string Id { get; set; }
         public NodeContentType DataType { get; set; }
         public string CommonName { get; set; }
-        public string ReleaseDate { get; set; }
-        public string DeathDate { get; set; }
+        public long ReleaseDate { get; set; }
+        public long DeathDate { get; set; }
     }
 }

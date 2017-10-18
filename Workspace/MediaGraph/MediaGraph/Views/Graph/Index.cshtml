@@ -37,7 +37,7 @@
         </section>
         <div id="tab1" class="col s12 control-tab">
             <div class="col s12 m6">
-                @using (Ajax.BeginForm("SearchPaths", "Graph", null, options, new Dictionary<string, object> { { "id", "search-form" }, { "autocomplete", "off" } }))
+                @using (Ajax.BeginForm("GetNetworkInformation", "Graph", null, options, new Dictionary<string, object> { { "id", "search-form" }, { "autocomplete", "off" } }))
                 {
                     <input type="hidden" name="targetId" />
                     <div class="valign-wrapper">
@@ -75,5 +75,12 @@
             </form>
         </div>
     </article>
+</div>
+
+<div id="context-popup" class="inactive">
+    <div class="collection">
+        <a id="delete-context-link" class="collection-item pointer-item">Flag for deletion</a>
+        <a id="edit-context-link" href="/edit/index/" class="collection-item">Edit this node</a>
+    </div>
 </div>
 

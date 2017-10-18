@@ -15,6 +15,7 @@
 };  
 
 var targetElementId = 'visualization-target';
+var timelineRefreshDelay = 500;
 var display;
 $(document).ready(function () {
     // Set up events for the visualization options
@@ -29,6 +30,17 @@ $(document).ready(function () {
             }
         });
     }
+    $('#delete-context-link').on('click', function (response) {
+        $.ajax({
+            method: 'post',
+            url: '/edit/flagdeletion',
+            data: { id: $('#delete-context-link').attr('data-id') },
+            success: function (response) {
+                Materialize.toast("Flagged for deletion!", 3000);
+            },
+            error: searchFailed
+        });
+    });
 
     function changeVisualization() {
         // Destroy the current visualization
@@ -43,19 +55,34 @@ $(document).ready(function () {
 
     function initializeNetworkDisplay() {
         display = new NetworkDisplay(targetElementId, custom_options);
-        // Set up event handling
-        display.graphic.on('click', function (props) {
+        document.onclick = function (event) {
+            $('#context-popup').removeClass('active').addClass('inactive');
+        };
+        display.graphic.on('selectNode', function (props) {
             if (props.nodes.length > 0) {
                 getSingleInformation(props.nodes[0]);
             }
+        });
+        display.graphic.on('selectEdge', function (props) {
+            console.log(props);
         });
         display.graphic.on('doubleClick', function (props) {
             if (props.nodes.length > 0) {
                 getInformation(props.nodes[0], props.event.center);
             }
         });
-        display.graphic.on('contextMenu', function (props) {
-            console.log("Right click occurred");
+        display.graphic.on('oncontext', function (props) {
+            if (display.graphic.getNodeAt(props.pointer.DOM) != null) {
+                var selected = display.graphic.getNodeAt(props.pointer.DOM); // Get the node at the point
+                console.log(selected);
+                display.graphic.selectNodes([selected]); // Select the node
+                // Update the context options
+                $('#edit-context-link').attr('href', '/edit/index/' + selected);
+                console.log($('#edit-context-link'));
+                $('#delete-context-link').attr('data-id', selected);
+                // Display the pop up
+                $('#context-popup').removeClass('inactive').addClass('inactive active').css({ left: props.pointer.DOM.x + 50, top: props.pointer.DOM.y + 50 });
+            }
             // Prevent the default functionality
             props.event.preventDefault();
         });
@@ -63,6 +90,7 @@ $(document).ready(function () {
     }
     function initializeTimelineDisplay() {
         display = new TimelineDisplay(targetElementId, null, null);
+        document.onclick = null;
         // Set up event handling
         display.graphic.on('click', function (props) {
             console.log(props);
@@ -74,7 +102,7 @@ $(document).ready(function () {
     }
 
     // Initialize the network display
-    initializeTimelineDisplay();
+    initializeNetworkDisplay();
 });
 
 function getSingleInformation(id) {
@@ -96,12 +124,7 @@ function populateSelectedInformation(response) {
     } else if (response.ContentType == 3) {
         $('#release-date-label').html("Date of Birth:");
     }
-    if (response.ReleaseDate != null) {
-        var dateTicks = Number.parseInt(response.ReleaseDate.substring(6, response.ReleaseDate.length - 1));
-        $('#release-date-value').html((new Date(dateTicks)).toDateString());
-    } else {
-        $('#release-date-value').html("Unknown");
-    }
+    $('#release-date-value').html(response.ReleaseDate != null ? parseLongDateValue(response.ReleaseDate).toDateString() : "Unknown");
 }
 
 function getInformation(id, position) {
@@ -146,4 +169,10 @@ function capitalizeLabel(label, type) {
     }
 
     return result;
+}
+
+function parseLongDateValue(date) {
+    var upperConst = 10000;
+    var lowerConst = 100;
+    return new Date(Math.floor(date / upperConst), Math.floor(((date % upperConst) / lowerConst) - 1), Math.floor(date % lowerConst));
 }

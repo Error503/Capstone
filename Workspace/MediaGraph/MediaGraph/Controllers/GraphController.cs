@@ -1,6 +1,7 @@
 ﻿using MediaGraph.Code;
 using MediaGraph.Models;
 using MediaGraph.Models.Component;
+using MediaGraph.ViewModels.Edit;
 using MediaGraph.ViewModels.Graph;
 using Neo4j.Driver.V1;
 using Newtonsoft.Json;
@@ -85,7 +86,6 @@ namespace MediaGraph.Controllers
                     Id = paths[0].Start.Properties["id"].As<string>(),
                     DataType = (NodeContentType)Enum.Parse(typeof(NodeContentType), paths[0].Start.Labels[0]),
                     CommonName = paths[0].Start.Properties["commonName"].As<string>(),
-                    ReleaseDate = paths[0].Start.Properties.ContainsKey("releaseDate") ? DateTime.Parse(paths[0].Start.Properties["releaseDate"].As<string>()).Ticks : 0
                 };
 
                 foreach (IPath p in paths)
@@ -96,7 +96,6 @@ namespace MediaGraph.Controllers
                         Id = p.End.Properties["id"].As<string>(),
                         DataType = (NodeContentType)Enum.Parse(typeof(NodeContentType), p.End.Labels[0]),
                         CommonName = p.End.Properties["commonName"].As<string>(),
-                        ReleaseDate = p.End.Properties.ContainsKey("releaseDate") ? DateTime.Parse(paths[0].End.Properties["releaseDate"].As<string>()).Ticks : 0,
                         RelationType = p.Relationships[0].Type,
                         Roles = p.Relationships[0].Properties["roles"].As<List<string>>()
                     });
@@ -128,8 +127,8 @@ namespace MediaGraph.Controllers
                     Id = n.Id.ToString(),
                     DataType = n.ContentType,
                     CommonName = n.CommonName,
-                    ReleaseDate = n.ReleaseDate?.ToString("yyyy-MM-dd"),
-                    DeathDate = n.DeathDate?.ToString("yyyy-MM-dd")
+                    ReleaseDate = n.ReleaseDate.HasValue ? DateValueConverter.ToDateTime(n.ReleaseDate.Value).Ticks : 0,
+                    DeathDate = n.DeathDate.HasValue ? DateValueConverter.ToDateTime(n.ReleaseDate.Value).Ticks : 0
                 });
             }
 
