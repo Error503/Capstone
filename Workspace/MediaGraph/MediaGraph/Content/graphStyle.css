@@ -1,12 +1,17 @@
-﻿.content-wrapper {
-    margin: auto 20px;
+﻿.visualization-wrapper {
+    margin: 10px 20px;
 }
 .control-tab {
     height: 50vh;
 }
-#graph {
+.visualization {
     margin-top: 10px;
     margin-bottom: 10px;
-    border: 1px solid #808080;
     height: 50vh
+}
+.network-display {
+    border: 1px solid #808080;
+}
+.timeline-display {
+
 }

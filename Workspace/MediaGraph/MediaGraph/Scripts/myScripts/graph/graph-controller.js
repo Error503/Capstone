@@ -14,20 +14,67 @@
     }
 };  
 
+var targetElementId = 'visualization-target';
 var display;
 $(document).ready(function () {
-    display = new NetworkDisplay('graph', custom_options);
+    // Set up events for the visualization options
+    var radioButtons = document.forms['visualization-options'].visualizationType;
+    var selectedType = 'network';
+    for (var i = 0; i < radioButtons.length; i++) {
+        $(radioButtons[i]).on('click', function (event) {
+            if ($(this).val() !== selectedType) {
+                // Change the display type
+                selectedType = $(this).val();
+                changeVisualization();
+            }
+        });
+    }
 
-    display.network.on('click', function (props) {
-        if (props.nodes.length > 0) {
-            getSingleInformation(props.nodes[0]);
+    function changeVisualization() {
+        // Destroy the current visualization
+        $('#visualization-target').empty().removeClass('network-display timeline-display');
+        display.clear();
+        if (selectedType === 'network') {
+            initializeNetworkDisplay();
+        } else if(selectedType === 'timeline') {
+            initializeTimelineDisplay();
         }
-    });
-    display.network.on('doubleClick', function (props) {
-        if (props.nodes.length > 0) {
-            getInformation(props.nodes[0], props.event.center);
-        }
-    });
+    }
+
+    function initializeNetworkDisplay() {
+        display = new NetworkDisplay(targetElementId, custom_options);
+        // Set up event handling
+        display.graphic.on('click', function (props) {
+            if (props.nodes.length > 0) {
+                getSingleInformation(props.nodes[0]);
+            }
+        });
+        display.graphic.on('doubleClick', function (props) {
+            if (props.nodes.length > 0) {
+                getInformation(props.nodes[0], props.event.center);
+            }
+        });
+        display.graphic.on('contextMenu', function (props) {
+            console.log("Right click occurred");
+            // Prevent the default functionality
+            props.event.preventDefault();
+        });
+        $('#visualization-target').addClass('network-display');
+    }
+    function initializeTimelineDisplay() {
+        display = new TimelineDisplay(targetElementId, null, null);
+        // Set up event handling
+        display.graphic.on('click', function (props) {
+            console.log(props);
+        });
+        display.graphic.on('rangechanged', function (props) {
+            console.log(props);
+        });
+        $('#visualization-target').addClass('timeline-display');
+    }
+
+    // Initialize the network display
+    initializeTimelineDisplay();
 });
 
 function getSingleInformation(id) {

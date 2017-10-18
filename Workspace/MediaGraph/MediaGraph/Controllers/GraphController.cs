@@ -25,10 +25,16 @@ namespace MediaGraph.Controllers
         }
 
         [HttpGet]
-        public ActionResult SearchPaths(string searchText, Guid? id)
+        public ActionResult GetNetworkInformation(string searchText, Guid? id)
         {
             GraphDataViewModel data = GetPaths(searchText, id);
             return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetTimelineInformation(DateTime start, DateTime end)
+        {
+            return Json(GetTimelineElements(start, end), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -46,6 +52,7 @@ namespace MediaGraph.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
 
+        #region Network Display Helper Methods
         private GraphDataViewModel GetPaths(string searchText, Guid? id)
         {
             // Get the paths from the database
@@ -100,5 +107,34 @@ namespace MediaGraph.Controllers
 
             return result;
         }
+        #endregion
+
+        #region Timeline Display Helper Methods
+        private List<TimelineDisplayViewModel> GetTimelineElements(DateTime start, DateTime end)
+        {
+            List<TimelineDisplayViewModel> result = new List<TimelineDisplayViewModel>();
+
+            List<BasicNodeModel> nodes;
+            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            {
+                nodes = driver.GetNodesBetweenDates(start, end);
+            }
+
+            // Convert the nodes to TimelineDisplayViewModel objects
+            foreach (BasicNodeModel n in nodes)
+            {
+                result.Add(new TimelineDisplayViewModel
+                {
+                    Id = n.Id.ToString(),
+                    DataType = n.ContentType,
+                    CommonName = n.CommonName,
+                    ReleaseDate = n.ReleaseDate?.ToString("yyyy-MM-dd"),
+                    DeathDate = n.DeathDate?.ToString("yyyy-MM-dd")
+                });
+            }
+
+            return result;
+        }
+        #endregion
     }
 }

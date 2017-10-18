@@ -1,6 +1,5 @@
 ﻿using MediaGraph.Models;
 using MediaGraph.Models.Component;
-using MediaGraph.Models.Util;
 using Neo4j.Driver.V1;
 using Newtonsoft.Json;
 using System;
@@ -302,6 +301,28 @@ namespace MediaGraph.Code
             }
 
             return paths;
+        }
+
+        /// <summary>
+        /// Returns a collection of nodes whose release date falls before
+        /// </summary>
+        /// <param name="start">The DateTime to use as the lower bound of the search</param>
+        /// <param name="end">The DateTime to use as the upper bound of the search</param>
+        /// <returns>A collection of nodes whose release date is in the specified range</returns>
+        public List<BasicNodeModel> GetNodesBetweenDates(DateTime start, DateTime end)
+        {
+            List<BasicNodeModel> nodeModels = new List<BasicNodeModel>();
+            using (ISession session = driver.Session())
+            {
+                // Create a transaction
+                session.ReadTransaction(action =>
+                {
+                    IStatementResult result = action.Run("MATCH (n) WHERE n.releaseDate >= $lowerBound AND n.releaseDate <= $upperBound", 
+                        new Dictionary<string, object> { { "lowerBound", long.Parse(start.ToString("yyyyMMdd")) }, { "upperBound", long.Parse(end.ToString("yyyyMMdd")) } });
+                });
+            }
+
+            return nodeModels;
         }
     }
 }

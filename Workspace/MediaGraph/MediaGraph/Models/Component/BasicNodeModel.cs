@@ -39,6 +39,16 @@ namespace MediaGraph.Models.Component
             return Enum.GetName(typeof(NodeContentType), ContentType);
         }
 
+        public long GetLongReleaseDate()
+        {
+            return ReleaseDate.HasValue ? long.Parse(ReleaseDate.Value.ToString("yyyyMMdd")) : 0;
+        }
+
+        public long GetLongDeathDate()
+        {
+            return DeathDate.HasValue ? long.Parse(DeathDate.Value.ToString("yyyyMMdd")) : 0;
+        }
+
         /// <summary>
         /// Creates and returns the property map for the node
         /// </summary>
@@ -50,8 +60,8 @@ namespace MediaGraph.Models.Component
                 { "id", Id.ToString() },
                 { "commonName", CommonName },
                 { "otherNames", OtherNames },
-                { "releaseDate", ReleaseDate?.ToShortDateString() },
-                { "deathDate", DeathDate?.ToShortDateString() }
+                { "releaseDate", ulong.Parse(ReleaseDate?.ToString("yyyyMMdd")) },
+                { "deathDate", ulong.Parse(DeathDate?.ToString("yyyyMMdd")) }
             };
         }
 
@@ -79,26 +89,12 @@ namespace MediaGraph.Models.Component
                 NodeContentType contentType = (NodeContentType)Enum.Parse(typeof(NodeContentType), node.Labels[0]);
                 if (contentType == NodeContentType.Company)
                 {
-                    result = new CompanyNodeModel
-                    {
-                        Id = Guid.Parse(node.Properties["id"].As<string>()),
-                        ContentType = contentType,
-                        ReleaseDate = node.Properties.ContainsKey("releaseDate") ? DateTime.Parse(node.Properties["releaseDate"].As<string>()) : default(DateTime?),
-                        DeathDate = node.Properties.ContainsKey("deathDate") ? DateTime.Parse(node.Properties["deathDate"].As<string>()) : default(DateTime?),
-                        CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null,
-                        OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>()
-                    };
+                    result = new CompanyNodeModel();
                 }
                 else if (contentType == NodeContentType.Media)
                 {
                     result = new MediaNodeModel
                     {
-                        Id = Guid.Parse(node.Properties["id"].As<string>()),
-                        ContentType = contentType,
-                        ReleaseDate = node.Properties.ContainsKey("releaseDate") ? DateTime.Parse(node.Properties["releaseDate"].As<string>()) : default(DateTime?),
-                        DeathDate = node.Properties.ContainsKey("deathDate") ? DateTime.Parse(node.Properties["deathDate"].As<string>()) : default(DateTime?),
-                        CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null,
-                        OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>(),
                         // Media properties
                         MediaType = (NodeMediaType)Enum.Parse(typeof(NodeMediaType), node.Labels[1]),
                         FranchiseName = node.Properties.ContainsKey("franchise") ? node.Properties["franchise"].As<string>() : null,
@@ -109,18 +105,19 @@ namespace MediaGraph.Models.Component
                 {
                     result = new PersonNodeModel
                     {
-                        Id = Guid.Parse(node.Properties["id"].As<string>()),
-                        ContentType = contentType,
-                        ReleaseDate = node.Properties.ContainsKey("releaseDate") ? DateTime.Parse(node.Properties["releaseDate"].As<string>()) : default(DateTime?),
-                        DeathDate = node.Properties.ContainsKey("deathDate") ? DateTime.Parse(node.Properties["deathDate"].As<string>()) : default(DateTime?),
-                        CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null,
-                        OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>(),
                         // Person properties
                         FamilyName = node.Properties.ContainsKey("familyName") ? node.Properties["familyName"].As<string>() : null,
                         GivenName = node.Properties.ContainsKey("givenName") ? node.Properties["givenName"].As<string>() : null,
                         Status = node.Properties.ContainsKey("status") ? (PersonStatus)Enum.Parse(typeof(PersonStatus), node.Properties["status"].As<string>()) : 0
                     };
                 }
+                // Basic properties
+                result.Id = Guid.Parse(node.Properties["id"].As<string>());
+                result.ContentType = contentType;
+                result.ReleaseDate = node.Properties.ContainsKey("releaseDate") ? DateTime.ParseExact(node.Properties["releaseDate"].As<string>(), "yyyyMMdd", null) : default(DateTime?);
+                result.DeathDate = node.Properties.ContainsKey("deathDate") ? DateTime.ParseExact(node.Properties["deathDate"].As<string>(), "yyyyMMdd", null) : default(DateTime?);
+                result.CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null;
+                result.OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>();
             }
             catch (Exception e)
             {

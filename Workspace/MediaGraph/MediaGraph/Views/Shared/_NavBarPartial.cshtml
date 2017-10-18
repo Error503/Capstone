@@ -6,7 +6,7 @@
             <a href="#" data-activates="side-nav" class="button-collapse"><i class="material-icons">menu</i></a>
             <ul class="left hide-on-med-and-down">
                 <li>@Html.ActionLink("New Contribution", "Index", "Edit")</li>
-                <li>@Html.ActionLink("Graphic Display", "Index", "Graph")</li>
+                <li>@Html.ActionLink("Visualization", "Index", "Graph")</li>
             </ul>
             @Html.Partial("_LoginPartial")
         </div>
@@ -16,12 +16,12 @@
     @if(Request.IsAuthenticated)
     {
         <li class="hide-on-med-and-up">
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+            @Html.ActionLink("Manage Account", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>
         using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutFormSide", @class = "hide-on-med-and-up" }))
         {
             @Html.AntiForgeryToken()
-            <li>
+            <li class="hide-on-med-and-up">
                 <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
             </li>
         }
@@ -33,5 +33,6 @@
     }
     <li class="hide-on-med-and-up"><div class="divider"></div></li>
     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-    <li>@Html.ActionLink("Add", "Index", "Edit")</li>
+    <li>@Html.ActionLink("New Contribution", "Index", "Edit")</li>
+    <li>@Html.ActionLink("Visualization", "Index", "Graph")</li>
 </ul>

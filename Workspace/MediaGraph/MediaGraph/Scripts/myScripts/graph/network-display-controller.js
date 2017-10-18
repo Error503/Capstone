@@ -15,7 +15,7 @@
     return {
         nodes: nodeData,
         edges: edgeData,
-        network: new vis.Network(document.getElementById(elementId), { nodes: nodeData, edges: edgeData }, options != null ? options : default_options),
+        graphic: new vis.Network(document.getElementById(elementId), { nodes: nodeData, edges: edgeData }, options != null ? options : default_options),
         // Functions
         addNode: addNode,
         addEdge: addEdge,
