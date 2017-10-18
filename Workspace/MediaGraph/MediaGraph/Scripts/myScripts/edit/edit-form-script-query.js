@@ -96,10 +96,12 @@ $(document).ready(function () {
 
     function bindModel(type) {
         if (type == MEDIA_TYPE || type === "Media") {
-            console.log("MEDIA BIND");
             // Set up the genre chips
             $('#genre-chips').on('chip.add', function (e, chip) {
-                genres.push(chip.tag);
+                chip.tag = chip.tag.trim().toLowerCase();
+                if (genres.indexOf(chip.tag) === -1) {
+                    genres.push(chip.tag);
+                }
                 // Update the input field
                 document.forms['nodeForm']['Genres'].value = JSON.stringify(genres);
             });
@@ -125,7 +127,10 @@ $(document).ready(function () {
 
         // Set up other-names chips
         $('#other-names').on('chip.add', function (e, chip) {
-            otherNames.push(chip.tag);
+            chip.tag = chip.tag.trim().toLowerCase()
+            if (otherNames.indexOf(chip.tag) === -1) {
+                otherNames.push(chip.tag);
+            }
             // Update the input field
             document.forms['nodeForm']['OtherNames'].value = JSON.stringify(otherNames);
         });

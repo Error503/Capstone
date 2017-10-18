@@ -271,8 +271,6 @@
     <Compile Include="Controllers\GraphController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\MediaDisplayController.cs" />
-    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -290,15 +288,11 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Code\DatabaseDriver.cs" />
     <Compile Include="Models\Component\BasicNodeModel.cs" />
     <Compile Include="Models\Component\NodeEnums.cs" />
     <Compile Include="Models\DatabaseRequestModels.cs" />
-    <Compile Include="Models\GraphModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\NodeModels.cs" />
-    <Compile Include="Models\RelationshipModels.cs" />
     <Compile Include="Models\Util\DisplayType.cs" />
     <Compile Include="Models\Util\GameGenres.cs" />
     <Compile Include="Models\Util\GuidStringKey.cs" />
@@ -320,13 +314,9 @@
     <Compile Include="ViewModels\AdminTools\UserManagementViewModels.cs" />
     <Compile Include="ViewModels\AutocompleteLabel.cs" />
     <Compile Include="ViewModels\Edit\BasicNodeViewModel.cs" />
-    <Compile Include="ViewModels\SearchViewModel.cs" />
+    <Compile Include="ViewModels\Graph\GraphDataViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bower_components\angular\angular-csp.css" />
-    <Content Include="bower_components\angular\angular.js" />
-    <Content Include="bower_components\angular\angular.min.js" />
-    <Content Include="bower_components\angular\index.js" />
     <Content Include="bower_components\svg.js\bench\runner.html" />
     <Content Include="bower_components\svg.js\bench\svg.bench.js" />
     <Content Include="bower_components\svg.js\bench\tests\10000-circles.js" />
@@ -346,7 +336,6 @@
     <Content Include="Content\home\HomePage.css" />
     <Content Include="Content\materialize\materialize.css" />
     <Content Include="Content\materialize\materialize.min.css" />
-    <Content Include="Content\mediaPageStyle.css" />
     <Content Include="Content\requestaccepted.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
@@ -393,7 +382,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -414,13 +402,6 @@
     <Content Include="Content\fonts\roboto\Roboto-Regular.woff2" />
     <Content Include="Content\fonts\roboto\Roboto-Thin.woff" />
     <Content Include="Content\fonts\roboto\Roboto-Thin.woff2" />
-    <Content Include="bower_components\angular\.bower.json" />
-    <Content Include="bower_components\angular\angular.min.js.gzip" />
-    <Content Include="bower_components\angular\angular.min.js.map" />
-    <Content Include="bower_components\angular\bower.json" />
-    <Content Include="bower_components\angular\LICENSE.md" />
-    <Content Include="bower_components\angular\package.json" />
-    <Content Include="bower_components\angular\README.md" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -453,12 +434,10 @@
     <Content Include="Scripts\myScripts\angular_scripts\userManagerApp.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script-query.js" />
     <Content Include="Scripts\myScripts\edit\relationship-form-script.js" />
-    <Content Include="Scripts\myScripts\graph\graph-control.js" />
+    <Content Include="Scripts\myScripts\graph\graph-controller.js" />
+    <Content Include="Scripts\myScripts\graph\network-display-controller.js" />
     <Content Include="Scripts\myScripts\menu.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script.js" />
-    <Content Include="Scripts\myScripts\graph\graphRenderer.js" />
-    <Content Include="Scripts\myScripts\relationshipForm.js" />
-    <Content Include="Scripts\myScripts\searchScript.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />
@@ -494,12 +473,6 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\MediaDisplay\Index.cshtml" />
-    <Content Include="Views\MediaDisplay\ViewInfo.cshtml" />
-    <Content Include="Views\MediaDisplay\AdvancedSearch.cshtml" />
-    <Content Include="Views\Search\Index.cshtml" />
-    <Content Include="Views\Search\_SearchFormPartial.cshtml" />
-    <Content Include="Views\Search\_AdvancedSearchFormPartial.cshtml" />
     <Content Include="Views\Graph\Index.cshtml" />
     <Content Include="Views\Edit\Accepted.cshtml" />
     <Content Include="Views\Shared\_MaterialLayout.cshtml" />
@@ -519,6 +492,7 @@
     <Content Include="Views\Shared\_BasicInformationPartial.cshtml" />
     <Content Include="Views\AdminTools\_DatabaseRequestFilterPartial.cshtml" />
     <Content Include="Views\AdminTools\_UserManagementFilterPartial.cshtml" />
+    <Content Include="Views\Shared\_UpdatedNavBarPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

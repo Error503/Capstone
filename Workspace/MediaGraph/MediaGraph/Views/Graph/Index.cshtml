@@ -1,40 +1,69 @@
-﻿@model string
-@{
+﻿@{
     ViewBag.Title = "Visualization";
+    Layout = "~/Views/Shared/_ContainerLayout.cshtml";
+    AjaxOptions options = new AjaxOptions
+    {
+        HttpMethod = "get",
+        OnSuccess = "searchSuccessful",
+        OnFailure = "searchFailed"
+    };
 }
 
 @section css {
-    <link rel="stylesheet" type="text/css" href="~/Content/graphStyle.css" />    
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/graphStyle.css" />
 }
 
+@section headScripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+}
 @section scripts {
-    <script src="~/Scripts/jquery-1.12.4.min.js"></script>
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
-    <script src="~/bower_components/svg.js/dist/svg.min.js"></script>
-    <script src="~/Scripts/myScripts/graph/graphRenderer.js"></script>
-    <script src="~/Scripts/myScripts/graph/graph-control.js"></script>
+    <script src="~/Scripts/myScripts/graph/graph-controller.js"></script>
+    <script src="~/Scripts/myScripts/graph/network-display-controller.js"></script>
 }
 
-<h2>Graph</h2>
+<h4>Graph Visualization</h4>
+<article class="row">
 
-<article>
-    <section id="graph">
+    <section id="visualization-container" class="col s12">
+        <div id="graph"></div>
     </section>
-    <section>
-        <!-- 
-            Questions for Mr.Beatty:
+</article>
+<article class="row">
+    <section class="col s12">
+        <ul class="tabs tabs-fixed-width">
+            <li class="tab"><a href="#tab1">Search and Data</a></li>
+            <li class="tab"><a href="#tab2">Display Settings</a></li>
+        </ul>
+    </section>
+    <div id="tab1" class="col s12 control-tab">
+        <div class="col s12 m6">
+            @using (Ajax.BeginForm("SearchPaths", "Graph", null, options, new Dictionary<string, object> { { "id", "search-form" }, { "autocomplete", "off" } } ))
+            {
+                <input type="hidden" name="targetId" />
+                <div class="valign-wrapper">
+                    <div class="col s9 input-field">
+                        <input type="text" name="searchText" />
+                        <label for="searchName">Search</label>
+                    </div>
+                    <div class="col s3">
+                        <button id="searchButton" type="button" class="waves-effect waves-light btn"><i class="material-icons">search</i></button>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col s12 m6">
+            <table>
+                <tbody>
+                    <tr><td>Name:</td><td id="node-name-value"></td></tr>
+                    <tr><td id="release-date-label">Release Date:</td><td id="release-date-value"></td></tr>
+                    <tr><td id="death-date-label">Death Date:</td><td id="death-date-value"></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="tab2" class="col s12 control-tab">
 
-            1) Is there a good way to create a color palette for large numbers of colors?
-                - Color coding the graph by node and relationship would take at least 8 colors
-            2) What are some ways to model user-defined one-to-many relationships in a web form?
-                - Would it be better to have those relationships determined on the back end?
-                    -- I think that might be a better way to implement relationships actually. I would handle it, and not the users.
-                - Actually... I'm already doing this
-            3) I would like to connect nodes with a smooth beizer curve. I have never worked with them before.
-                Do you have any tips on how I can calculate control points?
-            4) What are some things I should keep in mind when designing a website for mobile devices?
-            5) 
-        -->
-    </section>
+    </div>
 </article>
 

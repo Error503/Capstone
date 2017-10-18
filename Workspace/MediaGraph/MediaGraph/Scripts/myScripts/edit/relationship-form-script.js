@@ -26,7 +26,10 @@ $(document).ready(function () {
     $('#relationship-chips').material_chip();
     $('#relatoinship-chips').find('input').attr('disabled', 'disabled');
     $('#relationship-chips').on('chip.add', function (e, chip) {
-        activeGroupArray[activeIndex].Roles.push(chip.tag);
+        chip.tag = chip.tag.trim().toLowerCase();
+        if (activeGroupArray[activeIndex].Roles.indexOf(chip.tag) === -1) {
+            activeGroupArray[activeIndex].Roles.push(chip.tag);
+        }
         document.forms[relationshipFormTarget]['Related' + activeGroup].value = JSON.stringify(activeGroupArray);
     })
     .on('chip.delete', function (e, chip) {

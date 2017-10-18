@@ -297,32 +297,6 @@ namespace MediaGraph.Controllers
                 }
             }
         }
-
-        /// <summary>
-        /// Creates a BasicNodeModel that contains the updated data.
-        /// </summary>
-        /// <param name="updated">The updated node</param>
-        /// <param name="existing">The existing node from the database</param>
-        /// <returns>The BasicNodeModel containing the updates</returns>
-        private BasicNodeModel GetNodeDelta(BasicNodeViewModel updated, BasicNodeViewModel existing)
-        {
-            if(updated.Id != existing.Id)
-            {
-                throw new Exception("Id mismatch in delta comparison");
-            }
-
-            BasicNodeModel model = new BasicNodeModel
-            {
-                Id = existing.Id,
-                ContentType = existing.ContentType,
-                CommonName = updated.CommonName,
-                OtherNames = updated.OtherNames,
-                ReleaseDate = updated.ReleaseDate,
-                DeathDate = updated.DeathDate,
-            };
-
-            return model;
-        }
         #endregion
     }
 }

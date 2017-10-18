@@ -18,11 +18,16 @@ namespace MediaGraph.Code
         private const string kDeleteNodeQuery = "MATCH (n {id: $id}) DETACH DELETE n";
         private const string kMatchNodeAndRelationshipsQuery = "MATCH (n {id: $id})-[r]-(e) RETURN DISTINCT n, r, e";
         private const string kMatchPathQuery = "MATCH p = ({id: $id})--() RETURN DISTINCT p";
-        private const string kUpdateNodeQuery = "MATCH (update:{0} {1}) SET update = $props ";
-        private const string kUpdateRelationshipQuery = "MATCH ({id: $id})-[r]-({id: $id2}) SET r.roles = $roles RETURN r";
-        private const string kCreateOrUpdateRelationshipQuery = "MATCH (n1 {id: $id1) OPTIONAL MATCH (n2 {id: $id2}) MERGE (n1)<-[r:Related]-(n2) ON MATCH SET r = $props ON CREATE SET r = $prop RETURN n1, r, n2";
+        //private const string kUpdateNodeQuery = "MATCH (update:{0} {1}) SET update = $props ";
+        //private const string kUpdateRelationshipQuery = "MATCH ({id: $id})-[r]-({id: $id2}) SET r.roles = $roles RETURN r";
+        //private const string kCreateOrUpdateRelationshipQuery = "MATCH (n1 {id: $id1) OPTIONAL MATCH (n2 {id: $id2}) MERGE (n1)<-[r:Related]-(n2) ON MATCH SET r = $props ON CREATE SET r = $prop RETURN n1, r, n2";
 
         private const string kCreateRelationshipStatement = "CREATE ({0})-[:Related{1} {2}]->({3}) ";
+
+        private const string kMatchNodeByNameQuery = "MATCH (n {commonName: $name}) RETURN n";
+        private const string kMatchPathsByNameQuery = "MATCH p = ({commonName: $name})--() RETURN p";
+
+        //private const string kMatchNodeByAnyName = "MATCH (n) WHERE n.commonName = $name OR $name IN n.otherNames RETURN n";
 
         private readonly IDriver driver;
 
@@ -105,9 +110,16 @@ namespace MediaGraph.Code
                     builder.AppendFormat("id:'{0}'", relModel.TargetId.ToString());
                 else
                     // We do not have the id - create a new node
-                    builder.AppendFormat("id:'{0}',commonName:'{1}'", Guid.NewGuid().ToString(), relModel.TargetName);
+                    builder.AppendFormat("commonName:'{1}'", relModel.TargetName);
                 // End the properties section
                 builder.Append("}) ");  
+
+                // If we merged based on the name,
+                if(relModel.TargetId == null || relModel.TargetId == Guid.Empty)
+                {
+                    // Append an ON CREATE statement to get the created node an id
+                    builder.AppendFormat("ON CREATE {0}.id = {1}", identifier, Guid.NewGuid().ToString());
+                }
 
                 // Append the creation statement for the relationship
                 string relProps = "{roles: " + JsonConvert.SerializeObject(relModel.Roles) + "}";
@@ -198,7 +210,26 @@ namespace MediaGraph.Code
                 result = session.ReadTransaction(action =>
                 {
                     IStatementResult statementResult = action.Run(kMatchNodeQuery, new Dictionary<string, object> { { "id", id.ToString() } });
-                    return statementResult.Count() > 0 ? statementResult.Single()[0].As<INode>() : null;
+                    return statementResult.FirstOrDefault()?[0].As<INode>();
+                });
+            }
+
+            return result != null ? BasicNodeModel.FromINode(result) : null;
+        }
+
+        public BasicNodeModel GetNode(string commonName)
+        {
+            if (commonName == null)
+                return null;
+
+            INode result = null;
+
+            using (ISession session = driver.Session())
+            {
+                result = session.ReadTransaction(action =>
+                {
+                    IStatementResult statementResult = action.Run(kMatchNodeByNameQuery, new Dictionary<string, object> { { "name", commonName } });
+                    return statementResult.FirstOrDefault()?[0].As<INode>();
                 });
             }
 
@@ -241,6 +272,28 @@ namespace MediaGraph.Code
                     // Run the query
                     IStatementResult result = action.Run(kMatchPathQuery, new { id = id.ToString() });
                     // Add each of the paths to return object
+                    foreach(IRecord record in result)
+                    {
+                        paths.Add(record[0].As<IPath>());
+                    }
+                });
+            }
+
+            return paths;
+        }
+
+        public List<IPath> GetPaths(string commonName)
+        {
+            List<IPath> paths = new List<IPath>();
+
+            using (ISession session = driver.Session())
+            {
+                // Create a transaction
+                session.ReadTransaction(action =>
+                {
+                    // Run the query
+                    IStatementResult result = action.Run(kMatchPathsByNameQuery, new { name = commonName });
+                    // Add each of the paths to the result
                     foreach(IRecord record in result)
                     {
                         paths.Add(record[0].As<IPath>());

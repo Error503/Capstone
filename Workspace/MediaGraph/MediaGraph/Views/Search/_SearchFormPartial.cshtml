@@ -1,9 +1,0 @@
-﻿@model MediaGraph.ViewModels.SearchViewModel
-
-@using (Html.BeginForm("Search", "Search", FormMethod.Post))
-{
-    <p>
-        I'm looking for a @Html.EnumDropDownListFor(x => Model.Label) named @Html.TextBoxFor(x => Model.Title) <button type="submit">Search!</button>
-    </p>
-    
-}

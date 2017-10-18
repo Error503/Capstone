@@ -1,67 +1,12 @@
-﻿#graph {
-    /*border: 2px solid #000;*/
-    min-height: 1000px;
-    max-width: 1000px;
-    min-height: 500px;
-    max-height: 500px;
+﻿.content-wrapper {
+    margin: auto 20px;
 }
-#svg-graph {
-    border: 1px solid black;
-    cursor: grab;
+.control-tab {
+    height: 50vh;
 }
-text tspan {
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    cursor: pointer;
-}
-/* Node Style */
-.node {
-    stroke-width: 0.5px;
-    stroke: #000;
-    fill: #fff;
-    cursor: pointer;
-}
-.node-media {
-    fill: #ababcc;
-}
-.node-game {
-    fill: #6bde4c;
-}
-.node-video {
-    fill: #f8ff7a;
-}
-.node-audio {
-
-}
-.node-print {
-
-}
-.node-person {
-    fill: #bc89d1;
-}
-.node-company {
-
-}
-/* Relationship Style */
-.relationship {
-    marker-end: none;
-    stroke-width: 1.5px;
-    stroke: #000;
-}
-.relationship:hover {
-    marker-end: url(#end-mark);
-}
-.relationship-cast {
-    stroke: #d63838;
-}
-.relationship-multiple {
-    stroke: #ec5bdf;
-}
-.relationship-adaptation {
-    stroke: #ed850b;
-}
-.relationship-sequel {
-    stroke: #fe2e2e;
+#graph {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #808080;
+    height: 50vh
 }

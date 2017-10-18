@@ -3,9 +3,11 @@
     min-height: 100vh;
     flex-direction: column;
 }
-
 main {
     flex: 1 0 auto;
+}
+input[type=search] {
+    height: 64px !important;
 }
 .active-item {
     font-size: 1.5em;

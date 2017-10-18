@@ -38,22 +38,22 @@ namespace MediaGraph.Code
                 {
                     Genres = ParseFromJson<IEnumerable<string>>(request.Form["Genres"]),
                     MediaType = (NodeMediaType)Enum.Parse(typeof(NodeMediaType), request.Form["MediaType"]),
-                    FranchiseName = request.Form["FranchiseName"]
+                    FranchiseName = request.Form["FranchiseName"].Trim().ToLower()
                 };
             }
             else if (contentType == NodeContentType.Person)
             {
                 result = new PersonNodeViewModel
                 {
-                    GivenName = request.Form["GivenName"],
-                    FamilyName = request.Form["FamilyName"],
+                    GivenName = request.Form["GivenName"].Trim().ToLower(),
+                    FamilyName = request.Form["FamilyName"].Trim().ToLower(),
                     Status = (PersonStatus)Enum.Parse(typeof(PersonStatus), request.Form["Status"])
                 };
             }
 
             result.Id = Guid.Parse(request.Form["Id"]);
             result.ContentType = contentType;
-            result.CommonName = request.Form["CommonName"];
+            result.CommonName = request.Form["CommonName"].Trim().ToLower();
             result.OtherNames = ParseFromJson<IEnumerable<string>>(request.Form["OtherNames"]);
             result.ReleaseDate = releaseDate;
             result.DeathDate = deathDate;
