@@ -245,10 +245,6 @@ namespace MediaGraph.Controllers
         [HttpPost]
         public ActionResult ViewRequest(RequestReviewViewModel request)
         {
-            if(!ModelState.IsValid)
-            {
-                return Json(ModelState.ToList());
-            }
             // TODO: Editing that results in an invalid node
             ActionResult result = View("Error");
             if (request != null)
@@ -259,15 +255,20 @@ namespace MediaGraph.Controllers
                 using (ApplicationDbContext context = ApplicationDbContext.Create())
                 {
                     fromDatabase = context.Requests.Single(x => x.Id == request.RequestId);
-                    shouldCommitChanges = !fromDatabase.Reviewed && request.Approved;
-                    // Update the information in the database
-                    fromDatabase.Reviewed = true;
-                    fromDatabase.ReviewedDate = DateTime.Now;
-                    fromDatabase.Approved = request.Approved;
-                    if (request.Approved)
-                        fromDatabase.ApprovalDate = DateTime.Now;
-                    // Save the changes
-                    context.SaveChanges();
+                    if (!fromDatabase.Reviewed)
+                    {
+                        // If the request has been approved then changes should be committed
+                        shouldCommitChanges = request.Approved; 
+                        // Update the information in the database
+                        fromDatabase.Reviewed = true;
+                        fromDatabase.ReviewedDate = DateTime.Now;
+                        fromDatabase.Approved = request.Approved;
+                        fromDatabase.Notes = request.Notes;
+                        if (request.Approved)
+                            fromDatabase.ApprovalDate = DateTime.Now;
+                        // Save the changes
+                        context.SaveChanges();
+                    }
                 }
 
                 // If the request has not been reviewed,

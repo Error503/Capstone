@@ -36,7 +36,7 @@ namespace MediaGraph.ViewModels.AdminTools
 
     public class DatabaseRequestViewModel
     {
-        public Guid Id { get; set; }
+        public Guid RequestId { get; set; }
         public DatabaseRequestType RequestType { get; set; }
         public NodeContentType NodeDataType { get; set; }
         public BasicNodeViewModel NodeData { get; set; }
@@ -67,7 +67,7 @@ namespace MediaGraph.ViewModels.AdminTools
             }
             return new DatabaseRequestViewModel
             {
-                Id = model.Id,
+                RequestId = model.Id,
                 RequestType = model.RequestType,
                 SubmissionDate = model.SubmissionDate,
                 NodeData = model.ParseModel(),

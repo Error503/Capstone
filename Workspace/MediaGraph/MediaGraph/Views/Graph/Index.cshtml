@@ -29,58 +29,46 @@
         </section>
     </article>
     <article class="row">
-        <section class="col s12">
-            <ul class="tabs tabs-fixed-width">
-                <li class="tab"><a href="#tab1">Search and Data</a></li>
-                <li class="tab"><a href="#tab2">Display Settings</a></li>
-            </ul>
-        </section>
-        <div id="tab1" class="col s12 control-tab">
-            <div class="col s12 m6">
-                @using (Ajax.BeginForm("GetNetworkInformation", "Graph", null, options, new Dictionary<string, object> { { "id", "search-form" }, { "autocomplete", "off" } }))
-                {
-                    <input type="hidden" name="targetId" />
-                    <div class="valign-wrapper">
-                        <div class="col s9 input-field">
-                            <input type="text" name="searchText" />
-                            <label for="searchName">Search</label>
-                        </div>
-                        <div class="col s3">
-                            <button id="searchButton" type="button" class="waves-effect waves-light btn"><i class="material-icons">search</i></button>
-                        </div>
+        <section class="col s12 m6">
+            @using (Ajax.BeginForm("GetNetworkInformation", "Graph", null, options, new Dictionary<string, object> { { "id", "search-form" }, { "autocomplete", "off" } }))
+            {
+                <input type="hidden" name="targetId" />
+                <div class="valign-wrapper">
+                    <div class="col s9 input-field">
+                        <input type="text" name="searchText" id="autocomplete-field" class="autocomplete" />
+                        <label for="searchName">Search</label>
                     </div>
-                }
-            </div>
-            <div class="col s12 m6">
-                <table>
-                    <tbody>
-                        <tr><td>Name:</td><td id="node-name-value"></td></tr>
-                        <tr><td id="release-date-label">Release Date:</td><td id="release-date-value"></td></tr>
-                        <tr><td id="death-date-label">Death Date:</td><td id="death-date-value"></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div id="tab2" class="col s12 control-tab">
-            <form id="visualization-options">
-                <div class="col s12 m6">
-                    <label for="type-wrapper">Visualization Type</label>
-                    <p id="type-wrapper">
-                        <input type="radio" name="visualizationType" value="network" id="option1" class="with-gap" checked="checked" />
-                        <label for="option1">Network</label>
-                        <input type="radio" name="visualizationType" value="timeline" id="option2" class="with-gap" />
-                        <label for="option2">Timeline</label>
-                    </p>
+                    <div class="col s3">
+                        <button id="searchButton" type="button" class="waves-effect waves-light btn"><i class="material-icons">search</i></button>
+                    </div>
                 </div>
+            }
+        </section>
+        <section class="col s12 m6">
+            <form id="visualization-options">
+                <label for="type-wrapper">Visualization Type</label>
+                <p id="type-wrapper">
+                    <input type="radio" name="visualizationType" value="network" id="option1" class="with-gap" checked="checked" />
+                    <label for="option1">Network</label>
+                    <input type="radio" name="visualizationType" value="timeline" id="option2" class="with-gap" />
+                    <label for="option2">Timeline</label>
+                </p>
             </form>
-        </div>
+        </section>
     </article>
 </div>
 
-<div id="context-popup" class="inactive">
+<div id="context-popup" class="popup inactive">
     <div class="collection">
         <a id="delete-context-link" class="collection-item pointer-item">Flag for deletion</a>
         <a id="edit-context-link" href="/edit/index/" class="collection-item">Edit this node</a>
     </div>
+</div>
+<div id="info-popup" class="popup inactive z-depth-1">
+    <table>
+        <tbody id="info-table">
+            <tr><td></td></tr>
+        </tbody>
+    </table>
 </div>
 

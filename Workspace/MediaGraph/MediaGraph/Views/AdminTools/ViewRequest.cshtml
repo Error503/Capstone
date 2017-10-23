@@ -4,6 +4,7 @@
 @{
     ViewBag.Title = "Review Request";
     Layout = "~/Views/Shared/_ContainerLayout.cshtml";
+    string value = Model.RequestId.ToString();
 }
 
 <article class="row">
@@ -23,11 +24,16 @@
 <form action="/admintools/viewrequest" method="post" id="nodeForm">
     <article class="row">
         <section class="col s12">
-            <input type="hidden" name="RequestId" value="@Model.Id.ToString()"/>
+            <input type="hidden" name="RequestId" value="@Model.RequestId" />
             <input type="hidden" name="RequestType" value="@Html.ValueFor(x => x.RequestType)" />
             <input type="hidden" name="NodeDataType" value="@Html.ValueFor(x => x.NodeDataType)" />
             <input type="hidden" name="Approved" />
-            @Html.Partial("_BasicInformationPartial", Model.NodeData)
+
+            <input type="hidden" name="Id" value="@Model.NodeData.Id" />
+            <input type="hidden" name="RelatedCompanies" value="@Model.NodeData.GetRelatedCompaniesJson()" />
+            <input type="hidden" name="RelatedMedia" value="@Model.NodeData.GetRelatedMediaJson()" />
+            <input type="hidden" name="RelatedPeople" value="@Model.NodeData.GetRelatedPeopleJson()" />
+            <input type="hidden" name="OtherNames" value="@Model.NodeData.GetOtherNamesJson()" />
             @{
                 if (Model.NodeDataType == NodeContentType.Company)
                 {

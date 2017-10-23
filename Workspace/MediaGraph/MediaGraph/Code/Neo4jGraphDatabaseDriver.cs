@@ -17,9 +17,6 @@ namespace MediaGraph.Code
         private const string kDeleteNodeQuery = "MATCH (n {id: $id}) DETACH DELETE n";
         private const string kMatchNodeAndRelationshipsQuery = "MATCH (n {id: $id})-[r]-(e) RETURN DISTINCT n, r, e";
         private const string kMatchPathQuery = "MATCH p = ({id: $id})--() RETURN DISTINCT p";
-        //private const string kUpdateNodeQuery = "MATCH (update:{0} {1}) SET update = $props ";
-        //private const string kUpdateRelationshipQuery = "MATCH ({id: $id})-[r]-({id: $id2}) SET r.roles = $roles RETURN r";
-        //private const string kCreateOrUpdateRelationshipQuery = "MATCH (n1 {id: $id1) OPTIONAL MATCH (n2 {id: $id2}) MERGE (n1)<-[r:Related]-(n2) ON MATCH SET r = $props ON CREATE SET r = $prop RETURN n1, r, n2";
 
         private const string kCreateRelationshipStatement = "CREATE ({0})-[:Related{1} {2}]->({3}) ";
 
@@ -82,6 +79,7 @@ namespace MediaGraph.Code
 
             // Append the node creation statement
             builder.AppendFormat(kNodeCreationStatement, model.GetNodeLabels());
+            builder.AppendLine();
             // Append the relationship statements
             BuildRelationshipMergeStatement(builder, model.RelatedCompanies, NodeContentType.Company, model.ContentType);
             BuildRelationshipMergeStatement(builder, model.RelatedMedia, NodeContentType.Media, model.ContentType);
@@ -109,15 +107,16 @@ namespace MediaGraph.Code
                     builder.AppendFormat("id:'{0}'", relModel.TargetId.ToString());
                 else
                     // We do not have the id - create a new node
-                    builder.AppendFormat("commonName:'{1}'", relModel.TargetName);
+                    builder.AppendFormat("commonName:'{0}'", relModel.TargetName);
                 // End the properties section
-                builder.Append("}) ");  
+                builder.Append("}) ");
+                builder.AppendLine();
 
                 // If we merged based on the name,
                 if(relModel.TargetId == null || relModel.TargetId == Guid.Empty)
                 {
                     // Append an ON CREATE statement to get the created node an id
-                    builder.AppendFormat("ON CREATE {0}.id = {1}", identifier, Guid.NewGuid().ToString());
+                    builder.AppendFormat("ON CREATE SET {0}.id = '{1}' ", identifier, Guid.NewGuid().ToString());
                 }
 
                 // Append the creation statement for the relationship
@@ -128,56 +127,45 @@ namespace MediaGraph.Code
                 else
                     // We are a non-media node or a media node relating to media: Relationship goes us to them
                     builder.AppendFormat(kCreateRelationshipStatement, "n", label, relProps, identifier);
-
+                builder.AppendLine();
                 // Incremenet targetIndex
                 targetIndex++;
             }
         }
 
+        #region Update Methods
         public bool UpdateNode(BasicNodeModel model)
         {
-            bool result = false;
-            if(DeleteNode(model.Id))
+            bool success = false;
+            using (ISession session = driver.Session())
             {
-                result = AddNode(model);
-            }
-            return result;
-        }
-
-        private int UpdateRelationships(ITransaction transaction, IEnumerable<RelationshipModel> updated)
-        {
-            int relsUpdated = 0;
-            foreach (RelationshipModel updateRel in updated)
-            {
-                IStatementResult result = transaction.Run("MATCH (update {id: $id1})-[r]-({id: $id2}) SET r.roles = $roles",
-                    new Dictionary<string, object>
+                success = session.ReadTransaction(action =>
+                {
+                    IStatementResult result = action.Run(kMatchNodeQuery, new Dictionary<string, object> { { "id", model.Id.ToString() } });
+                    // We found a node to delete
+                    if(result.FirstOrDefault() != null)
                     {
-                                { "id1", updateRel.SourceId.ToString() },
-                                { "id2", updateRel.TargetId.ToString() },
-                                { "roles", updateRel.Roles }
-                    });
-                relsUpdated += result.Summary.Counters.RelationshipsCreated > 0 || result.Summary.Counters.PropertiesSet > 0 ? 1 : 0;
+                        // Delete the node
+                        Delete(action, model.Id);
+                    }
+                    // Update the node
+                    return Update(action, model);
+                });
             }
 
-            return relsUpdated;
+            return success;
         }
 
-        private int DeleteRelationships(ITransaction transaction, IEnumerable<RelationshipModel> deleted)
+        private bool Delete(ITransaction transaction, Guid id)
         {
-            int relsDeleted = 0;
-            foreach (RelationshipModel deleteRel in deleted)
-            {
-                IStatementResult result = transaction.Run("MATCH ({id: $id1})-[r]-({id: $id2}) DELETE r",
-                        new Dictionary<string, object>
-                        {
-                                    { "id1", deleteRel.SourceId.ToString() },
-                                    { "id2", deleteRel.TargetId.ToString() }
-                        });
-                relsDeleted += result.Summary.Counters.RelationshipsDeleted;
-            }
-
-            return relsDeleted;
+            return transaction.Run(kDeleteNodeQuery, new Dictionary<string, object> { { "id", id.ToString() } }).Summary.Counters.NodesDeleted > 0;
         }
+
+        private bool Update(ITransaction transaction, BasicNodeModel node)
+        {
+            return transaction.Run(BuildNodeCreationQuery(node), new { props = node.GetPropertyMap() }).Summary.Counters.NodesCreated > 0;
+        }
+        #endregion
 
 
         /// <summary>
@@ -194,7 +182,7 @@ namespace MediaGraph.Code
                 // Create a transaction
                 success = session.WriteTransaction(action =>
                 {
-                    IStatementResult result = action.Run(kDeleteNodeQuery, new { id = id.ToString() });
+                    IStatementResult result = action.Run(kDeleteNodeQuery, new Dictionary<string, object> { { "id", id.ToString() } });
                     return result.Summary.Counters.NodesDeleted > 0;
                 });
             }
@@ -319,16 +307,70 @@ namespace MediaGraph.Code
                 // Create a transaction
                 session.ReadTransaction(action =>
                 {
-                    IStatementResult result = action.Run("MATCH (n) WHERE n.releaseDate >= $lowerBound AND n.releaseDate <= $upperBound", 
+                    IStatementResult result = action.Run("MATCH (n) WHERE n.releaseDate >= $lowerBound AND n.releaseDate <= $upperBound RETURN n",
                         new Dictionary<string, object>
                         {
                             { "lowerBound", DateValueConverter.ToLongValue(start) },
                             { "upperBound", DateValueConverter.ToLongValue(end) }
                         });
+                    // Add the nodes 
+                    foreach(IRecord record in result)
+                    {
+                        nodeModels.Add(BasicNodeModel.FromINode(record[0].As<INode>()));
+                    }
                 });
             }
 
             return nodeModels;
+        }
+
+        public IRecord GetRelationship(Guid source, Guid target)
+        {
+            IRecord relationship = null;
+
+            using (ISession session = driver.Session())
+            {
+                // Create a transaction
+                relationship = session.ReadTransaction(action =>
+                {
+                    IStatementResult result = action.Run("MATCH (s {id: $sourceId})-[r]-(e {id: $targetId}) RETURN s.commonName, r.roles, e.commonName",
+                        new Dictionary<string, object>
+                        {
+                            { "sourceId", source.ToString() },
+                            { "targetId", target.ToString() }
+                        });
+                    return result.FirstOrDefault();
+                });
+            }
+
+            return relationship;
+        }
+
+        /// <summary>
+        /// A simple implementation of autocomplete functionality using Neo4j itself.
+        /// This simple implementation will not check for matches in the 'otherNames' property
+        /// and might be very inefficient with large data sets.
+        /// </summary>
+        /// <param name="name">The name of the node for which to search</param>
+        /// <returns>A collection of key value pairs that represent the nodes that match the given string</returns>
+        public Dictionary<string, string> SearchForNodes(string name)
+        {
+            Dictionary<string, string> results = new Dictionary<string, string>();
+            using (ISession session = driver.Session())
+            {
+                session.ReadTransaction(action =>
+                {
+                    // Run the query
+                    IStatementResult statementResult = action.Run("MATCH (n) WHERE n.commonName STARTS WITH $text RETURN n.commonName, n.id", new { text = name });
+                    // Populate the dictionary
+                    foreach(IRecord record in statementResult)
+                    {
+                        results.Add(record[0].As<string>(), record[1].As<string>());
+                    }
+                });
+            }
+
+            return results;
         }
     }
 }

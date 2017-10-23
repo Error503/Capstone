@@ -13,7 +13,7 @@ function grabRelationshipInformation() {
         relatedCompanies = JSON.parse(document.forms[relationshipFormTarget]['RelatedCompanies'].value);
         relatedMedia = JSON.parse(document.forms[relationshipFormTarget]['RelatedMedia'].value);
         relatedPeople = JSON.parse(document.forms[relationshipFormTarget]['RelatedPeople'].value);
-        activeGRoupArray = relatedCompanies;
+        activeGroupArray = relatedCompanies;
         // Populate the list
         populateRelationshipList();
     }
@@ -114,7 +114,7 @@ function bindListEvents() {
     $('.remove-relationship-button').on('click', function (event) {
         if (allowEditing) {
             // Remove the item
-            activeGroupArray.splice(Number.parseInt($(this).attr('rel-index')), 1);
+            activeGroupArray.splice(Number.parseInt($(this).parent().attr('rel-index')), 1);
             // Update the input field
             document.forms[relationshipFormTarget]['Related' + activeGroup].value = JSON.stringify(activeGroupArray);
             // Ignore the next selection (effectively saying select -1)
@@ -137,6 +137,7 @@ function deactivateRelationshipInputs() {
 function disableRelationshipInputs() {
     // Update relationship information
     setRelationshipData();
+    $('#relationship-name-entry').attr('disabled', 'disabled');
     $('#relationship-chips').addClass('disabled');
     $('#relationship-chips').find('input').attr('disabled', 'disabled');
     $('#relationship-chips > .chip > i').hide();

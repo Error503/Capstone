@@ -30,4 +30,11 @@ namespace MediaGraph.ViewModels.Graph
         public string RelationType { get; set; }
         public IEnumerable<string> Roles { get; set; }
     }
+
+    public class GraphEdgeViewModel
+    {
+        public string SourceName { get; set; }
+        public string TargetName { get; set; }
+        public IEnumerable<string> Roles { get; set; }
+    }
 }

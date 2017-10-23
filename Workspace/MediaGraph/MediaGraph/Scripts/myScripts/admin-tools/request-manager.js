@@ -36,9 +36,15 @@ function updateDisplay(list) {
         $('#request-list').append('<div class="collection-item center-align">No results</div>')
     }
     function getElementBadge(ele) {
-        var str = '<span class="new badge"></span>';
+        var str;
         if (ele.Reviewed) {
-            $(str).addClass(ele.Approved ? 'blue' : 'red').attr('data-badge-caption', ele.Approved ? 'approved' : 'rejected');
+            if (ele.Approved) {
+                str = '<span class="new badge green" data-badge-caption="approved"></span>';
+            } else {
+                str = '<span class="new badge red" data-badge-caption="rejected"></span>';
+            }
+        } else {
+            str = '<span class="new badge"></span>';
         }
 
         return str;

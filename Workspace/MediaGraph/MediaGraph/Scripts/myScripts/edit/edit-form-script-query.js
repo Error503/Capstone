@@ -160,8 +160,8 @@ function validate() {
     var form = document.forms['nodeForm'];
     var valid = true;
 
-    if (form['ContentType'].value !== PERSON_TYPE) {
-        if (form['CommonName'].value === null || form['CommonName'] === '') {
+    if (form['ContentType'].value != 'Person') {
+        if (form['CommonName'].value === null || form['CommonName'].value === '') {
             valid = false;
         }
     } else {

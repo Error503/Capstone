@@ -91,6 +91,30 @@ namespace MediaGraph.Models.Component
                         GivenName = node.Properties.ContainsKey("givenName") ? node.Properties["givenName"].As<string>() : null,
                         Status = node.Properties.ContainsKey("status") ? (PersonStatus)Enum.Parse(typeof(PersonStatus), node.Properties["status"].As<string>()) : 0
                     };
+
+                    // If the family and given name was not populated and there is a common name,
+                    if(((PersonNodeModel)result).FamilyName == null && ((PersonNodeModel)result).GivenName == null &&
+                        node.Properties.ContainsKey("commonName"))
+                    {
+                        // Parse the names out of the common name
+                        string[] nameParts = node.Properties["commonName"].As<string>().Split(' ');
+                        string givenName = "";
+                        string familyName = "";
+                        for(int i = 0; i < nameParts.Length; i++)
+                        {
+                            if(i != nameParts.Length - 1)
+                            {
+                                givenName += $"{nameParts[i]} ";
+                            }
+                            else
+                            {
+                                familyName = nameParts[i];
+                            }
+                        }
+
+                        ((PersonNodeModel)result).GivenName = givenName.Trim();
+                        ((PersonNodeModel)result).FamilyName = familyName;
+                    }
                 }
                 // Basic properties
                 result.Id = Guid.Parse(node.Properties["id"].As<string>());

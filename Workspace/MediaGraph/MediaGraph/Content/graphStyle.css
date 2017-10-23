@@ -13,18 +13,31 @@
     border: 1px solid #808080;
 }
 .timeline-display {
-
 }
-#context-popup {
-    width: 150px;
+.popup {
+    width: auto;
     height: auto;
     z-index: 10000;
     position: absolute;
 }
-#context-popup.inactive {
-    display: none;
+.popup.inactive {
+    display:none;
 }
-
-#context-popup.active {
-    display: flex;
+.popup.active {
+    display:flex;
+}
+#info-popup {
+    background: white;
+}
+#info-table {
+    font-size: 12px;
+}
+.vis-item.vis-dot.type-1 {
+    border-color: #63CE4B;
+}
+.vis-item.vis-dot.type-2 {
+    border-color: #CD7ED1;
+}
+.vis-item.vis-dot.type-3 {
+    border-color: #5BC5D9;
 }
