@@ -1,23 +1,8 @@
 ﻿@{
     ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_ContainerLayout.cshtml";
 }
 
 <article class="row">
-    <section class="col s12 m8">
-        <h4>Main Content</h4>
-    </section>
-    @if(User.IsInRole("admin") || User.IsInRole("staff"))
-    {
-        <section class="col s12 m4 card-panel teal lighten-2">
-            <h4 class="white-text center">Admin Tools</h4>
-            <ul>
-                <li>@Html.ActionLink("Manage Edit Requests", "DatabaseRequests", "AdminTools", null, new { @class = "white-text" })</li>
-                <li>@Html.ActionLink("Upload Node File", "Upload", "Edit", null, new { @class = "white-text" })</li>
-                @if (User.IsInRole("staff"))
-                {
-                    <li>@Html.ActionLink("Manage Users", "UserManagement", "AdminTools", null, new { @class = "white-text" })</li>
-                }
-            </ul>
-        </section>
-    }
+    <h4>Content</h4>
 </article>

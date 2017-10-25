@@ -1,0 +1,11 @@
+﻿@model MediaGraph.ViewModels.Edit.MediaNodeViewModel
+
+<input type="hidden" name="Genres" value="@Model.GetGenresJson()" />
+<div class="col s12 input-field">
+    @Html.LabelFor(x => x.FranchiseName)
+    @Html.TextBoxFor(x => x.FranchiseName)
+</div>
+<div class="col s12 input-field">
+    @Html.LabelFor(x => x.Genres)
+    <div class="chips" id="genre-chips"></div>
+</div>

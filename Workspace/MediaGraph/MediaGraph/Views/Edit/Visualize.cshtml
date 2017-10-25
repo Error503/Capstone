@@ -1,0 +1,67 @@
+﻿@using MediaGraph.Models.Component
+@using MediaGraph.ViewModels.Edit
+@model BasicNodeViewModel
+@section css {
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/graphStyle.css" />
+}
+@section headScripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+}
+@section scripts {
+    <script src="~/Scripts/myScripts/edit/visual-edit-form.js"></script>
+}
+
+<article class="row visualization-wrapper">
+    <section class="col s12 l6">
+        <div id="network-graph" class="visualization full network-display"></div>
+    </section>
+    <section class="col s12 l6">
+        <div id="source-node-content" class="row">
+            <h5 class="left-align">Source Information</h5>
+            @using (Html.BeginForm("Vizualize", "Edit", null, FormMethod.Post, new Dictionary<string, object> { { "id", "information-form" }, { "autocomplete", "off" } }))
+            {
+                <div class="row">
+                    @Html.Partial("_VisualBasicInformationPartial", Model)
+                </div>
+                <div id="content-specific-data" class="row">
+                    @if (Model.ContentType == NodeContentType.Media)
+                    {
+                        @Html.Partial("_VisualMediaInformationPartial", (MediaNodeViewModel)Model)
+                    }
+                    else if (Model.ContentType == NodeContentType.Person)
+                    {
+                        @Html.Partial("_VisualPersonInformationPartial", (MediaNodeViewModel)Model)
+                    }
+                </div>
+            }
+        </div>
+        <div id="related-node-content" class="row" style="display:none;">
+            <h5 class="left-align">Related Information</h5>
+            <div class="col s12 m6 input-field">
+                <label for="targetType" class="active">Target Type</label>
+                <select id="targetType">
+                    <option value="0" disabled selected>Target Type</option>
+                    <option value="1">Company</option>
+                    <option value="2">Media</option>
+                    <option value="3">Person</option>
+                </select>
+            </div>
+            <div class="col s12 m6 input-field">
+                <label for="targetName">Target Name</label>
+                <input type="text" class="autocomplete" />
+            </div>
+            <div class="col s12 input-field">
+                <label for="relationship-chips">Relation</label>
+                <div class="chips" id="relationship-chips"></div>
+            </div>
+        </div>
+    </section>
+</article>
+<article class="row">
+    <section class="col offset-l6 l6">
+        <div class="center">
+            <button id="submit-button" type="button" class="waves-effect waves-light btn">Submit <i class="material-icons right">send</i></button>
+        </div>
+    </section>
+</article>

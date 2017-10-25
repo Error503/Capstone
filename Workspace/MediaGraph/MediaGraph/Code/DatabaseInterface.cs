@@ -1,4 +1,4 @@
-﻿using MediaGraph.ViewModels.Edit;
+﻿using MediaGraph.Models.Component;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,8 @@ using System.Web;
 namespace MediaGraph.Code
 {
     /// <summary>
-    /// Defines the interface used to interact with the various parses of the database
+    /// Defines the interface used to interact with the database system
+    /// as a whole.
     /// </summary>
     public interface DatabaseInterface
     {
@@ -17,28 +18,28 @@ namespace MediaGraph.Code
         /// </summary>
         /// <param name="node">The node description to add to the database system</param>
         /// <returns>Returns true if the node was inserted into the database system successfully</returns>
-        bool InsertNode(BasicNodeViewModel node);
-
-        /// <summary>
-        /// Inserts the given relationship into the database system. This method controls
-        /// inserting the relationship into the applicable databases.
-        /// </summary>
-        /// <param name="rel">The relationship to insert into the database</param>
-        /// <returns>Returns true if the relationship was added to the database system successfully</returns>
-        //bool InsertRelationship(RelationshipDescription rel);
+        bool AddNode(BasicNodeModel node);
 
         /// <summary>
         /// Removes the node with the specified GUID from the database system.
         /// </summary>
         /// <param name="id">The GUID of the node to remove from the database system</param>
         /// <returns></returns>
-        bool RemoveNodeFromSystem(Guid id);
+        bool DeleteNode(Guid id);
 
         /// <summary>
-        /// Removes the specified relationship from the database system.
+        /// Updates the given node's information within the database system.
         /// </summary>
-        /// <param name="rel">The description of the relationship to rmeove</param>
-        /// <returns>Returns true if the relationship was removed successfully</returns>
-        //bool RemoveRelationshipFromSystem(RelationshipDescription rel);
+        /// <param name="node">The node to update</param>
+        /// <returns>Returns true if the node's information was updated successfully</returns>
+        bool UpdateNode(BasicNodeModel node);
+
+        /// <summary>
+        /// Searches for nodes in the database that match the given text.
+        /// </summary>
+        /// <param name="text">The text for which to search</param>
+        /// <returns>A dictionary of key-value pairs representing the nodes that match
+        /// the given text</returns>
+        Dictionary<string, string> AutocompleteSearch(string text);
     }
 }

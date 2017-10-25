@@ -17,7 +17,6 @@ namespace MediaGraph
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
@@ -26,9 +25,6 @@ namespace MediaGraph
             // Add custom model binders
             ModelBinders.Binders.Add(typeof(BasicNodeViewModel), new NodeModelBinder());
             ModelBinders.Binders.Add(typeof(RequestReviewViewModel), new RequestReviewModelBinder());
-            //CustomDateBinder binder = new CustomDateBinder();
-            //ModelBinders.Binders.Add(typeof(DateTime), binder);
-            //ModelBinders.Binders.Add(typeof(DateTime?), binder);
         }
     }
 }

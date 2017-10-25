@@ -1,11 +1,5 @@
 ﻿@{
     ViewBag.Title = "Visualization";
-    AjaxOptions options = new AjaxOptions
-    {
-        HttpMethod = "get",
-        OnSuccess = "searchSuccessful",
-        OnFailure = "searchFailed"
-    };
 }
 
 @section css {
@@ -30,21 +24,21 @@
     </article>
     <article class="row">
         <section class="col s12 m6">
-            @using (Ajax.BeginForm("GetNetworkInformation", "Graph", null, options, new Dictionary<string, object> { { "id", "search-form" }, { "autocomplete", "off" } }))
-            {
-                <input type="hidden" name="targetId" />
+            <form id="search-form" autocomplete="off">
+                <input id="id-field" type="hidden" name="id" />
                 <div class="valign-wrapper">
                     <div class="col s9 input-field">
                         <input type="text" name="searchText" id="autocomplete-field" class="autocomplete" />
-                        <label for="searchName">Search</label>
+                        <label for="searchText">Search</label>
                     </div>
                     <div class="col s3">
-                        <button id="searchButton" type="button" class="waves-effect waves-light btn"><i class="material-icons">search</i></button>
+                        <button id="search-button" type="submit" class="waves-effect waves-light btn"><i class="material-icons">search</i></button>
                     </div>
                 </div>
-            }
+            </form>
         </section>
         <section class="col s12 m6">
+            <h5 class="center-align">Display Options</h5>
             <form id="visualization-options">
                 <label for="type-wrapper">Visualization Type</label>
                 <p id="type-wrapper">
@@ -53,21 +47,26 @@
                     <input type="radio" name="visualizationType" value="timeline" id="option2" class="with-gap" />
                     <label for="option2">Timeline</label>
                 </p>
+                <div id="network-options">
+                </div>
+                <div id="timeline-options" style="display:none;">
+
+                </div>
             </form>
         </section>
     </article>
 </div>
 
 <div id="context-popup" class="popup inactive">
-    <div class="collection">
-        <a id="delete-context-link" class="collection-item pointer-item">Flag for deletion</a>
+    <div id="context-items" class="collection">
+        <a id="cluster-link" class="collection-item pointer-item">Cluster Connections</a>
         <a id="edit-context-link" href="/edit/index/" class="collection-item">Edit this node</a>
+        <a id="delete-context-link" class="collection-item pointer-item">Flag for deletion</a>
     </div>
 </div>
 <div id="info-popup" class="popup inactive z-depth-1">
     <table>
         <tbody id="info-table">
-            <tr><td></td></tr>
         </tbody>
     </table>
 </div>

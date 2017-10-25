@@ -13,10 +13,6 @@ using System.Web.Mvc;
 
 namespace MediaGraph.Controllers
 {
-    /// <summary>
-    /// All action methods in this controller should return
-    /// JSON string and be handled via Ajax.
-    /// </summary>
     public class GraphController : Controller
     {
         [HttpGet]
@@ -26,17 +22,24 @@ namespace MediaGraph.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetNetworkInformation(string searchText, Guid? id)
+        public ActionResult NetworkData(Guid? id, string text)
         {
-            GraphDataViewModel data = GetPaths(searchText, id);
+            GraphDataViewModel data = GetPaths(id, text);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
-        public ActionResult GetTimelineInformation(DateTime start, DateTime end)
+        public ActionResult TimelineData(Guid? id, string texts)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        public ActionResult TimelineDataRange(DateTime start, DateTime end)
         {
             return Json(GetTimelineElements(start, end), JsonRequestBehavior.AllowGet);
         }
+
 
         [HttpGet]
         public ActionResult GetNodeInformation(Guid id)
@@ -78,23 +81,8 @@ namespace MediaGraph.Controllers
             return Json(viewModel, JsonRequestBehavior.AllowGet);
         }
 
-        // TODO: This method should be moved out into a separate controller
-        [HttpGet]
-        public ActionResult SearchForNodes(string text)
-        {
-            List<Tuple<string, string>> result = new List<Tuple<string, string>>();
-
-            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
-            {
-                Dictionary<string, string> matches = driver.SearchForNodes(text);
-                result = matches.Select(x => new Tuple<string, string>(x.Key, x.Value)).ToList();
-            }
-
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
-
         #region Network Display Helper Methods
-        private GraphDataViewModel GetPaths(string searchText, Guid? id)
+        private GraphDataViewModel GetPaths(Guid? id, string searchText)
         {
             GraphDataViewModel result = new GraphDataViewModel();
             // Get the paths from the database

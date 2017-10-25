@@ -76,7 +76,7 @@
     function createNodeFor(data) {
         return {
             id: data.Id,
-            content: capitalizeLabel(data.CommonName),
+            content: createLabel(data.CommonName),
             start: parseLongDateValue(data.ReleaseDate),
             type: 'point',
             className: 'type-' + data.DataType
@@ -98,7 +98,7 @@
     function getTimelineInformation(start, end) {
         $.ajax({
             method: 'get',
-            url: '/graph/gettimelineinformation',
+            url: '/graph/timelinedatarange',
             data: { start: start, end: end },
             success: function (response) {
                 clearData(); // Clear the display

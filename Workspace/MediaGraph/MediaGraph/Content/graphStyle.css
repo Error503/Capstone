@@ -1,13 +1,13 @@
 ﻿.visualization-wrapper {
     margin: 10px 20px;
 }
-.control-tab {
-    height: 50vh;
-}
 .visualization {
     margin-top: 10px;
     margin-bottom: 10px;
-    height: 50vh
+    height: 50vh;
+}
+.visualization.full {
+    height: 59vh;
 }
 .network-display {
     border: 1px solid #808080;

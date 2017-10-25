@@ -346,6 +346,7 @@ namespace MediaGraph.Code
             return relationship;
         }
 
+        #region Simple Autocomplete Functionality
         /// <summary>
         /// A simple implementation of autocomplete functionality using Neo4j itself.
         /// This simple implementation will not check for matches in the 'otherNames' property
@@ -372,5 +373,34 @@ namespace MediaGraph.Code
 
             return results;
         }
+
+        /// <summary>
+        /// Searches for nodes of a specific type whose name starts with the given string
+        /// </summary>
+        /// <param name="contentType">The content type of the nodes to search</param>
+        /// <param name="name">The name being searched</param>
+        /// <returns>A collection of key-value pairs representing the matching nodes</returns>
+        public Dictionary<string, string> SearchForNodes(NodeContentType contentType, string name)
+        {
+            Dictionary<string, string> results = new Dictionary<string, string>();
+            string searchType = Enum.GetName(typeof(NodeContentType), contentType);
+            string queryBase = $"MATCH (n:{searchType}) WHERE n.commonName STARTS WITH $text RETURN n.commonName, n.id";
+            using (ISession session = driver.Session())
+            {
+                session.ReadTransaction(action =>
+                {
+                    // Run the query
+                    IStatementResult statementResult = action.Run(queryBase, new { text = name });
+                    // Populate the result
+                    foreach(IRecord record in statementResult)
+                    {
+                        results.Add(record[0].As<string>(), record[1].As<string>());
+                    }
+                });
+            }
+
+            return results;
+        }
+        #endregion
     }
 }

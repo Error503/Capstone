@@ -64,6 +64,7 @@ namespace MediaGraph.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
+            // TODO: Add the requests from the user and the ability to retract requests?
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),

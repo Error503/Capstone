@@ -259,7 +259,6 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Code\CustomModelBinders.cs" />
     <Compile Include="Code\DatabaseInterface.cs" />
     <Compile Include="Code\DateValueConverter.cs" />
@@ -267,7 +266,7 @@
     <Compile Include="Code\Neo4jGraphDatabaseDriver.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminToolsController.cs" />
-    <Compile Include="Controllers\Api\AutocompleteController.cs" />
+    <Compile Include="Controllers\AutocompleteController.cs" />
     <Compile Include="Controllers\EditController.cs" />
     <Compile Include="Controllers\GraphController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -314,26 +313,13 @@
     <Compile Include="ViewModels\Graph\TimelineDisplayViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bower_components\svg.js\bench\runner.html" />
-    <Content Include="bower_components\svg.js\bench\svg.bench.js" />
-    <Content Include="bower_components\svg.js\bench\tests\10000-circles.js" />
-    <Content Include="bower_components\svg.js\bench\tests\10000-each.js" />
-    <Content Include="bower_components\svg.js\bench\tests\10000-pathArrays.js" />
-    <Content Include="bower_components\svg.js\bench\tests\10000-paths.js" />
-    <Content Include="bower_components\svg.js\bench\tests\10000-rects.js" />
-    <Content Include="bower_components\svg.js\dist\svg.js" />
-    <Content Include="bower_components\svg.js\dist\svg.min.js" />
-    <Content Include="bower_components\svg.js\LICENSE.txt" />
     <Content Include="Content\admin-tools\management-style.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\form.css" />
     <Content Include="Content\forms\formStyle.css" />
     <Content Include="Content\graphStyle.css" />
-    <Content Include="Content\home\HomePage.css" />
     <Content Include="Content\materialize\materialize.css" />
     <Content Include="Content\materialize\materialize.min.css" />
-    <Content Include="Content\requestaccepted.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -384,11 +370,6 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="bower_components\svg.js\.bower.json" />
-    <Content Include="bower_components\svg.js\bower.json" />
-    <Content Include="bower_components\svg.js\CHANGELOG.md" />
-    <Content Include="bower_components\svg.js\package.json" />
-    <Content Include="bower_components\svg.js\README.md" />
     <Content Include="Content\fonts\roboto\Roboto-Bold.woff" />
     <Content Include="Content\fonts\roboto\Roboto-Bold.woff2" />
     <Content Include="Content\fonts\roboto\Roboto-Light.woff" />
@@ -426,16 +407,13 @@
     <Content Include="Scripts\myScripts\admin-tools\request-manager.js" />
     <Content Include="Scripts\myScripts\admin-tools\review-page.js" />
     <Content Include="Scripts\myScripts\admin-tools\user-manager.js" />
-    <Content Include="Scripts\myScripts\angular_scripts\databaseRequestManagerApp.js" />
-    <Content Include="Scripts\myScripts\angular_scripts\nodeCreationApp.js" />
-    <Content Include="Scripts\myScripts\angular_scripts\userManagerApp.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script-query.js" />
     <Content Include="Scripts\myScripts\edit\relationship-form-script.js" />
+    <Content Include="Scripts\myScripts\edit\visual-edit-form.js" />
     <Content Include="Scripts\myScripts\graph\graph-controller.js" />
     <Content Include="Scripts\myScripts\graph\network-display-controller.js" />
     <Content Include="Scripts\myScripts\graph\timeline-display-controller.js" />
     <Content Include="Scripts\myScripts\menu.js" />
-    <Content Include="Scripts\myScripts\edit\edit-form-script.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />
@@ -475,7 +453,6 @@
     <Content Include="Views\Edit\Accepted.cshtml" />
     <Content Include="Views\Shared\_MaterialLayout.cshtml" />
     <Content Include="Views\Shared\_NavBarPartial.cshtml" />
-    <Content Include="Views\Edit\OldIndex.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
     <Content Include="Views\Shared\_MediaInformationPartial.cshtml" />
     <Content Include="Views\AdminTools\Index.cshtml" />
@@ -491,9 +468,14 @@
     <Content Include="Views\AdminTools\_DatabaseRequestFilterPartial.cshtml" />
     <Content Include="Views\AdminTools\_UserManagementFilterPartial.cshtml" />
     <Content Include="Views\Shared\_UpdatedNavBarPartial.cshtml" />
+    <Content Include="Views\Edit\Visualize.cshtml" />
+    <Content Include="Views\Edit\_VisualCompanyInformationPartial.cshtml" />
+    <Content Include="Views\Edit\_VisualBasicInformationPartial.cshtml" />
+    <Content Include="Views\Edit\_VisualMediaInformatioPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Autocomplete\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -521,9 +503,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="bower_components\svg.js\svg.js.d.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

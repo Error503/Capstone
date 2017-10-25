@@ -1,15 +1,29 @@
 ﻿@using Microsoft.AspNet.Identity
 <div class="navbar-fixed">
     <nav>
-        <div class="nav-wrapper">
+        <div class="nav-wrapper green lighten-1">
             @Html.ActionLink("Logo", "Index", "Home", new { area = "" }, new { @class = "brand-logo center" })
             <a href="#" data-activates="side-nav" class="button-collapse"><i class="material-icons">menu</i></a>
             <ul class="left hide-on-med-and-down">
                 <li>@Html.ActionLink("New Contribution", "Index", "Edit")</li>
                 <li>@Html.ActionLink("Visualization", "Index", "Graph")</li>
+                @if(User.IsInRole("admin") || User.IsInRole("staff"))
+                {
+                    <li><a class="dropdown-button" href="#!" data-activates="admin-dropdown">Admin Tools <i class="material-icons right">arrow_drop_down</i></a></li>
+                }
             </ul>
             @Html.Partial("_LoginPartial")
         </div>
+        @if(User.IsInRole("admin") || User.IsInRole("staff"))
+        {
+            <ul id="admin-dropdown" class="dropdown-content hide-on-med-and-down">
+                <li>@Html.ActionLink("Manage Requests", "DatabaseRequests", "AdminTools")</li>
+                @if (User.IsInRole("staff"))
+                {
+                    <li>@Html.ActionLink("Manage Users", "UserManagement", "AdminTools")</li>
+                }
+            </ul>
+        }
     </nav>
 </div>
 <ul class="side-nav" id="side-nav">
@@ -35,4 +49,10 @@
     <li>@Html.ActionLink("Home", "Index", "Home")</li>
     <li>@Html.ActionLink("New Contribution", "Index", "Edit")</li>
     <li>@Html.ActionLink("Visualization", "Index", "Graph")</li>
+    @if(User.IsInRole("admin") || User.IsInRole("staff"))
+    {
+        <li><div class="divider"></div></li>
+        <li>@Html.ActionLink("Manage Requests", "DatabaseRequests", "AdminTools")</li>
+        <li>@Html.ActionLink("Manage Users", "UserManagement", "AdminTools")</li>
+    }
 </ul>

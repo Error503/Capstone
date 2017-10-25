@@ -66,6 +66,25 @@ namespace MediaGraph.Controllers
             return CheckModelAndMakeRequest(model);
         }
 
+        [HttpGet]
+        public ActionResult Visualize()
+        {
+            return View(model: new BasicNodeViewModel { Id = Guid.NewGuid(), ContentType = 0 });
+        }
+
+        [HttpGet]
+        public ActionResult AutocompleteSearch(NodeContentType type, string searchText)
+        {
+            List<Tuple<string, string>> result = new List<Tuple<string, string>>();
+            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            {
+                Dictionary<string, string> searchResult = driver.SearchForNodes(type, searchText);
+                result = searchResult.Select(x => new Tuple<string, string>(x.Key, x.Value)).ToList();
+            }
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         private ActionResult CheckModelAndMakeRequest(BasicNodeViewModel model)
         {
             ActionResult result = View("Index", model);
