@@ -41,3 +41,9 @@
 .vis-item.vis-dot.type-3 {
     border-color: #5BC5D9;
 }
+.vis-item.vis-dot.death {
+    border-color: #ED2121;
+}
+.vis-item.death {
+    color: #ED2121;
+}

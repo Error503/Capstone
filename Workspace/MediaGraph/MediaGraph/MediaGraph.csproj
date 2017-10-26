@@ -260,7 +260,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Code\CustomModelBinders.cs" />
-    <Compile Include="Code\DatabaseInterface.cs" />
+    <Compile Include="Code\DatabaseDriver.cs" />
     <Compile Include="Code\DateValueConverter.cs" />
     <Compile Include="Code\IGraphDatabaseDriver.cs" />
     <Compile Include="Code\Neo4jGraphDatabaseDriver.cs" />

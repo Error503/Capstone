@@ -233,12 +233,12 @@ namespace MediaGraph.Controllers
             using (ApplicationDbContext context = ApplicationDbContext.Create())
             {
                 DatabaseRequest request = context.Requests.SingleOrDefault(x => x.Id == id);
-                if(request != null)
+                if (request != null)
                 {
                     result = View(model: DatabaseRequestViewModel.FromModel(request));
                 }
             }
-
+             
             return result;
         }
 

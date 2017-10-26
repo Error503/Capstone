@@ -13,17 +13,22 @@
         width: '99%',   // For some reason 100% causes an infinite loop warning
         height: '100%', // Manually set the time to prevent the timeline from growing during resizing
     };
-    var elementData = new vis.DataSet();//([{ id: 1, content: "Test item", start: '2017-10-18', type: 'box' }]);
+    var elementData = new vis.DataSet();
     var timeline = new vis.Timeline(document.getElementById(elementId), elementData, options != null ? options : default_options);
 
     timeline.on('click', function (props) {
         if (props.what === 'item') {
-            getNodeInformation(props.item, { x: props.x, y: props.y - 50});
+            getNodeInformation(elementData.get(props.item).nid, { x: props.x, y: props.y - 50});
         }
     });
     timeline.on('contextmenu', function (props) {
         if (props.what === 'item') {
-            displayContextMenu(props.item, { x: props.x, y: props.y - 50 });
+            generateContextMenu({ x: props.x, y: props.y - 50 }, [
+                { text: 'Edit Node', link: '/edit/index/' + elementData.get(props.item).nid },
+                { text: 'Flag for Deletion', link: 'javascript:flag()'}
+            ]);
+            // Select the item
+            timeline.setSelection([props.item]);
         }
         // Prevent the default functionality
         props.event.preventDefault();
@@ -61,26 +66,49 @@
         // Functions
         addNode: addNode,
         clear: clearData,
-        destroy: destroyTimeline
+        destroy: destroyTimeline,
+        goToDate: goToDate
     };
 
     // ===== Functions =====
 
     function addNode(data) {
-        // If the node is not already present
-        if (elementData.get(data.Id) == null) {
-            // Add the node to the element data
-            elementData.add(createNodeFor(data));
+        var window = timeline.getWindow();
+        var releaseDate = parseLongDateValue(data.ReleaseDate);
+        var deathDate = parseLongDateValue(data.DeathDate);
+        // If there is a release date,
+        if (data.ReleaseDate > 0) {
+            elementData.add({
+                id: 'R:' + data.Id,
+                content: createLabel(data.CommonName),
+                start: releaseDate,
+                type: 'point',
+                className: 'type-' + data.DataType,
+                nid: data.Id
+            });
+        }
+        // If there is a death date
+        if (data.DeathDate > 0) {
+            elementData.add({
+                id: 'D:' + data.Id,
+                content: createLabel(data.CommonName),
+                start: deathDate,
+                type: 'point',
+                className: 'death',
+                nid: data.Id
+            });
         }
     }
-    function createNodeFor(data) {
-        return {
-            id: data.Id,
-            content: createLabel(data.CommonName),
-            start: parseLongDateValue(data.ReleaseDate),
-            type: 'point',
-            className: 'type-' + data.DataType
-        };
+    function releaseLabel(nodeType) {
+        var value = 'ERROR TYPE';
+        if (nodeType === 1) {
+            value = 'Founded';
+        } else if (nodeType === 2) {
+            value = 'Released';
+        } else if (nodeType === 3) {
+            value = 'Born';
+        }
+        return value;
     }
 
     function clearData() {
@@ -91,8 +119,22 @@
         timeline.destroy();
     }
 
+    function goToDate(longDate) {
+        var asDate = parseLongDateValue(longDate);
+        timeline.moveTo(asDate, { duration: 1000, easingFunction: 'easeInOutQuart' }, zoomIn);
+    }
+    function zoomIn() {
+        var window = timeline.getWindow();
+        // If the display is over the max display level,
+        if (window.end.getTime() - window.start.getTime() > MAX_DISPLAY_LEVEL) {
+            // Zoom in - callback function is recursive ending when the zoom is in display level
+            timeline.zoomIn(1, { duration: 750, easingFunction: 'easeInOutQuart' }, zoomIn);
+        }
+    }
+
+
     function alterDate(date, delta) {
-        return new Date(date.getTime() - (delta * 24 * 60 * 60 * 1000));
+        return new Date(date.getTime() + (delta * 24 * 60 * 60 * 1000));
     }
 
     function getTimelineInformation(start, end) {

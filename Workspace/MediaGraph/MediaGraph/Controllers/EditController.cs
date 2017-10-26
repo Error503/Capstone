@@ -154,7 +154,7 @@ namespace MediaGraph.Controllers
                     RequestType = DatabaseRequestType.Delete,
                     SubmissionDate = DateTime.Now,
                     NodeDataType = toDelete.ContentType,
-                    NodeData = JsonConvert.SerializeObject(toDelete),
+                    NodeData = JsonConvert.SerializeObject(BasicNodeViewModel.FromModel(toDelete)),
                     Approved = false,
                     ApprovalDate = null,
                     Notes = null,

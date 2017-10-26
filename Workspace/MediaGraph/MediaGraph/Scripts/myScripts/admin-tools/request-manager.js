@@ -29,7 +29,7 @@ function updateDisplay(list) {
 
     if (list.length > 0) {
         for (var i = 0; i < list.length; i++) {
-            $('#request-list').append('<a href="/admintools/viewrequest/' + list[i].NodeData.Id + '" class="collection-item">' +
+            $('#request-list').append('<a href="/admintools/viewrequest/' + list[i].RequestId + '" class="collection-item">' +
                 getElementBadge(list[i]) + '[' + getUpdateTypeString(list[i].RequestType) + '] ' + list[i].NodeData.CommonName + '</a>');
         }
     } else {

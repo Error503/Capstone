@@ -73,32 +73,18 @@ function updateNetwork(data, position) {
         display.addNode(data.Source, position);
         for (var i = 0; i < data.RelatedNodes.length; i++) {
             display.addNode(data.RelatedNodes[i], position);
-            display.addEdge(data.Source.Id, data.RelatedNodes[i]);
+            display.addEdge(data.Source.Id, data.RelatedNodes[i ]);
         }
     }
-
-    // TODO: after stabilizing, fit the view
 }
 function updateTimeline(data) {
-    console.log("TIMELINE UPDATE NOT IMPLEMENTED");
+    if (data != null) {
+        // Adjust the window the the release date of the node
+        display.goToDate(data.ReleaseDate);
+    }
 }
 
 // ===== Context Popup Methods =====
-
-function displayContextMenu(nodeId, position, values) {
-    $('#info-popup').hide();
-    // Update the context options
-    $('#edit-context-link').attr('href', '/edit/index/' + nodeId);
-    $('#delete-context-link').attr('data-id', nodeId);
-    // If this is the network display, show the cluster option
-    if (selectedType == 'network') {
-        $('#cluster-link').show();
-    } else {
-        $('#cluster-link').hide();
-    }
-    // Display the pop up
-    $('#context-popup').removeClass('inactive').addClass('active').css({ left: position.x + 50, top: position.y + 50 });
-}
 
 function generateContextMenu(position, items) {
     $('#info-popup').removeClass('active').addClass('inactive'); // Hide the info popup
@@ -112,13 +98,26 @@ function generateContextMenu(position, items) {
 }
 
 function flag() {
-    var selected = display.graphic.getSelection().nodes[0]; // Get the selected node.
+    var selected;
+    // If we are on the network display,
+    if (selectedType === 'network') {
+        // Get the selected node
+        selected = display.graphic.getSelection().nodes[0];
+    } else {
+        // Get the selected timeline item
+        selected = display.elements.get(display.graphic.getSelection())[0].nid;
+    }
     // Flag that node for deletion
     $.ajax({
         method: 'post',
         url: '/edit/flagdeletion',
         data: { id: selected },
-        success: function (response) { createToast("Node flagged for deletion!", 2500); },
+        success: function (response, status, xhr) {
+            var parsed = JSON.parse(xhr.getResponseHeader('X-Responded-JSON')); 
+            if (parsed == null) {
+                createToast('Node flagged for deletion!', 2500);
+            }
+        }
     });
 }
 

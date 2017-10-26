@@ -29,9 +29,23 @@ namespace MediaGraph.Controllers
         }
 
         [HttpGet]
-        public ActionResult TimelineData(Guid? id, string texts)
+        public ActionResult TimelineData(Guid? id, string text)
         {
-            throw new NotImplementedException();
+            BasicNodeModel model = null;
+
+            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            {
+                if(!id.HasValue || id == Guid.Empty)
+                {
+                    model = driver.GetNode(text);
+                } 
+                else
+                {
+                    model = driver.GetNode(id.Value);
+                }
+            }
+
+            return Json(new { ReleaseDate = model.ReleaseDate, DeathDate = model.DeathDate }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

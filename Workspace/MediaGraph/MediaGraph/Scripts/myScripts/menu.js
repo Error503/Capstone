@@ -26,6 +26,9 @@ function createLabel(value, length) {
 
 // Parses the given long value as a date
 function parseLongDateValue(date) {
+    if (date == null || date <= 0) {
+        return new Date(1, 0, 1);
+    }
     var upperConst = 10000;
     var lowerConst = 100;
     return new Date(Math.floor(date / upperConst), Math.floor(((date % upperConst) / lowerConst) - 1), Math.floor(date % lowerConst));
@@ -83,7 +86,6 @@ function setupAutocomplete(element, useClearing, callback) {
             lastSearchText = null;
         }
     }).on('focus', function (event) {
-        console.log("CLEAR");
         if (useClearing && wasCompleted) {
             $(this).val(''); // Clear the search box
             wasCompleted = false;

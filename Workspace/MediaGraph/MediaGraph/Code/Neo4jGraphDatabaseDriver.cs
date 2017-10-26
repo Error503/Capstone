@@ -307,7 +307,7 @@ namespace MediaGraph.Code
                 // Create a transaction
                 session.ReadTransaction(action =>
                 {
-                    IStatementResult result = action.Run("MATCH (n) WHERE n.releaseDate >= $lowerBound AND n.releaseDate <= $upperBound RETURN n",
+                    IStatementResult result = action.Run("MATCH (n) WHERE (n.releaseDate >= $lowerBound AND n.releaseDate <= $upperBound) OR (n.deathDate >= $lowerBound AND n.deathDate <= $upperBound) RETURN n",
                         new Dictionary<string, object>
                         {
                             { "lowerBound", DateValueConverter.ToLongValue(start) },
