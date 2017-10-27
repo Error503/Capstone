@@ -12,8 +12,8 @@
         <section class="row">
             <div class="col s12 offset-m2 m8 offset-l3 l6">
                 <div class="input-field">
-                    <input name="@Html.NameFor(x => x.Email)" type="email" class="validate" />
-                    @Html.LabelFor(x => x.Email, new Dictionary<string, object> { { "data-error", "Invalid email" }, { "data-success", "" } })
+                    @Html.TextBoxFor(x => x.UserName)
+                    @Html.LabelFor(x => x.UserName)
                 </div>
                 <div class="input-field">
                     @Html.PasswordFor(x => x.Password)

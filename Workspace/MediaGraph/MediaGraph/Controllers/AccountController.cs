@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using MediaGraph.Models;
+using System.Web.UI;
 
 namespace MediaGraph.Controllers
 {
@@ -68,27 +69,55 @@ namespace MediaGraph.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (!ModelState.IsValid)
+            ActionResult result = View(model);
+            // If the model state is valid,
+            if(ModelState.IsValid)
             {
-                return View(model);
+                ApplicationUser user = null;
+                // If we have been given a email address,
+                if(new System.ComponentModel.DataAnnotations.EmailAddressAttribute().IsValid(model.UserName))
+                {
+                    // Treat the given user name as an email
+                    user = await UserManager.FindByEmailAsync(model.UserName);
+                }
+                else
+                {
+                    // Treat the given user name has a user name
+                    user = await UserManager.FindAsync(model.UserName, model.Password);
+                }
+
+                // If the user was found
+                if(user != null)
+                {
+                    // Attempt to sign in
+                    // This doesn't count login failures toward account lockout
+                    // To enable password failures to trigger account lockout, change to shouldLockout: true
+                    SignInStatus signInResult = await SignInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, shouldLockout: false);
+
+                    switch(signInResult)
+                    {
+                        case SignInStatus.Success:
+                            result = RedirectToLocal(returnUrl);
+                            break;
+                        case SignInStatus.LockedOut:
+                            result = View("Lockout");
+                            break;
+                        case SignInStatus.RequiresVerification:
+                            result = RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                            break;
+                        case SignInStatus.Failure:
+                        default:
+                            ModelState.AddModelError("", "Invalid user name or password.");
+                            break;
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid user name or password.");
+                }
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
-            }
+            return result;
         }
 
         //
@@ -151,7 +180,7 @@ namespace MediaGraph.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
                 user.Roles.Add(new Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole { UserId = user.Id, RoleId = "0" });
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -172,6 +201,15 @@ namespace MediaGraph.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [OutputCache(Location = OutputCacheLocation.None, NoStore = true, Duration = 0, VaryByParam = "*")]
+        public async Task<JsonResult> DoesUserNameExist(string userName)
+        {
+            bool exists = await UserManager.FindByNameAsync(userName) != null;
+            return Json(exists);
         }
 
         //
