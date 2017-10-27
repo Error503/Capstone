@@ -410,6 +410,7 @@
     <Content Include="Scripts\myScripts\graph\network-display-controller.js" />
     <Content Include="Scripts\myScripts\graph\timeline-display-controller.js" />
     <Content Include="Scripts\myScripts\menu.js" />
+    <Content Include="Scripts\myScripts\validation\register-validation.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />

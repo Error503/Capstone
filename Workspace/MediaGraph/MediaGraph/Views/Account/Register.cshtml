@@ -6,25 +6,25 @@
 
 <h3 class="center-align">Register</h3>
 <h5 class="center-align">Create a new account</h5>
-@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, htmlAttributes: new { autocomplete = "off" }))
 {
     @Html.AntiForgeryToken()
     <article class="row">
         <section class="col s12 offset-m2 m8 offset-l3 l6">
             <div class="input-field">
-                @Html.TextBoxFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "validate", type = "email" })
                 @Html.LabelFor(m => m.Email)
             </div>
             <div class="input-field">
-                @Html.TextBoxFor(m => m.Username)
+                @Html.TextBoxFor(m => m.Username, new { @class = "validate" })
                 @Html.LabelFor(m => m.Username)
             </div>
             <div class="input-field">
-                @Html.PasswordFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "validate" })
                 @Html.LabelFor(m => m.Password)
             </div>
             <div class="input-field">
-                @Html.PasswordFor(m => m.ConfirmPassword)
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "validate" })
                 @Html.LabelFor(m => m.ConfirmPassword)
             </div>
         </section>
@@ -37,9 +37,8 @@
         </section>
     </article>
 }
-<div>
-    @Html.ValidationSummary("", new { @class = "red-text text-darken-2" })
-</div>
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    @*@Scripts.Render("~/bundles/jqueryval")*@
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/myScripts/validation/register-validation.js"></script>
 }

@@ -208,7 +208,7 @@ namespace MediaGraph.Controllers
         [OutputCache(Location = OutputCacheLocation.None, NoStore = true, Duration = 0, VaryByParam = "*")]
         public async Task<JsonResult> DoesUserNameExist(string userName)
         {
-            bool exists = await UserManager.FindByNameAsync(userName) != null;
+            bool exists = await UserManager.FindByNameAsync(userName) == null;
             return Json(exists);
         }
 
