@@ -1,6 +1,4 @@
-﻿var currentPage = 0;
-var totalPages = 0;
-
+﻿
 function searchStarted() {
 
 }

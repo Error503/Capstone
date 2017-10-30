@@ -1,7 +1,4 @@
-﻿var totalPages = 0;
-var currentPage = 0;
-
-function searchStarted() {
+﻿function searchStarted() {
     //$('#request-list-container').hide();
     //$('#preloader').show().addClass('active');
 }

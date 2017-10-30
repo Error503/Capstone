@@ -1,12 +1,17 @@
-﻿function updateSytling() {
+﻿var totalPages = 0;
+var currentPage = 0;
+
+function updateSytling() {
     if (currentPage <= 1) {
         $('#previous-page-button').addClass('disabled');
     } else {
         $('#previous-page-button').removeClass('disabled');
     }
 
-    if (currentPage === totalPages) {
+    if (currentPage >= totalPages) {
         $('#next-page-button').addClass('disabled');
+        $('#page-selection-box').val(totalPages);
+        currentPage = totalPages;
     } else {
         $('#next-page-button').removeClass('disabled');
     }

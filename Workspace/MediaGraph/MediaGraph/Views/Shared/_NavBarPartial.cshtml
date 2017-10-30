@@ -17,7 +17,7 @@
         @if(User.IsInRole("admin") || User.IsInRole("staff"))
         {
             <ul id="admin-dropdown" class="dropdown-content hide-on-med-and-down">
-                <li>@Html.ActionLink("Manage Requests", "DatabaseRequests", "AdminTools")</li>
+                <li>@Html.ActionLink("View Requests", "DatabaseRequests", "AdminTools")</li>
                 @if (User.IsInRole("staff"))
                 {
                     <li>@Html.ActionLink("Manage Users", "UserManagement", "AdminTools")</li>
