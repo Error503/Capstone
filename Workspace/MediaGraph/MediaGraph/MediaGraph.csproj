@@ -380,18 +380,18 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Scripts\jquery-3.1.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.1.1.js" />
-    <Content Include="Scripts\jquery-3.1.1.min.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.1.1.min.map" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <None Include="Scripts\jquery-3.2.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.2.1.js" />
+    <Content Include="Scripts\jquery-3.2.1.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.js" />
     <Content Include="Scripts\jquery-ui-1.12.1.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.2.1.min.map" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -410,7 +410,7 @@
     <Content Include="Scripts\myScripts\graph\network-display-controller.js" />
     <Content Include="Scripts\myScripts\graph\timeline-display-controller.js" />
     <Content Include="Scripts\myScripts\menu.js" />
-    <Content Include="Scripts\myScripts\validation\register-validation.js" />
+    <Content Include="Scripts\myScripts\validation-adapter.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />
@@ -466,9 +466,6 @@
     <Content Include="Views\AdminTools\_UserManagementFilterPartial.cshtml" />
     <Content Include="Views\Shared\_UpdatedNavBarPartial.cshtml" />
     <Content Include="Views\Edit\Visualize.cshtml" />
-    <Content Include="Views\Edit\_VisualCompanyInformationPartial.cshtml" />
-    <Content Include="Views\Edit\_VisualBasicInformationPartial.cshtml" />
-    <Content Include="Views\Edit\_VisualMediaInformatioPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

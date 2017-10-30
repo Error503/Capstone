@@ -72,7 +72,7 @@ namespace MediaGraph.Models
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
         [System.Web.Mvc.Remote("DoesUserNameExist", "Account", "", ErrorMessage = "Username taken", HttpMethod = "POST")]
-        [Display(Name = "UserName")]
+        [Display(Name = "Username")]
         public string Username { get; set; }
 
         [Required]

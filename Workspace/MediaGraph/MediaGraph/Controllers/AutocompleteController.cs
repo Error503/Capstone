@@ -7,6 +7,8 @@ using System.Web.Mvc;
 
 namespace MediaGraph.Controllers
 {
+    // We won't want to cache the results of this controller
+    [OutputCache(Location = System.Web.UI.OutputCacheLocation.None, NoStore = true)]
     public class AutocompleteController : Controller
     {
         [HttpGet]

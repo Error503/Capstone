@@ -6,7 +6,7 @@
 
 <h3 class="center-align">Register</h3>
 <h5 class="center-align">Create a new account</h5>
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, htmlAttributes: new { autocomplete = "off" }))
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, htmlAttributes: new { autocomplete = "off", novalidate = "novalidate" }))
 {
     @Html.AntiForgeryToken()
     <article class="row">
@@ -38,7 +38,5 @@
     </article>
 }
 @section Scripts {
-    @*@Scripts.Render("~/bundles/jqueryval")*@
-    <script src="~/Scripts/jquery.validate.min.js"></script>
-    <script src="~/Scripts/myScripts/validation/register-validation.js"></script>
+    @Scripts.Render("~/bundles/validation")
 }

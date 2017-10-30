@@ -203,13 +203,12 @@ namespace MediaGraph.Controllers
             return View(model);
         }
 
-        [HttpPost]
         [AllowAnonymous]
         [OutputCache(Location = OutputCacheLocation.None, NoStore = true, Duration = 0, VaryByParam = "*")]
-        public async Task<JsonResult> DoesUserNameExist(string userName)
+        public async Task<JsonResult> DoesUserNameExist(string Username)
         {
-            bool exists = await UserManager.FindByNameAsync(userName) == null;
-            return Json(exists);
+            bool doesNotExist = await UserManager.FindByNameAsync(Username) == null;
+            return Json(doesNotExist, JsonRequestBehavior.AllowGet);
         }
 
         //

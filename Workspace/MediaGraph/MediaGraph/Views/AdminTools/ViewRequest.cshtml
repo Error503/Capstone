@@ -14,7 +14,10 @@
         </section>
         <section class="col s12 m6">
             <div class="right-align">
-                <button id="edit-info-button" type="button" class="waves-effect waves-light btn-flat">Edit</button>
+                @if (!Model.Reviewed)
+                {
+                    <button id="edit-info-button" type="button" class="waves-effect waves-light btn-flat">Edit</button>
+                }
                 @Html.ActionLink("Back", "DatabaseRequests", "AdminTools", null, new { @class = "waves-effect waves-light btn-flat" })
             </div>
         </section>
@@ -64,17 +67,27 @@
             </section>
             <section class="col s12 m6">
                 <div class="input-field">
-                    <textarea name="Notes" class="materialize-textarea"></textarea>
+                    @if(Model.Reviewed)
+                    {
+                        @Html.TextAreaFor(x => x.Notes, new { @class = "materialize-textarea", disabled = "disabled" })
+                    }
+                    else
+                    {
+                        @Html.TextAreaFor(x => x.Notes, new { @class = "materialize-textarea" })
+                    }
                     <label for="Notes">Notes</label>
                 </div>
-                <div class="row">
-                    <div class="col s6">
-                        <button id="reject-button" type="button" class="waves-effect waves-light btn red accent-2">Reject</button>
+                @if (!Model.Reviewed)
+                {
+                    <div class="row">
+                        <div class="col s6">
+                            <button id="reject-button" type="button" class="waves-effect waves-light btn red accent-2">Reject</button>
+                        </div>
+                        <div class="col s6">
+                            <button id="approve-button" type="button" class="right waves-effect waves-light btn green accent-2">Approve</button>
+                        </div>
                     </div>
-                    <div class="col s6">
-                        <button id="approve-button" type="button" class="right waves-effect waves-light btn green accent-2">Approve</button>
-                    </div>
-                </div>
+                }
             </section>
         </div>
     </article>
