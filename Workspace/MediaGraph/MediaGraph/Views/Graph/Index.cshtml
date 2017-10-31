@@ -3,17 +3,11 @@
 }
 
 @section css {
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Scripts/vis/vis.min.css">
     <link rel="stylesheet" type="text/css" href="~/Content/graphStyle.css" />
 }
-
 @section headScripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-}
-@section scripts {
-    <script src="~/Scripts/myScripts/graph/graph-controller.js"></script>
-    <script src="~/Scripts/myScripts/graph/network-display-controller.js"></script>
-    <script src="~/Scripts/myScripts/graph/timeline-display-controller.js"></script>
+    @Scripts.Render("~/bundles/visualization")
 }
 
 <div class="visualization-wrapper">

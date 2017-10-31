@@ -9,7 +9,7 @@ namespace MediaGraph.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
             ContextKey = "MediaGraph.Models.ApplicationDbContext";
         }
 

@@ -18,8 +18,9 @@ namespace MediaGraph.Controllers
     [Authorize(Roles = "admin,staff")]
     public class AdminToolsController : Controller
     {
+        private static readonly bool kDeleteOnReview = true;
         // Exclude the default admin, myself, from being displayed
-        private static readonly string[] kExcludedUsers = new string[] { "2f1c3a70-493a-42b3-a29e-c3ec96acc4a6" };
+        private static readonly string[] kExcludedUsers = new string[] { "a8ea39f9-e1b1-4ecb-bc88-7d22f5d2b165" };
 
         // GET: AdminTools
         public ActionResult Index()
@@ -245,7 +246,6 @@ namespace MediaGraph.Controllers
         [HttpPost]
         public ActionResult ViewRequest(RequestReviewViewModel request)
         {
-            // TODO: Editing that results in an invalid node
             ActionResult result = View("Error");
             if (request != null)
             {
@@ -258,14 +258,23 @@ namespace MediaGraph.Controllers
                     if (!fromDatabase.Reviewed)
                     {
                         // If the request has been approved then changes should be committed
-                        shouldCommitChanges = request.Approved; 
-                        // Update the information in the database
-                        fromDatabase.Reviewed = true;
-                        fromDatabase.ReviewedDate = DateTime.Now;
-                        fromDatabase.Approved = request.Approved;
-                        fromDatabase.Notes = request.Notes;
-                        if (request.Approved)
-                            fromDatabase.ApprovalDate = DateTime.Now;
+                        shouldCommitChanges = request.Approved;
+                        // If we should delete requests when they are reviewed,
+                        if (kDeleteOnReview)
+                        {
+                            // Delete the request
+                            context.Requests.Remove(fromDatabase);
+                        }
+                        else
+                        {
+                            // Update the information in the database
+                            fromDatabase.Reviewed = true;
+                            fromDatabase.ReviewedDate = DateTime.Now;
+                            fromDatabase.Approved = request.Approved;
+                            fromDatabase.Notes = request.Notes;
+                            if (request.Approved)
+                                fromDatabase.ApprovalDate = DateTime.Now;
+                        }
                         // Save the changes
                         context.SaveChanges();
                     }

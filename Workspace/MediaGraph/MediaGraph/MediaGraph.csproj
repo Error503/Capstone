@@ -275,17 +275,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201708281903414_DatabaseRequestsAddition.cs" />
-    <Compile Include="Migrations\201708281903414_DatabaseRequestsAddition.Designer.cs">
-      <DependentUpon>201708281903414_DatabaseRequestsAddition.cs</DependentUpon>
+    <Compile Include="Migrations\201710302237262_InitialCreate.cs" />
+    <Compile Include="Migrations\201710302237262_InitialCreate.Designer.cs">
+      <DependentUpon>201710302237262_InitialCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201708301709524_UpdateRequestModel.cs" />
-    <Compile Include="Migrations\201708301709524_UpdateRequestModel.Designer.cs">
-      <DependentUpon>201708301709524_UpdateRequestModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201710101719271_RequestAndNodeType.cs" />
-    <Compile Include="Migrations\201710101719271_RequestAndNodeType.Designer.cs">
-      <DependentUpon>201710101719271_RequestAndNodeType.cs</DependentUpon>
+    <Compile Include="Migrations\201710302250280_Initial.cs" />
+    <Compile Include="Migrations\201710302250280_Initial.Designer.cs">
+      <DependentUpon>201710302250280_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -376,6 +372,7 @@
     <Content Include="Content\fonts\roboto\Roboto-Regular.woff2" />
     <Content Include="Content\fonts\roboto\Roboto-Thin.woff" />
     <Content Include="Content\fonts\roboto\Roboto-Thin.woff2" />
+    <None Include="Properties\PublishProfiles\MediaGraph - Web Deploy.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -413,7 +410,33 @@
     <Content Include="Scripts\myScripts\validation-adapter.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Scripts\vis\img\network\acceptDeleteIcon.png" />
+    <Content Include="Scripts\vis\img\network\addNodeIcon.png" />
+    <Content Include="Scripts\vis\img\network\backIcon.png" />
+    <Content Include="Scripts\vis\img\network\connectIcon.png" />
+    <Content Include="Scripts\vis\img\network\cross.png" />
+    <Content Include="Scripts\vis\img\network\cross2.png" />
+    <Content Include="Scripts\vis\img\network\deleteIcon.png" />
+    <Content Include="Scripts\vis\img\network\downArrow.png" />
+    <Content Include="Scripts\vis\img\network\editIcon.png" />
+    <Content Include="Scripts\vis\img\network\leftArrow.png" />
+    <Content Include="Scripts\vis\img\network\minus.png" />
+    <Content Include="Scripts\vis\img\network\plus.png" />
+    <Content Include="Scripts\vis\img\network\rightArrow.png" />
+    <Content Include="Scripts\vis\img\network\upArrow.png" />
+    <Content Include="Scripts\vis\img\network\zoomExtends.png" />
+    <Content Include="Scripts\vis\vis-graph3d.min.js" />
+    <Content Include="Scripts\vis\vis-network.min.css" />
+    <Content Include="Scripts\vis\vis-network.min.js" />
+    <Content Include="Scripts\vis\vis-timeline-graph2d.min.css" />
+    <Content Include="Scripts\vis\vis-timeline-graph2d.min.js" />
+    <Content Include="Scripts\vis\vis.css" />
+    <Content Include="Scripts\vis\vis.js" />
+    <Content Include="Scripts\vis\vis.min.css" />
+    <Content Include="Scripts\vis\vis.min.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -466,6 +489,8 @@
     <Content Include="Views\AdminTools\_UserManagementFilterPartial.cshtml" />
     <Content Include="Views\Shared\_UpdatedNavBarPartial.cshtml" />
     <Content Include="Views\Edit\Visualize.cshtml" />
+    <Content Include="Scripts\vis\vis.map" />
+    <Content Include="Scripts\vis\vis.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -475,14 +500,11 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201708281903414_DatabaseRequestsAddition.resx">
-      <DependentUpon>201708281903414_DatabaseRequestsAddition.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201710302237262_InitialCreate.resx">
+      <DependentUpon>201710302237262_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708301709524_UpdateRequestModel.resx">
-      <DependentUpon>201708301709524_UpdateRequestModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201710101719271_RequestAndNodeType.resx">
-      <DependentUpon>201710101719271_RequestAndNodeType.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201710302250280_Initial.resx">
+      <DependentUpon>201710302250280_Initial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

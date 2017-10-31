@@ -7,13 +7,13 @@ namespace MediaGraph.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class RequestAndNodeType : IMigrationMetadata
+    public sealed partial class InitialCreate : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RequestAndNodeType));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
         
         string IMigrationMetadata.Id
         {
-            get { return "201710101719271_RequestAndNodeType"; }
+            get { return "201710302237262_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source
