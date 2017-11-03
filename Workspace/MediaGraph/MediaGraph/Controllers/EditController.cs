@@ -185,21 +185,24 @@ namespace MediaGraph.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetInformation(int type)
+        public ActionResult GetInformation(int type, bool visual = false)
         {
             NodeContentType contentType = (NodeContentType)type;
             ActionResult result = Json(new { msg = $"Invalid type {type}" }, JsonRequestBehavior.AllowGet);
             if(contentType == NodeContentType.Company)
             {
-                result = PartialView("_CompanyInformationPartial", new CompanyNodeViewModel());
+                result = visual ? PartialView("_VisualCompanyInformationPartial", new CompanyNodeViewModel()) : 
+                    PartialView("_CompanyInformationPartial", new CompanyNodeViewModel());
             }
             else if(contentType == NodeContentType.Media)
             {
-                result = PartialView("_MediaInformationPartial", new MediaNodeViewModel());
+                result = visual ? PartialView("_VisualMediaInformationPartial", new MediaNodeViewModel()) : 
+                    PartialView("_MediaInformationPartial", new MediaNodeViewModel());
             }
             else if(contentType == NodeContentType.Person)
             {
-                result = PartialView("_PersonInformationPartial", new PersonNodeViewModel());
+                result = visual ? PartialView("_VisualPersonInformationPartial", new PersonNodeViewModel()) : 
+                    PartialView("_PersonInformationPartial", new PersonNodeViewModel());
             } 
             else
             {

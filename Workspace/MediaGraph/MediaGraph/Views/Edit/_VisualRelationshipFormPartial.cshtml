@@ -1,0 +1,26 @@
+﻿<div class="row">
+    <h5 class="left-align">Relationship Data</h5>
+    <form id="relationship-form">
+        <input type="hidden" name="targetId" autocomplete="off" />
+        <div class="col s12 m6 input-field">
+            <label for="targetType" class="active">Target Type</label>
+            <select name="targetType" id="targetTypeSelect">
+                <option value="0" disabled selected>Target Type...</option>
+                <option value="1">Company</option>
+                <option value="2">Media</option>
+                <option value="3">Person</option>
+            </select>
+        </div>
+        <div class="col s12 m6 input-field">
+            <input id="relationship-target" name="targetName" type="text" class="autocomplete" />
+            <label for="relationship-target">Target Name</label>
+        </div>
+        <div class="col s12 input-field">
+            <label for="relationship-chips">Relationship</label>
+            <div id="relationship-chips" class="chips"></div>
+        </div>
+        <div class="col s12 center-align">
+            <button id="add-relationship-button" type="button" class="waves-effect waves-light green accent-4 btn">Add Relationship</button>
+        </div>
+    </form>
+</div>

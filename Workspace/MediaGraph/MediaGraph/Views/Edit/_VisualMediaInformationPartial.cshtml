@@ -1,0 +1,33 @@
+﻿@model MediaGraph.ViewModels.Edit.MediaNodeViewModel
+<input type="hidden" name="Genres" />
+<div class="col s12 m6 input-field">
+    @Html.LabelFor(x => x.MediaType, new { @class = "active" })
+    @Html.DropDownListFor(x => x.MediaType, new List<SelectListItem>
+    {
+        new SelectListItem { Value = "0", Text = "Media Type..." },
+        new SelectListItem { Value = "1", Text = "Audio", Disabled = true },
+        new SelectListItem { Value = "2", Text = "Book" },
+        new SelectListItem { Value = "4", Text = "Move, TV Show, Video" },
+        new SelectListItem { Value = "8", Text = "Video Game" }
+    })
+</div>
+<div class="col s12 m6 input-field">
+    @Html.TextBoxFor(x => x.FranchiseName, new { @class = "validate" })
+    @Html.LabelFor(x => x.FranchiseName)
+</div>
+<div class="col s12 m6 input-field">
+    @Html.TextBoxFor(x => x.CommonName, new { @class = "validate" })
+    @Html.LabelFor(x => x.CommonName)
+</div>
+<div class="col s12 m6 input-field">
+    @Html.TextBoxFor(x => x.ReleaseDate, new { @class = "validate", placeholder = "yyyy-mm-dd" })
+    <label for="@Html.NameFor(x => x.ReleaseDate)" class="active">Initial Release Date</label>
+</div>
+<div class="col s12 input-field">
+    <label for="other-name-chips">Other Names</label>
+    <div id="other-name-chips" class="chips"></div>
+</div>
+<div class="col s12 input-field">
+    <label for="genre-chips">Genres</label>
+    <div id="genre-chips" class="chips"></div>
+</div>

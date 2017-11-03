@@ -403,6 +403,7 @@
     <Content Include="Scripts\myScripts\edit\edit-form-script-query.js" />
     <Content Include="Scripts\myScripts\edit\relationship-form-script.js" />
     <Content Include="Scripts\myScripts\edit\visual-edit-form.js" />
+    <Content Include="Scripts\myScripts\edit\visual-relationship-script.js" />
     <Content Include="Scripts\myScripts\graph\graph-controller.js" />
     <Content Include="Scripts\myScripts\graph\network-display-controller.js" />
     <Content Include="Scripts\myScripts\graph\timeline-display-controller.js" />
@@ -491,6 +492,9 @@
     <Content Include="Views\Edit\Visualize.cshtml" />
     <Content Include="Scripts\vis\vis.map" />
     <Content Include="Scripts\vis\vis.js.map" />
+    <Content Include="Views\Edit\_VisualRelationshipFormPartial.cshtml" />
+    <Content Include="Views\Edit\_VisualCompanyInformationPartial.cshtml" />
+    <Content Include="Views\Edit\_VisualMediaInformationPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -6,10 +6,10 @@
       <Value Profile="(Default)">neo4j</Value>
     </Setting>
     <Setting Name="neo4jPass" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">meaninglessPassword</Value>
+      <Value Profile="(Default)">yN28owNM10Qloz</Value>
     </Setting>
     <Setting Name="neo4jUrl" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">bolt://localhost</Value>
+      <Value Profile="(Default)">bolt://medianeodata.southcentralus.cloudapp.azure.com:7687</Value>
     </Setting>
   </Settings>
 </SettingsFile>
