@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="~/Content/graphStyle.css" />
 }
 @section scripts {
+    @Scripts.Render("~/bundles/validation")
     <script src="~/Scripts/myScripts/edit/visual-relationship-script.js"></script>
     <script src="~/Scripts/myScripts/edit/visual-edit-form.js"></script>
 }
@@ -15,50 +16,50 @@
         <div id="visualization-target" class="visualization full    network-display"></div>
     </section>
     <section class="col s12 m6">
+        <ul class="tabs tabs-fixed-width">
+            <li class="tab"><a href="#node-tab">Node</a></li>
+            <li class="tab"><a href="#rel-tab">Relationships</a></li>
+        </ul>
         <div class="row">
-            <h5 class="left-align">Node Information</h5>
-            @using (Html.BeginForm("Visualize", "Edit", FormMethod.Post, htmlAttributes: new { id = "node-form", autocomplete = "off" }))
-            {
-                <input type="hidden" name="Id" value="@Model.Id.ToString()" />
-                <input type="hidden" name="Relationships" />
-                <input type="hidden" name="OtherNames" />
-                if (Model.ContentType == 0)
+            <div id="node-tab">
+                @using (Html.BeginForm("Visualize", "Edit", FormMethod.Post, htmlAttributes: new { id = "node-form", autocomplete = "off" }))
                 {
-                    <div class="col s12 offset-m3 m6 center">
-                        Node Content Type: 
-                        <div class="input-field inline">
-                            <select id="ContentType" name="ContentType">
-                                <option value="0" disabled selected>Content Type</option>
-                                <option value="1">Company</option>
-                                <option value="2">Media</option>
-                                <option value="3">Person</option>
-                            </select>
+                    <input type="hidden" name="Id" value="@Model.Id.ToString()" />
+                    <input type="hidden" name="Relationships" />
+                    <input type="hidden" name="OtherNames" />
+                    if (Model.ContentType == 0)
+                    {
+                        <div class="col s12 offset-m3 m6 center">
+                            Node Content Type:
+                            <div class="input-field inline">
+                                <select id="ContentType" name="ContentType">
+                                    <option value="0" disabled selected>Content Type</option>
+                                    <option value="1">Company</option>
+                                    <option value="2">Media</option>
+                                    <option value="3">Person</option>
+                                </select>
+                            </div>
                         </div>
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(x => x.ContentType)
+                    }
+                    <div id="node-information">
+
                     </div>
                 }
-                else
-                {
-                    @Html.HiddenFor(x => x.ContentType)
-                }
-                <div id="node-information">
-
-                </div>
-            }
+            </div>
+            <div id="rel-tab">
+                @Html.Partial("_VisualRelationshipFormPartial")
+            </div>
         </div>
-        <div class="divider"></div>
-        @Html.Partial("_VisualRelationshipFormPartial")
     </section>
 </article>
 <article class="row">
-    <section class="col s12 offset-m8 m4">
-        <div class="center-align">
-            <button id="submit-button" type="button" class="waves-effect waves-light btn">Submit <i class="material-icons right">send</i></button>
-        </div> 
+    <section class="col s12 offset-m6 m6">
+        <div class="center">
+            <button id="submit-button" type="button" class="waves-effect waves-light btn accent-1">Submit <i class="material-icons right">send</i></button>
+        </div>
     </section>
 </article>
-
-<div id="context-popup" class="popup inactive">
-    <div class="collection">
-        <a class="collection-item" href="javascript:removeNode()">Remove</a>
-    </div>
-</div>

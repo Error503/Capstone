@@ -7,7 +7,7 @@
         new SelectListItem { Value = "0", Text = "Media Type..." },
         new SelectListItem { Value = "1", Text = "Audio", Disabled = true },
         new SelectListItem { Value = "2", Text = "Book" },
-        new SelectListItem { Value = "4", Text = "Move, TV Show, Video" },
+        new SelectListItem { Value = "4", Text = "Moive, TV Show, Video" },
         new SelectListItem { Value = "8", Text = "Video Game" }
     })
 </div>
@@ -20,7 +20,7 @@
     @Html.LabelFor(x => x.CommonName)
 </div>
 <div class="col s12 m6 input-field">
-    @Html.TextBoxFor(x => x.ReleaseDate, new { @class = "validate", placeholder = "yyyy-mm-dd" })
+    @Html.TextBoxFor(x => x.ReleaseDate, new { @class = "validate", type = "date" })
     <label for="@Html.NameFor(x => x.ReleaseDate)" class="active">Initial Release Date</label>
 </div>
 <div class="col s12 input-field">

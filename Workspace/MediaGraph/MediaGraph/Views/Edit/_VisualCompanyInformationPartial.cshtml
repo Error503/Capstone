@@ -8,10 +8,10 @@
     <div id="other-name-chips" class="chips"></div>
 </div>
 <div class="col s12 m6 input-field">
-    @Html.TextBoxFor(x => x.ReleaseDate, new { @class = "validate", placeholder = "yyyy-mm-dd" })
+    @Html.TextBoxFor(x => x.ReleaseDate, new { @class = "validate", type = "date" })
     <label for="@Html.NameFor(x => x.ReleaseDate)" class="active">Date Founded</label>
 </div>
 <div class="col s12 m6 input-field">
-    @Html.TextBoxFor(x => x.DeathDate, new { @class = "validate", placeholder = "yyyy-mm-dd" })
+    @Html.TextBoxFor(x => x.DeathDate, new { @class = "validate", type = "date" })
     <label for="@Html.NameFor(x => x.DeathDate)" class="active">Date Defunct</label>
 </div>

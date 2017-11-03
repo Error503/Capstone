@@ -1,0 +1,32 @@
+﻿@model MediaGraph.ViewModels.Edit.PersonNodeViewModel
+
+<div class="col s12 m6 input-field">
+    @Html.TextBoxFor(x => x.GivenName, new { @class = "validate" })
+    @Html.LabelFor(x => x.GivenName)
+</div>
+<div class="col s12 m6 input-field">
+    @Html.TextBoxFor(x => x.FamilyName, new { @class = "validate" })
+    @Html.LabelFor(x => x.FamilyName)
+</div>
+<div class="col s12 input-field">
+    <label for="other-name-chips">Other Names</label>
+    <div id="other-name-chips" class="chips"></div>
+</div>
+<div class="col s12 m6 input-field">
+    <label for="@Html.NameFor(x => x.ReleaseDate)" class="active">Date of Birth</label>
+    @Html.TextBoxFor(x => x.ReleaseDate, new { @class = "valiate", type = "date", placeholder = "yyyy-mm-dd" })
+</div>
+<div class="col s12 m6 input-field">
+    <label for="@Html.NameFor(x => x.DeathDate)" class="active">Date of Death</label>
+    @Html.TextBoxFor(x => x.ReleaseDate, new { @class = "validate", type = "date", format = "yyyy-mm-dd" })
+</div>
+<div class="col s12 m6 input-field">
+    @Html.LabelFor(x => x.Status, new { @class = "active"})
+    @Html.DropDownListFor(x => x.Status, new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "Active" },
+        new SelectListItem { Value = "2", Text = "Inactive" },
+        new SelectListItem { Value = "3", Text = "Retired" },
+        new SelectListItem { Value = "4", Text = "Deceased" }
+    })
+</div>

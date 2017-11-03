@@ -28,10 +28,5 @@ namespace MediaGraph.Controllers
 
             return View();
         }
-
-        public ActionResult Search()
-        {
-            return PartialView("_SearchPartialView");
-        }
     }
 }
