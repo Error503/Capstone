@@ -38,28 +38,26 @@ namespace MediaGraph.Code
                 {
                     Genres = ParseFromJson<IEnumerable<string>>(request.Form["Genres"]),
                     MediaType = (NodeMediaType)Enum.Parse(typeof(NodeMediaType), request.Form["MediaType"]),
-                    FranchiseName = request.Form["FranchiseName"].Trim().ToLower()
+                    FranchiseName = request.Form["FranchiseName"].Trim()
                 };
             }
             else if (contentType == NodeContentType.Person)
             {
                 result = new PersonNodeViewModel
                 {
-                    GivenName = request.Form["GivenName"].Trim().ToLower(),
-                    FamilyName = request.Form["FamilyName"].Trim().ToLower(),
+                    GivenName = request.Form["GivenName"].Trim(),
+                    FamilyName = request.Form["FamilyName"].Trim(),
                     Status = (PersonStatus)Enum.Parse(typeof(PersonStatus), request.Form["Status"])
                 };
             }
 
             result.Id = Guid.Parse(request.Form["Id"]);
             result.ContentType = contentType;
-            result.CommonName = contentType == NodeContentType.Person ? $"{((PersonNodeViewModel)result).GivenName} {((PersonNodeViewModel)result).FamilyName}" : request.Form["CommonName"].Trim().ToLower();
+            result.CommonName = contentType == NodeContentType.Person ? $"{((PersonNodeViewModel)result).GivenName} {((PersonNodeViewModel)result).FamilyName}" : request.Form["CommonName"].Trim();
             result.OtherNames = ParseFromJson<IEnumerable<string>>(request.Form["OtherNames"]);
             result.ReleaseDate = releaseDate;
             result.DeathDate = deathDate;
-            result.RelatedCompanies = ParseFromJson<IEnumerable<RelationshipViewModel>>(request.Form["RelatedCompanies"]);
-            result.RelatedMedia = ParseFromJson<IEnumerable<RelationshipViewModel>>(request.Form["RelatedMedia"]);
-            result.RelatedPeople = ParseFromJson<IEnumerable<RelationshipViewModel>>(request.Form["RelatedPeople"]);
+            result.Relationships = ParseFromJson<IEnumerable<RelationshipViewModel>>(request.Form["Relationships"]);
 
             // Validate the object
             Validate(result, bindingContext);

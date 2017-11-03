@@ -26,9 +26,7 @@ namespace MediaGraph.Models.Component
         //[JsonProperty("links")]
         //public Dictionary<string, string> Links { get; set; }
 
-        public List<RelationshipModel> RelatedCompanies { get; set; } = new List<RelationshipModel>();
-        public List<RelationshipModel> RelatedMedia { get; set; } = new List<RelationshipModel>();
-        public List<RelationshipModel> RelatedPeople { get; set; } = new List<RelationshipModel>();
+        public List<RelationshipModel> Relationships { get; set; }
 
         /// <summary>
         /// Returns the string represtation of this node's labels.
@@ -78,7 +76,7 @@ namespace MediaGraph.Models.Component
                     {
                         // Media properties
                         MediaType = node.Labels.Count > 2 ? (NodeMediaType)Enum.Parse(typeof(NodeMediaType), node.Labels[1]) : 0,
-                        FranchiseName = node.Properties.ContainsKey("franchise") ? node.Properties["franchise"].As<string>() : null,
+                        Franchise = node.Properties.ContainsKey("franchise") ? node.Properties["franchise"].As<string>() : null,
                         Genres = node.Properties.ContainsKey("genres") ? node.Properties["genres"].As<List<string>>() : new List<string>()
                     };
                 }
@@ -148,23 +146,10 @@ namespace MediaGraph.Models.Component
                 {
                     SourceId = Id,
                     TargetId = relatedId,
+                    TargetType = relatedType,
                     TargetName = relatedNode["commonName"].As<string>(),
                     Roles = relationship["roles"].As<List<string>>()
                 };
-
-                // Add the relationship to the correct list
-                if (relatedType == NodeContentType.Company)
-                {
-                    RelatedCompanies.Add(relModel);
-                }
-                else if (relatedType == NodeContentType.Media)
-                {
-                    RelatedMedia.Add(relModel);
-                }
-                else if (relatedType == NodeContentType.Person)
-                {
-                    RelatedPeople.Add(relModel);
-                }
             }
         }
     }
@@ -181,8 +166,8 @@ namespace MediaGraph.Models.Component
     {
         [JsonProperty("mediaType")]
         public NodeMediaType MediaType { get; set; }
-        [JsonProperty("franchiseName")]
-        public string FranchiseName { get; set; }
+        [JsonProperty("franchise")]
+        public string Franchise { get; set; }
         [JsonProperty("genres")]
         public IEnumerable<string> Genres { get; set; }
         //[JsonProperty("regionalReleaseDates")]
@@ -217,7 +202,18 @@ namespace MediaGraph.Models.Component
     {
         public Guid SourceId { get; set; }
         public Guid? TargetId { get; set; }
+        public NodeContentType TargetType { get; set; }
         public string TargetName { get; set; }
         public IEnumerable<string> Roles { get; set; }
+
+        /// <summary>
+        /// Generates the label string for this relationship.
+        /// This is the same as calling GetNodeLabels on node with only one label.
+        /// </summary>
+        /// <returns>The label for this relationship</returns>
+        public string GetNodeLabel()
+        {
+            return Enum.GetName(typeof(NodeContentType), TargetType);
+        }
     }
 }

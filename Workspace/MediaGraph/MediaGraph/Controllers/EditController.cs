@@ -75,7 +75,7 @@ namespace MediaGraph.Controllers
         [HttpPost]
         public ActionResult Visualize(BasicNodeViewModel viewModel)
         {
-            return Json(viewModel);
+            return View(model: viewModel);
         }
 
         private ActionResult CheckModelAndMakeRequest(BasicNodeViewModel model)

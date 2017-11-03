@@ -1,5 +1,5 @@
 ﻿@model MediaGraph.ViewModels.Edit.MediaNodeViewModel
-<input type="hidden" name="Genres" />
+<input type="hidden" name="Genres" value="@Model.GetGenresJson()"/>
 <div class="col s12 m6 input-field">
     @Html.LabelFor(x => x.MediaType, new { @class = "active" })
     @Html.DropDownListFor(x => x.MediaType, new List<SelectListItem>
@@ -12,20 +12,20 @@
     })
 </div>
 <div class="col s12 m6 input-field">
-    @Html.TextBoxFor(x => x.FranchiseName, new { @class = "validate" })
-    @Html.LabelFor(x => x.FranchiseName)
-</div>
-<div class="col s12 m6 input-field">
     @Html.TextBoxFor(x => x.CommonName, new { @class = "validate" })
     @Html.LabelFor(x => x.CommonName)
-</div>
-<div class="col s12 m6 input-field">
-    @Html.TextBoxFor(x => x.ReleaseDate, new { @class = "validate", type = "date" })
-    <label for="@Html.NameFor(x => x.ReleaseDate)" class="active">Initial Release Date</label>
 </div>
 <div class="col s12 input-field">
     <label for="other-name-chips">Other Names</label>
     <div id="other-name-chips" class="chips"></div>
+</div>
+<div class="col s12 m6 input-field">
+    @Html.TextBoxFor(x => x.FranchiseName, new { @class = "validate" })
+    @Html.LabelFor(x => x.FranchiseName)
+</div>
+<div class="col s12 m6 input-field">
+    <input id="@Html.NameFor(x => x.ReleaseDate)" type="date" name="@Html.NameFor(x => x.ReleaseDate)" class="validate" value="@MediaGraph.Code.DateValueConverter.ToDisplayFormat(Model.ReleaseDate)"/>
+    <label for="@Html.NameFor(x => x.ReleaseDate)" class="active">Initial Release Date</label>
 </div>
 <div class="col s12 input-field">
     <label for="genre-chips">Genres</label>

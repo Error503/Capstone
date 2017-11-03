@@ -81,24 +81,20 @@ namespace MediaGraph.Code
             builder.AppendFormat(kNodeCreationStatement, model.GetNodeLabels());
             builder.AppendLine();
             // Append the relationship statements
-            BuildRelationshipMergeStatement(builder, model.RelatedCompanies, NodeContentType.Company, model.ContentType);
-            BuildRelationshipMergeStatement(builder, model.RelatedMedia, NodeContentType.Media, model.ContentType);
-            BuildRelationshipMergeStatement(builder, model.RelatedPeople, NodeContentType.Person, model.ContentType);
+            BuildRelationshipMergeStatement(builder, model.Relationships, model.ContentType);
             // Append the return statement
             builder.Append("RETURN n");
 
             return builder.ToString();
         }
 
-        private void BuildRelationshipMergeStatement(StringBuilder builder, IEnumerable<RelationshipModel> relationships, 
-            NodeContentType targetType, NodeContentType sourceType)
+        private void BuildRelationshipMergeStatement(StringBuilder builder, IEnumerable<RelationshipModel> relationships, NodeContentType sourceType)
         {
             int targetIndex = 0;
-            string label = Enum.GetName(typeof(NodeContentType), targetType);
             foreach(RelationshipModel relModel in relationships)
             {
-                string identifier = $"target{label}{targetIndex}";
-                builder.AppendFormat("MERGE ({0}:{1} ", identifier, label);
+                string identifier = $"targetRel{targetIndex}";
+                builder.AppendFormat("MERGE ({0}:{1} ", identifier, relModel.GetNodeLabel());
                 // Start the properties section
                 builder.Append('{');
                 // Append the properties
@@ -121,12 +117,17 @@ namespace MediaGraph.Code
 
                 // Append the creation statement for the relationship
                 string relProps = "{roles: " + JsonConvert.SerializeObject(relModel.Roles) + "}";
-                if (sourceType == NodeContentType.Media && sourceType != targetType)
-                    // We are media note contecting to a non-media node: Relationship goes them to us
-                    builder.AppendFormat(kCreateRelationshipStatement, identifier, label, relProps, "n");
+                // If this is a media node,
+                if(sourceType == NodeContentType.Media)
+                {
+                    // This relationship goes Target -> Source
+                    builder.AppendFormat(kCreateRelationshipStatement, identifier, relModel.GetNodeLabel(), relProps, "n");
+                }
                 else
-                    // We are a non-media node or a media node relating to media: Relationship goes us to them
-                    builder.AppendFormat(kCreateRelationshipStatement, "n", label, relProps, identifier);
+                {
+                    // This relationship goes Source -> Target
+                    builder.AppendFormat(kCreateRelationshipStatement, "n", relModel.GetNodeLabel(), relProps, identifier);
+                }
                 builder.AppendLine();
                 // Incremenet targetIndex
                 targetIndex++;

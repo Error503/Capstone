@@ -30,12 +30,8 @@ namespace MediaGraph.ViewModels.Edit
         [JsonProperty("otherNames")]
         public IEnumerable<string> OtherNames { get; set; } = new List<string>();
 
-        [JsonProperty("relatedCompanies")]
-        public IEnumerable<RelationshipViewModel> RelatedCompanies { get; set; } = new List<RelationshipViewModel>();
-        [JsonProperty("relatedMedia")]
-        public IEnumerable<RelationshipViewModel> RelatedMedia { get; set; } = new List<RelationshipViewModel>();
-        [JsonProperty("relatedPeople")]
-        public IEnumerable<RelationshipViewModel> RelatedPeople { get; set; } = new List<RelationshipViewModel>();
+        [JsonProperty("relationships")]
+        public IEnumerable<RelationshipViewModel> Relationships { get; set; } = new List<RelationshipViewModel>();
 
         // Other possible properties
         //[JsonProperty("links")]
@@ -82,33 +78,12 @@ namespace MediaGraph.ViewModels.Edit
         }
 
         /// <summary>
-        /// Converts the collection of related companies into a JSON value to be 
-        /// put into forms.
+        /// Converts the relationships collection into a JSON string to be put into forms.
         /// </summary>
-        /// <returns>The JSON value of the related companies collection</returns>
-        public string GetRelatedCompaniesJson()
+        /// <returns>The JSON value of the relationships collection</returns>
+        public string GetRelationshipsJson()
         {
-            return JsonConvert.SerializeObject(RelatedCompanies);
-        }
-
-        /// <summary>
-        /// Converts the collection of related media into a JSON value to be
-        /// put into forms.
-        /// </summary>
-        /// <returns>The JSON value of the related media collection</returns>
-        public string GetRelatedMediaJson()
-        {
-            return JsonConvert.SerializeObject(RelatedMedia);
-        }
-
-        /// <summary>
-        /// Converts the collection of related people into a JSON value to be
-        /// put into forms.
-        /// </summary>
-        /// <returns>The JSON value of the related people collection</returns>
-        public string GetRelatedPeopleJson()
-        {
-            return JsonConvert.SerializeObject(RelatedPeople);
+            return JsonConvert.SerializeObject(Relationships);
         }
 
         /// <summary>
@@ -145,7 +120,7 @@ namespace MediaGraph.ViewModels.Edit
                 result = new MediaNodeViewModel
                 {
                     MediaType = ((MediaNodeModel)model).MediaType,
-                    FranchiseName = ((MediaNodeModel)model).FranchiseName,
+                    FranchiseName = ((MediaNodeModel)model).Franchise,
                     Genres = ((MediaNodeModel)model).Genres,
                 };
             } 
@@ -166,9 +141,7 @@ namespace MediaGraph.ViewModels.Edit
             result.ReleaseDate = model.ReleaseDate.HasValue ? DateValueConverter.ToDateTime(model.ReleaseDate.Value) : default(DateTime?);
             result.DeathDate = model.DeathDate.HasValue ? DateValueConverter.ToDateTime(model.DeathDate.Value) : default(DateTime?);
             // Add the relationships
-            result.RelatedCompanies = ConvertRelationships(model.RelatedCompanies);
-            result.RelatedMedia = ConvertRelationships(model.RelatedMedia);
-            result.RelatedPeople = ConvertRelationships(model.RelatedPeople);
+            //result.Relationships = model.Relationships;
 
             return result;
         }
@@ -202,9 +175,7 @@ namespace MediaGraph.ViewModels.Edit
                 OtherNames = this.OtherNames,
                 ReleaseDate = this.ReleaseDate.HasValue ? DateValueConverter.ToLongValue(this.ReleaseDate.Value) : default(long?),
                 DeathDate = this.DeathDate.HasValue ? DateValueConverter.ToLongValue(this.DeathDate.Value) : default(long?),
-                RelatedCompanies = ConvertRelationshipsToModel(this.RelatedCompanies),
-                RelatedMedia = ConvertRelationshipsToModel(this.RelatedMedia),
-                RelatedPeople = ConvertRelationshipsToModel(this.RelatedPeople)
+                Relationships = ConvertRelationshipsToModel(this.Relationships)
             };
         }
 
@@ -278,11 +249,9 @@ namespace MediaGraph.ViewModels.Edit
                 ReleaseDate = this.ReleaseDate.HasValue ? DateValueConverter.ToLongValue(this.ReleaseDate.Value) : default(long?),
                 DeathDate = this.DeathDate.HasValue ? DateValueConverter.ToLongValue(this.DeathDate.Value) : default(long?),
                 MediaType = this.MediaType,
-                FranchiseName = this.FranchiseName,
+                Franchise = this.FranchiseName,
                 Genres = this.Genres,
-                RelatedCompanies = ConvertRelationshipsToModel(this.RelatedCompanies),
-                RelatedMedia = ConvertRelationshipsToModel(this.RelatedMedia),
-                RelatedPeople = ConvertRelationshipsToModel(this.RelatedPeople)
+                Relationships = ConvertRelationshipsToModel(this.Relationships)
             };
         }
     }
@@ -341,9 +310,7 @@ namespace MediaGraph.ViewModels.Edit
                 FamilyName = this.FamilyName,
                 GivenName = this.FamilyName,
                 Status = this.Status,
-                RelatedCompanies = ConvertRelationshipsToModel(this.RelatedCompanies),
-                RelatedMedia = ConvertRelationshipsToModel(this.RelatedMedia),
-                RelatedPeople = ConvertRelationshipsToModel(this.RelatedPeople)
+                Relationships = ConvertRelationshipsToModel(this.Relationships)
             };
         }
     }
@@ -358,6 +325,7 @@ namespace MediaGraph.ViewModels.Edit
     {
         public Guid SourceId { get; set; }
         public Guid? TargetId { get; set; }
+        public NodeContentType TargetType { get; set; }
         public string TargetName { get; set; }
         public IEnumerable<string> Roles { get; set; }
 

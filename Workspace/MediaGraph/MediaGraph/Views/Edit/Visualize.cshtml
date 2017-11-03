@@ -25,8 +25,8 @@
                 @using (Html.BeginForm("Visualize", "Edit", FormMethod.Post, htmlAttributes: new { id = "node-form", autocomplete = "off" }))
                 {
                     <input type="hidden" name="Id" value="@Model.Id.ToString()" />
-                    <input type="hidden" name="Relationships" />
-                    <input type="hidden" name="OtherNames" />
+                    <input type="hidden" name="Relationships" value="@Model.GetRelationshipsJson()"/>
+                    <input type="hidden" name="OtherNames" value="@Model.GetOtherNamesJson()"/>
                     if (Model.ContentType == 0)
                     {
                         <div class="col s12 offset-m3 m6 center">
@@ -46,7 +46,18 @@
                         @Html.HiddenFor(x => x.ContentType)
                     }
                     <div id="node-information">
-
+                        @if(Model.ContentType == NodeContentType.Company)
+                        {
+                            @Html.Partial("_VisualCompanyInformationPartial", (CompanyNodeViewModel)Model)
+                        }
+                        else if(Model.ContentType == NodeContentType.Media)
+                        {
+                            @Html.Partial("_VisualMediaInformationPartial", (MediaNodeViewModel)Model)
+                        }
+                        else if(Model.ContentType == NodeContentType.Person)
+                        {
+                            @Html.Partial("_VisualPersonInformationPartial", (PersonNodeViewModel)Model)
+                        }
                     </div>
                 }
             </div>

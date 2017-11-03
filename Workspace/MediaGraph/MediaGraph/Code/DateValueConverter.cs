@@ -31,5 +31,17 @@ namespace MediaGraph.Code
             const int kMonthDivisor = 100;
             return new DateTime((int)(dateLong / kYearDivisor), (int)((dateLong % kYearDivisor) / kMonthDivisor), (int)(dateLong % kMonthDivisor));
         }
+
+        public static string ToDisplayFormat(DateTime? date)
+        {
+            string result = "";
+
+            if(date.HasValue)
+            {
+                result = date.Value.ToString("yyyy-MM-dd");
+            }
+
+            return result;
+        }
     }
 }

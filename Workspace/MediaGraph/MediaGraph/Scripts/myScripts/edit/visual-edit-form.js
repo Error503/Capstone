@@ -25,28 +25,43 @@ $(document).ready(function () {
     // If there is a content type defined
     if (document.forms['node-form']['ContentType'].value != 0) {
         // Parse the contentType
-        contentType = Number.parseInt(document.forms['node-form']['ContentType'].value);
+        var type = document.forms['node-form']['ContentType'].value;
+        if (type == 'Company') {
+            contentType = 1;
+        } else if (type == 'Media') {
+            contentType = 2;
+        } else if (type == 'Person') {
+            contentType = 3;
+        }
         // Set the value of the OtherNames field
         $('#other-name-chips').material_chip({ data: makeChips(JSON.parse(document.forms['node-form']['OtherNames'].value)) });
         // If this is a media node,
-        if (contentType === 3) {
+        console.log(contentType);
+        if (contentType == 2) {
             // Set the value of the Genres field
-            $('#genre-chips').material_chip({ data: makeChips(JSON.parse(document.forms['node-form']['Genres'].value)) });
+            var genreChips = makeChips(JSON.parse(document.forms['node-form']['Genres'].value));
+            $('#genre-chips').material_chip({ data: genreChips });
+            if (genreChips.length > 0) {
+                $('label[for="genre-chips"]').addClass('active');
+            }
         }
         // Create the network 
         nodeData = new vis.DataSet();
         edgeData = new vis.DataSet();
+
         var source = {
             id: 'source',
             shape: 'diamond',
             mass: 2,
-            group: 'original',
+            group: contentType,
             label: createLabel(document.forms['node-form']['CommonName'].value, 15),
-            title: document.forms['node-form']['CommonName'].value
+            title: document.forms['node-form']['CommonName'].value,
+            nid: document.forms['node-form']['Id'].value
         };
+        nodeData.add(source);
 
         // Get the relationship data
-        var relationships = JSON.parse($(document.forms['node-form']['Relationships'].value));
+        var relationships = JSON.parse(document.forms['node-form']['Relationships'].value);
 
         // Loop through the related nodes
         for (var i = 0; i < relationships.length; i++) {
@@ -54,27 +69,28 @@ $(document).ready(function () {
             var added = nodeData.add({
                 shape: 'dot',
                 mass: 2,
-                group: relationships[i].targetType,
-                label: createLabel(relationships[i].targetName, 15),
-                title: relationships[i].targetName,
-                nid: relationships[i].targetId,
-                targetType: relationships[i].targetType,
-                targetName: relationships[i].targetName,
-                roles: relationships[i].roles
+                group: relationships[i].TargetType,
+                label: createLabel(relationships[i].TargetName, 15),
+                title: relationships[i].TargetName,
+                nid: relationships[i].TargetId,
+                targetType: relationships[i].TargetType,
+                targetName: relationships[i].TargetName,
+                roles: relationships[i].Roles
             });
             // Add the edge
             edgeData.add({
-                from: added,
+                from: added[0],
                 to: 'source',
-                label: createLabel(relationships[i].roles[0], 15)
+                font: { align: 'top' },
+                label: createLabel(relationships[i].Roles[0], 15)
             });
         }
         // Create the network
-        network = new vis.network(document.getElementById('visualization-target'), { nodes: nodeData, edges: edgeData }, options);
+        network = new vis.Network(document.getElementById('visualization-target'), { nodes: nodeData, edges: edgeData }, options);
         // Setup validation
     } else {
         // Create the default network
-        nodeData = new vis.DataSet([{ id: 'source', label: 'Source', shape: 'diamond', group: 'original', mass: 2 }]);
+        nodeData = new vis.DataSet([{ id: 'source', label: 'Source', shape: 'diamond', group: 'original', mass: 2, nid: document.forms['node-form']['Id'].value }]);
         edgeData = new vis.DataSet();
         network = new vis.Network(document.getElementById('visualization-target'), { nodes: nodeData, edges: edgeData }, options);
         // Create an event to handle the dropdown change
@@ -118,15 +134,17 @@ $(document).ready(function () {
     });
     // Setup the event for the form submission
     $('#submit-button').on('click', function (event) {
-        console.log("Submit button clicked");
         var nodes = nodeData.get(); // Get the related nodes
+        var sourceNodeId = nodeData.get('source').nid;
         var relationshipsValue = [];
         for (var i = 0; i < nodes.length; i++) {
             // If the node is not the source node,
             if (nodes[i].id != 'source') {
                 relationshipsValue.push({
+                    sourceId: sourceNodeId,
                     targetId: nodes[i].nid,
-                    targetName: nodes[i].title.toLowerCase().trim(),
+                    targetType: nodes[i].targetType,
+                    targetName: nodes[i].targetName,
                     roles: nodes[i].roles
                 });
             }
@@ -137,11 +155,11 @@ $(document).ready(function () {
         // Set the value of the OtherNames field
         form['OtherNames'].value = JSON.stringify(getChipData('#other-name-chips'));
         // Set type specific data
-        if (contentType === 2) {
+        if (contentType == 2) {
             // This is a media node
             // Set the value of the Genres field
             form['Genres'].value = JSON.stringify(getChipData('#genre-chips'));
-        } else if (contentType === 3) {
+        } else if (contentType == 3) {
             // This is a person node
             form['CommonName'].value = form['GivenName'].value + ' ' + form['FamilyName'].value;
         }
