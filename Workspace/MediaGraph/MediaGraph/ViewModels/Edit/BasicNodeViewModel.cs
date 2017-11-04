@@ -189,6 +189,7 @@ namespace MediaGraph.ViewModels.Edit
                 {
                     SourceId = vm.SourceId,
                     TargetId = vm.TargetId,
+                    TargetType = vm.TargetType,
                     TargetName = vm.TargetName,
                     Roles = vm.Roles
                 });

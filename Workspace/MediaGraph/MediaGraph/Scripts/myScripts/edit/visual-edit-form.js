@@ -36,7 +36,6 @@ $(document).ready(function () {
         // Set the value of the OtherNames field
         $('#other-name-chips').material_chip({ data: makeChips(JSON.parse(document.forms['node-form']['OtherNames'].value)) });
         // If this is a media node,
-        console.log(contentType);
         if (contentType == 2) {
             // Set the value of the Genres field
             var genreChips = makeChips(JSON.parse(document.forms['node-form']['Genres'].value));
@@ -101,7 +100,7 @@ $(document).ready(function () {
                 $.ajax({
                     method: 'get',
                     url: '/edit/getInformation',
-                    data: { type: Number.parseInt($(this).val()), visual: true },
+                    data: { type: Number.parseInt($(this).val()) },
                     success: function (response) {
                         $('#node-information').empty().append(response);
                         setupInputEvents();

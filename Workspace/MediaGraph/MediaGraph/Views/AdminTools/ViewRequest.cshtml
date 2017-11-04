@@ -3,8 +3,6 @@
 @model  MediaGraph.ViewModels.AdminTools.DatabaseRequestViewModel
 @{
     ViewBag.Title = "Review Request";
-    Layout = "~/Views/Shared/_ContainerLayout.cshtml";
-    string value = Model.RequestId.ToString();
 }
 
 <article class="row">
@@ -23,81 +21,55 @@
         </section>
     </div>
     <div class="divider"></div>
-</article>
-<form action="/admintools/viewrequest" method="post" id="nodeForm">
-    <article class="row">
-        <section class="col s12">
-            <input type="hidden" name="RequestId" value="@Model.RequestId" />
-            <input type="hidden" name="RequestType" value="@Html.ValueFor(x => x.RequestType)" />
-            <input type="hidden" name="NodeDataType" value="@Html.ValueFor(x => x.NodeDataType)" />
-            <input type="hidden" name="Approved" />
-
-            <input type="hidden" name="Id" value="@Model.NodeData.Id" />
-            <input type="hidden" name="RelatedCompanies" value="@Model.NodeData.GetRelatedCompaniesJson()" />
-            <input type="hidden" name="RelatedMedia" value="@Model.NodeData.GetRelatedMediaJson()" />
-            <input type="hidden" name="RelatedPeople" value="@Model.NodeData.GetRelatedPeopleJson()" />
-            <input type="hidden" name="OtherNames" value="@Model.NodeData.GetOtherNamesJson()" />
-            @{
-                if (Model.NodeDataType == NodeContentType.Company)
-                {
-                    @Html.Partial("_CompanyInformationPartial", (CompanyNodeViewModel)Model.NodeData)
-                }
-                else if (Model.NodeDataType == NodeContentType.Media)
-                {
-                    @Html.Partial("_MediaInformationPartial", (MediaNodeViewModel)Model.NodeData)
-                }
-                else if (Model.NodeDataType == NodeContentType.Person)
-                {
-                    @Html.Partial("_PersonInformationPartial", (PersonNodeViewModel)Model.NodeData)
-                }
+    <section class="col s12 m6">
+        <div id="visualization-target" class="network-display full visualization"></div>
+    </section>
+    <section class="col s12 m6">
+        <ul class="tabs tabs-fixed-width">
+            <li class="tab"><a href="#node-tab">Node</a></li>
+            <li class="tab"><a href="#rel-tab">Relationships</a></li>
+        </ul>
+        <div id="node-tab">
+            @using (Html.BeginForm("ViewRequest", "AdminTools", FormMethod.Post, htmlAttributes: new { id = "node-form", autocomplete = "off" }))
+            {
+                <input type="hidden" name="Notes" value="@Model.Notes" />
+                <input type="hidden" name="RequestId" value="@Model.RequestId.ToString()" />
+                <input type="hidden" name="RequestType" value="@Model.RequestType" />
+                @Html.HiddenFor(x => x.NodeDataType)
+                <input type="hidden" name="Approved" value="@Model.Approved" />
+                @Html.Partial("_NodeFormPartial", (BasicNodeViewModel)Model.NodeData)
             }
-        </section>
-    </article>
-    <article class="row">
-        <section class="col s12">
-            @Html.Partial("_RelationshipFormPartial")
-        </section>
-    </article>
-    <article class="row">
-        <div class="valign-wrapper">
-            <section class="col s12 m6">
-                <h5 class="center-align">Submission Details</h5>
-                <p>Submitted by: @Model.SubmitterName</p>
-                <p>Submission date: @Model.SubmissionDate.ToLongDateString() at @Model.SubmissionDate.ToLongTimeString()</p>
-            </section>
-            <section class="col s12 m6">
-                <div class="input-field">
-                    @if(Model.Reviewed)
-                    {
-                        @Html.TextAreaFor(x => x.Notes, new { @class = "materialize-textarea", disabled = "disabled" })
-                    }
-                    else
-                    {
-                        @Html.TextAreaFor(x => x.Notes, new { @class = "materialize-textarea" })
-                    }
-                    <label for="Notes">Notes</label>
-                </div>
-                @if (!Model.Reviewed)
-                {
-                    <div class="row">
-                        <div class="col s6">
-                            <button id="reject-button" type="button" class="waves-effect waves-light btn red accent-2">Reject</button>
-                        </div>
-                        <div class="col s6">
-                            <button id="approve-button" type="button" class="right waves-effect waves-light btn green accent-2">Approve</button>
-                        </div>
-                    </div>
-                }
-            </section>
         </div>
-    </article>
-</form>
+        <div id="rel-tab">
+            @Html.Partial("_RelationshipFormPartial")
+        </div>
+    </section>
+</article>
+<article class="row">
+    <section class="col s12 m6">
+
+    </section>
+    <section class="col s12 m6">
+        <div class="input-field">
+            <textarea id="notes-input" class="materialize-textarea"></textarea>
+            <label for="notes-input">Notes</label>
+        </div>
+        <div class="left">
+            <button id="reject-button" type="button" class="waves-effect waves-light btn red">Reject <i class="material-icons left">clear</i></button>
+        </div>
+        <div class="right">
+            <button id="approve-button" type="button" class="waves-effect waves-light btn green right">Approve <i class="material-icons left">done</i></button>
+        </div>
+    </section>
+</article>
 
 @section css {
-    <link rel="stylesheet" type="text/css" href="~/Content/admin-tools/management-style.css" />
-    <link rel="stylesheet" type="text/css" href="~/Content/forms/formStyle.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Content/graphStyle.css" />
 }
 @section scripts {
-    <script src="~/Scripts/myScripts/edit/relationship-form-script.js"></script>
-    <script src="~/Scripts/myScripts/admin-tools/review-page.js"></script>    
+    @Scripts.Render("~/bundles/validation")
+    <script src="~/Scripts/myScripts/edit/visual-relationship-script.js"></script>
+    <script src="~/Scripts/myScripts/edit/visual-edit-form.js"></script>
+    <script src="~/Scripts/myScripts/admin-tools/review-script.js"></script>
 }

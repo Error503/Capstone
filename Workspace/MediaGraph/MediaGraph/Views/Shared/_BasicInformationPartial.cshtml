@@ -1,7 +1,0 @@
-﻿@model MediaGraph.ViewModels.Edit.BasicNodeViewModel
-
-@Html.HiddenFor(x => x.Id)
-<input type="hidden" name="OtherNames" value="@Model.GetOtherNamesJson()"/>
-<input type="hidden" name="RelatedCompanies" value="@Model.GetRelatedCompaniesJson()"/>
-<input type="hidden" name="RelatedMedia" value="@Model.GetRelatedMediaJson()"/>
-<input type="hidden" name="RelatedPeople" value="@Model.GetRelatedPeopleJson()"/>

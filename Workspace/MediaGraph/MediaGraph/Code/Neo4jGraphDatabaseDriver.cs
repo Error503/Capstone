@@ -60,7 +60,6 @@ namespace MediaGraph.Code
                 {
                     // Create the node
                     IStatementResult result = action.Run(BuildNodeCreationQuery(node), new { props = node.GetPropertyMap() });
-
                     return result.Single()[0].As<INode>();
                 });
             }
@@ -363,7 +362,7 @@ namespace MediaGraph.Code
                 session.ReadTransaction(action =>
                 {
                     // Run the query
-                    IStatementResult statementResult = action.Run("MATCH (n) WHERE n.commonName STARTS WITH $text RETURN n.commonName, n.id", new { text = name });
+                    IStatementResult statementResult = action.Run("MATCH (n) WHERE LOWER(n.commonName) STARTS WITH $text RETURN n.commonName, n.id", new { text = name });
                     // Populate the dictionary
                     foreach(IRecord record in statementResult)
                     {
