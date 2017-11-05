@@ -13,8 +13,8 @@ namespace MediaGraph
                 "~/Scripts/jquery-ui-{version}.js",
                 "~/Scripts/jquery.unobtrusive-ajax.min.js"));
             bundles.Add(new ScriptBundle("~/bundles/core").Include(
-                "~/Scripts/vis/vis.min.js",
-                "~/Scripts/materialize/materialize.min.js",
+                //"~/Scripts/vis/vis.min.js",
+                //"~/Scripts/materialize/materialize.min.js",
                 "~/Scripts/myScripts/menu.js"));
             bundles.Add(new ScriptBundle("~/bundles/validation").Include(
                 "~/Scripts/jquery.validate.js",

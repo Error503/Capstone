@@ -26,11 +26,12 @@ namespace MediaGraph.Code
         //private const string kMatchNodeByAnyName = "MATCH (n) WHERE n.commonName = $name OR $name IN n.otherNames RETURN n";
 
         private readonly IDriver driver;
+        private const bool kUseInternal = false;
 
         public Neo4jGraphDatabaseDriver()
         {
             // Create the database driver
-            driver = GraphDatabase.Driver(Properties.Settings.Default.neo4jUrl, 
+            driver = GraphDatabase.Driver(kUseInternal ? Properties.Settings.Default.neoInternal : Properties.Settings.Default.neo4jUrl, 
                 AuthTokens.Basic(Properties.Settings.Default.neo4jLogin, Properties.Settings.Default.neo4jPass));
         }
 

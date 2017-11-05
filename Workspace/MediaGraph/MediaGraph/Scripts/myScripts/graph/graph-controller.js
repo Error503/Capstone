@@ -30,6 +30,7 @@ $(document).ready(function () {
     setupAutocomplete($('input.autocomplete'), true, autocompleteCallback);
 
     function autocompleteCallback(value) {
+        console.log(value);
         document.forms['search-form']['id'].value = value.id;
         getInformation();
     }
