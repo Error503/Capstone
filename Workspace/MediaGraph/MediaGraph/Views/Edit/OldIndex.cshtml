@@ -1,0 +1,68 @@
+﻿@using MediaGraph.ViewModels.Edit
+@using MediaGraph.Models.Component
+@model BasicNodeViewModel
+@{
+    Layout = "~/Views/Shared/_ContainerLayout.cshtml";
+}
+<div>
+    @Html.ValidationSummary()
+    <article id="basic-node-info" class="row">
+        <div class="valign-wrapper">
+            <div class="col s12 center-align">
+                <span class="title-text">What are you adding?</span>
+                <div class="inline input-field">
+                    <select id="node-content-type">
+                        <option value="" selected disabled>Content Type</option>
+                        <option value="1" >Company</option>
+                        <option value="2">Media</option>
+                        <option value="3">Person</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </article>
+    <div id="hidden-divider" class="divider" style="display:none;"></div>
+    <article class="row">
+        @using (Html.BeginForm("Index", "Edit", FormMethod.Post, new { id = "nodeForm", autocomplete = "off" }))
+        {
+            @Html.Partial("_BasicInformationPartial", Model)
+            <section id="node-info" style="display:none;">
+                @if (Model.ContentType != 0)
+                {
+                    if (Model.ContentType == NodeContentType.Company)
+                    {
+                        @Html.Partial("_CompanyInformationPartial", (CompanyNodeViewModel)Model)
+                    }
+                    else if (Model.ContentType == NodeContentType.Media)
+                    {
+                        @Html.Partial("_MediaInformationPartial", (MediaNodeViewModel)Model)
+                    }
+                    else if (Model.ContentType == NodeContentType.Person)
+                    {
+                       @Html.Partial("_PersonInformationPartial", (PersonNodeViewModel)Model)
+                    }
+                }
+            </section>
+        }
+    </article>
+    <div class="divider"></div>
+    <article id="relationship-info" class="row">
+        @Html.Partial("_RelationshipFormPartial")
+    </article>
+    <article id="submission-section" class="row">
+        <section class="col s12">
+            <div class="center">
+                <button id="reset-button" type="button" class="waves-effect waves-light btn disabled">Reset Form</button>
+                <button id="submit-button" type="submit" class="waves-effect waves-light btn disabled" onclick="validate()">Submit</button>
+            </div>
+        </section>
+    </article>
+</div>
+
+@section css {
+    <link rel="stylesheet" type="text/css" href="~/Content/forms/formStyle.css" />
+}
+@section scripts {
+    <script src="~/Scripts/myScripts/edit/relationship-form-script.js"></script>
+    <script src="~/Scripts/myScripts/edit/edit-form-script-query.js"></script>
+}

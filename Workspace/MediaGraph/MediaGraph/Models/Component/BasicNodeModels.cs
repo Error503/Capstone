@@ -213,6 +213,8 @@ namespace MediaGraph.Models.Component
         /// <returns>The label for this relationship</returns>
         public string GetNodeLabel()
         {
+            if (TargetType == 0)
+                throw new ArgumentException("TargetType is invalid!!!", "TargetType");
             return Enum.GetName(typeof(NodeContentType), TargetType);
         }
     }

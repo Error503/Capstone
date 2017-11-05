@@ -1,17 +1,13 @@
 ﻿using MediaGraph.Code;
 using MediaGraph.Models;
-using MediaGraph.Models.Component;
 using MediaGraph.ViewModels.AdminTools;
 using MediaGraph.ViewModels.Edit;
 using Microsoft.AspNet.Identity.EntityFramework;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 
 namespace MediaGraph.Controllers
 {
@@ -246,19 +242,24 @@ namespace MediaGraph.Controllers
         [HttpPost]
         public ActionResult ViewRequest(RequestReviewViewModel request)
         {
+            //return Json(  );
             ActionResult result = View("Error");
             if (request != null)
             {
                 DatabaseRequest fromDatabase;
-                bool shouldCommitChanges = false;
                 // Get the data from the request database
                 using (ApplicationDbContext context = ApplicationDbContext.Create())
                 {
                     fromDatabase = context.Requests.Single(x => x.Id == request.RequestId);
                     if (!fromDatabase.Reviewed)
                     {
-                        // If the request has been approved then changes should be committed
-                        shouldCommitChanges = request.Approved;
+                        bool saveDatabase = false;
+                        // If the request has not be reviewed and is approved,
+                        if (request.Approved)
+                        {
+                            // Commit the changes to the database
+                            saveDatabase = CheckRequestsAndCommitChanges(request.NodeData, fromDatabase);
+                        }
                         // If we should delete requests when they are reviewed,
                         if (kDeleteOnReview)
                         {
@@ -275,16 +276,13 @@ namespace MediaGraph.Controllers
                             if (request.Approved)
                                 fromDatabase.ApprovalDate = DateTime.Now;
                         }
-                        // Save the changes
-                        context.SaveChanges();
+                        // If the database action was successful,
+                        if(saveDatabase)
+                        {
+                            // Save the changes to the database
+                            context.SaveChanges();
+                        }
                     }
-                }
-
-                // If the request has not been reviewed,
-                if (shouldCommitChanges)
-                {
-                    // Commit the changes to the database
-                    CheckRequestsAndCommitChanges(request.NodeData, fromDatabase);
                 }
 
                 result = RedirectToAction("DatabaseRequests");
@@ -293,23 +291,26 @@ namespace MediaGraph.Controllers
             return result;
         }
 
-        private void CheckRequestsAndCommitChanges(BasicNodeViewModel fromForm, DatabaseRequest fromDatabase)
+        private bool CheckRequestsAndCommitChanges(BasicNodeViewModel fromForm, DatabaseRequest fromDatabase)
         {
+            bool result = false;
             using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
             {
                 if(fromDatabase.RequestType == DatabaseRequestType.Add)
                 {
-                    driver.AddNode(fromForm.ToModel());
+                    result = driver.AddNode(fromForm.ToModel());
                 }
                 else if(fromDatabase.RequestType == DatabaseRequestType.Update)
                 {
-                    driver.UpdateNode(fromForm.ToModel());
+                    result = driver.UpdateNode(fromForm.ToModel());
                 }
                 else if(fromDatabase.RequestType == DatabaseRequestType.Delete)
                 {
-                    driver.DeleteNode(fromForm.Id);
+                    result = driver.DeleteNode(fromForm.Id);
                 }
             }
+
+            return result;
         }
         #endregion
     }

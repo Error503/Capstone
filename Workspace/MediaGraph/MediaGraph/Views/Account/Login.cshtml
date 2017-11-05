@@ -13,7 +13,7 @@
             <div class="col s12 offset-m2 m8 offset-l3 l6">
                 <div class="input-field">
                     @Html.TextBoxFor(x => x.UserName, new { @class = "validate" })
-                    @Html.LabelFor(x => x.UserName)
+                    <label for="@Html.NameFor(x => x.UserName)">Username or Email</label>
                 </div>
                 <div class="input-field">
                     @Html.PasswordFor(x => x.Password, new { @class = "validate" })

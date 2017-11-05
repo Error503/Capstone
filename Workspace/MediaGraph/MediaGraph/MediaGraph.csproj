@@ -398,6 +398,7 @@
     <Content Include="Scripts\myScripts\admin-tools\request-base.js" />
     <Content Include="Scripts\myScripts\admin-tools\request-manager.js" />
     <Content Include="Scripts\myScripts\admin-tools\review-page.js" />
+    <Content Include="Scripts\myScripts\admin-tools\review-script.js" />
     <Content Include="Scripts\myScripts\admin-tools\user-manager.js" />
     <Content Include="Scripts\myScripts\edit\edit-form-script-query.js" />
     <Content Include="Scripts\myScripts\edit\relationship-form-script.js" />
@@ -474,27 +475,23 @@
     <Content Include="Views\Shared\_MaterialLayout.cshtml" />
     <Content Include="Views\Shared\_NavBarPartial.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
-    <Content Include="Views\Shared\_MediaInformationPartial.cshtml" />
     <Content Include="Views\AdminTools\Index.cshtml" />
     <Content Include="Views\Shared\_ContainerLayout.cshtml" />
     <Content Include="Views\AdminTools\UserManagement.cshtml" />
     <Content Include="Views\AdminTools\DatabaseRequests.cshtml" />
     <Content Include="Views\AdminTools\ViewRequest.cshtml" />
-    <Content Include="Views\Edit\Index.cshtml" />
-    <Content Include="Views\Shared\_CompanyInformationPartial.cshtml" />
-    <Content Include="Views\Shared\_PersonInformationPartial.cshtml" />
-    <Content Include="Views\Shared\_RelationshipFormPartial.cshtml" />
-    <Content Include="Views\Shared\_BasicInformationPartial.cshtml" />
+    <Content Include="Views\Edit\OldIndex.cshtml" />
     <Content Include="Views\AdminTools\_DatabaseRequestFilterPartial.cshtml" />
     <Content Include="Views\AdminTools\_UserManagementFilterPartial.cshtml" />
     <Content Include="Views\Shared\_UpdatedNavBarPartial.cshtml" />
-    <Content Include="Views\Edit\Visualize.cshtml" />
+    <Content Include="Views\Edit\Index.cshtml" />
     <Content Include="Scripts\vis\vis.map" />
     <Content Include="Scripts\vis\vis.js.map" />
-    <Content Include="Views\Edit\_VisualRelationshipFormPartial.cshtml" />
-    <Content Include="Views\Edit\_VisualCompanyInformationPartial.cshtml" />
-    <Content Include="Views\Edit\_VisualMediaInformationPartial.cshtml" />
-    <Content Include="Views\Edit\_VisualPersonInformationPartial.cshtml" />
+    <Content Include="Views\Shared\_RelationshipFormPartial.cshtml" />
+    <Content Include="Views\Shared\_CompanyInformationPartial.cshtml" />
+    <Content Include="Views\Shared\_MediaInformationPartial.cshtml" />
+    <Content Include="Views\Shared\_PersonInformationPartial.cshtml" />
+    <Content Include="Views\Shared\_NodeFormPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

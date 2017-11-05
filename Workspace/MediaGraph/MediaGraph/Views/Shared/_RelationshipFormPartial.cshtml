@@ -1,29 +1,28 @@
-﻿<h5 class="center-align">Relationship Data</h5>
-<div class="col s12">
-    <ul class="tabs tabs-fixed-width">
-        <li class="tab relationship-tab" tab-value="Companies"><a class="pointer-item">Companies</a></li>
-        <li class="tab relationship-tab" tab-value="Media"><a class="pointer-item">Media</a></li>
-        <li class="tab relationship-tab" tab-value="People"><a class="pointer-item">People</a></li>
-    </ul>
-</div>
-<div id="relationship-data" class="col s12 m6">
-    <h5 class="center-align">Related <span id="active-group-name">Companies</span></h5>
-    <ul id="relationship-list" class="collection relationship-group"></ul>
-</div>
-<div class="col s12 m6">
-    <div id="relationship-data-entry" class="row">
-        <div class="input-field">
-            <label id="relationship-name-label" for="relationship-name-entry">Name</label>
-            <input type="text" id="relationship-name-entry" disabled />
+﻿<form id="relationship-form">
+    <input type="hidden" name="targetId" autocomplete="off" />
+    <div class="col s12 m6 input-field">
+        <label for="targetType" class="active">Target Type</label>
+        <select name="targetType" id="targetTypeSelect">
+            <option value="" disabled selected>Target Type...</option>
+            <option value="1">Company</option>
+            <option value="2">Media</option>
+            <option value="3">Person</option>
+        </select>
+    </div>
+    <div class="col s12 m6 input-field">
+        <input id="relationship-target" name="targetName" type="text" class="autocomplete validate"/>
+        <label for="relationship-target">Target Name</label>
+    </div>
+    <div class="col s12 input-field">
+        <label for="relationship-chips" class="active">Relationship</label>
+        <div id="relationship-chips" class="chips"></div>
+    </div>
+    <div class="col s12">
+        <div class="left">
+            <button id="remove-relationship-button" type="button" class="waves-effect waves-light btn red accent-1 disabled"><i class="material-icons left">remove</i>Remove</button>
         </div>
-        <div class="input-field">
-            <label id="relationship-chips-label" for="relationship-chips">Roles</label>
-            <div id="relationship-chips" class="chips custom-chips disabled"></div>
+        <div class="right">
+            <button id="add-relationship-button" type="button" class="waves-effect waves-light btn green accent-4"><i class="material-icons left">add</i>Add</button>
         </div>
     </div>
-    <div class="row">
-        <div class="center">
-            <button id="add-relationship-button" type="button" class="waves-effect waves-light btn disabled">New Item</button>
-        </div>
-    </div>
-</div>
+</form>

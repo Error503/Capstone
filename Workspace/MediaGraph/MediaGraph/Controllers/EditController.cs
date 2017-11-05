@@ -66,18 +66,6 @@ namespace MediaGraph.Controllers
             return CheckModelAndMakeRequest(model);
         }
 
-        [HttpGet]
-        public ActionResult Visualize()
-        {
-            return View(model: new BasicNodeViewModel { Id = Guid.NewGuid(), ContentType = 0 });
-        }
-
-        [HttpPost]
-        public ActionResult Visualize(BasicNodeViewModel viewModel)
-        {
-            return View(model: viewModel);
-        }
-
         private ActionResult CheckModelAndMakeRequest(BasicNodeViewModel model)
         {
             ActionResult result = View("Index", model);
@@ -178,24 +166,21 @@ namespace MediaGraph.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetInformation(int type, bool visual = false)
+        public ActionResult GetInformation(int type)
         {
             NodeContentType contentType = (NodeContentType)type;
             ActionResult result = Json(new { msg = $"Invalid type {type}" }, JsonRequestBehavior.AllowGet);
             if(contentType == NodeContentType.Company)
             {
-                result = visual ? PartialView("_VisualCompanyInformationPartial", new CompanyNodeViewModel()) : 
-                    PartialView("_CompanyInformationPartial", new CompanyNodeViewModel());
+                result = PartialView("_CompanyInformationPartial", new CompanyNodeViewModel());
             }
             else if(contentType == NodeContentType.Media)
             {
-                result = visual ? PartialView("_VisualMediaInformationPartial", new MediaNodeViewModel()) : 
-                    PartialView("_MediaInformationPartial", new MediaNodeViewModel());
+                result = PartialView("_MediaInformationPartial", new MediaNodeViewModel());
             }
             else if(contentType == NodeContentType.Person)
             {
-                result = visual ? PartialView("_VisualPersonInformationPartial", new PersonNodeViewModel()) : 
-                    PartialView("_PersonInformationPartial", new PersonNodeViewModel());
+                result = PartialView("_PersonInformationPartial", new PersonNodeViewModel());
             } 
             else
             {

@@ -25,8 +25,8 @@ namespace MediaGraph.Code
             BasicNodeViewModel result = null;
 
             NodeContentType contentType = (NodeContentType)Enum.Parse(typeof(NodeContentType), request.Form["ContentType"]);
-            DateTime? releaseDate = ParseDateTime(bindingContext.ValueProvider.GetValue("ReleaseDate").AttemptedValue);
-            DateTime? deathDate = contentType == NodeContentType.Media ? null : ParseDateTime(bindingContext.ValueProvider.GetValue("DeathDate").AttemptedValue);
+            DateTime? releaseDate = request.Form["ReleaseDate"] != null ? ParseDateTime(request.Form["ReleaseDate"]) : null;
+            DateTime? deathDate = contentType == NodeContentType.Media ? null : request.Form["DeathDate"] != null ? ParseDateTime(request.Form["DeathDate"]) : null;
 
             if (contentType == NodeContentType.Company)
             {

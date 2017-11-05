@@ -1,38 +1,33 @@
 ﻿@model MediaGraph.ViewModels.Edit.PersonNodeViewModel
 
-@Html.HiddenFor(x => x.ContentType)
-<section>
-    <h5 class="center-align">Person Information</h5>
-    <div class="col s12 m6">
-        <div class="input-field">
-            @Html.LabelFor(x => x.GivenName)
-            @Html.TextBoxFor(x => x.GivenName)
-        </div>
-    </div>
-    <div class="col s12 m6">
-        <div class="input-field">
-            @Html.LabelFor(x => x.FamilyName)
-            @Html.TextBoxFor(x => x.FamilyName)
-        </div>
-    </div>
-    <div class="col s12">
-        <div class="input-field">
-            <label for="other-names">Other Names</label>
-            <div id="other-names" class="chips custom-chips"></div>
-        </div>
-    </div>
-    <div class="col s12 m6">
-        <label for="ReleaseDate" class="active">Date of Birth</label>
-        <input type="text" name="ReleaseDate" class="datepicker" value="@Model.GetDateValue(Model.ReleaseDate)" />
-    </div>
-    <div class="col s12 m6">
-        <label for="DeathDate" class="active">Date of Death</label>
-        <input type="text" name="DeathDate" class="datepicker" value="@Model.GetDateValue(Model.DeathDate)" />
-    </div>
-    <div class="col s12 m6 l4">
-        <div class="input-field">
-            @Html.LabelFor(x => x.Status, new { @class = "active" })
-            @Html.EnumDropDownListFor(x => x.Status, "Current Status")
-        </div>
-    </div>
-</section>
+<input type="hidden" name="@Html.NameFor(x => x.CommonName)" value="@Html.ValueFor(x => x.CommonName)" />
+<div class="col s12 m6 input-field">
+    @Html.TextBoxFor(x => x.GivenName, new { @class = "validate" })
+    @Html.LabelFor(x => x.GivenName)
+</div>
+<div class="col s12 m6 input-field">
+    @Html.TextBoxFor(x => x.FamilyName, new { @class = "validate" })
+    @Html.LabelFor(x => x.FamilyName)
+</div>
+<div class="col s12 input-field">
+    <label for="other-name-chips" class="active">Other Names</label>
+    <div id="other-name-chips" class="chips"></div>
+</div>
+<div class="col s12 m6 input-field">
+    <input id="@Html.NameFor(x => x.ReleaseDate)" type="date" name="@Html.NameFor(x => x.ReleaseDate)" class="validate" value="@MediaGraph.Code.DateValueConverter.ToDisplayFormat(Model.ReleaseDate)" />
+    <label for="@Html.NameFor(x => x.ReleaseDate)" class="active">Date of Birth</label>
+</div>
+<div class="col s12 m6 input-field">
+    <input id="@Html.NameFor(x => x.DeathDate)" type="date" name="@Html.NameFor(x => x.DeathDate)" class="validate" value="@MediaGraph.Code.DateValueConverter.ToDisplayFormat(Model.DeathDate)" />
+    <label for="@Html.NameFor(x => x.DeathDate)" class="active">Date of Death</label>
+</div>
+<div class="col s12 m6 input-field">
+    @Html.LabelFor(x => x.Status, new { @class = "active"})
+    @Html.DropDownListFor(x => x.Status, new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "Active" },
+        new SelectListItem { Value = "2", Text = "Inactive" },
+        new SelectListItem { Value = "3", Text = "Retired" },
+        new SelectListItem { Value = "4", Text = "Deceased" }
+    })
+</div>

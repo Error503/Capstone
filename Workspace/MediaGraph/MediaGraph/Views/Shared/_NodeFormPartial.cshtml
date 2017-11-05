@@ -1,0 +1,25 @@
+﻿@using MediaGraph.Models.Component
+@using MediaGraph.ViewModels.Edit
+@model MediaGraph.ViewModels.Edit.BasicNodeViewModel
+
+@if(Model.ContentType != 0)
+{
+    @Html.HiddenFor(x => x.ContentType)
+}
+<input type="hidden" name="Id" value="@Model.Id.ToString()" />
+<input type="hidden" name="Relationships" value="@Model.GetRelationshipsJson()" />
+<input type="hidden" name="OtherNames" value="@Model.GetOtherNamesJson()" />
+<div id="node-information">
+    @if(Model.ContentType == NodeContentType.Company)
+    {
+        @Html.Partial("_CompanyInformationPartial", (CompanyNodeViewModel)Model)
+    }
+    else if(Model.ContentType == NodeContentType.Media)
+    {
+        @Html.Partial("_MediaInformationPartial", (MediaNodeViewModel)Model)
+    }
+    else if(Model.ContentType == NodeContentType.Person)
+    {
+        @Html.Partial("_PersonInformationPartial", (PersonNodeViewModel)Model)
+    }
+</div>

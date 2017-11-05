@@ -64,7 +64,7 @@ function setupAutocomplete(element, useClearing, callback) {
                         autocompleteStorage = {};
                         for (var i = 0; i < response.length; i++) {
                             autocompleteData[createLabel(response[i].Item1)] = '';
-                            autocompleteStorage[response[i].Item1] = response[i].Item2;
+                            autocompleteStorage[response[i].Item1.toLowerCase()] = response[i].Item2;
                         }
                         $(element).autocomplete({
                             data: autocompleteData,
@@ -91,4 +91,39 @@ function setupAutocomplete(element, useClearing, callback) {
             wasCompleted = false;
         }
     });
+}
+
+// Creates a materialize chip whose placeholders won't get mixed up
+function customChips(element, options, data) {
+    $(element).material_chip({ data: data != null ? data : [] }); // Create the chips input
+    var chipInput = $(element).find('input'); // Get the chips input
+    var chipCount = 0;
+    console.log(options);
+    // If there are place holder options,
+    if (options.hasOwnProperty('placeholder') || options.hasOwnProperty('secondaryPlaceholder')) {
+        // Set up the events
+        $(element).on('chip.add', function (e, chip) {
+            chipCount += 1; // Increment the chip count
+            // If the chip count is now greater than 0,
+            if (chipCount > 0) {
+                // Set the value of the placeholder to the secondary placeholder,if present,
+                if (options.hasOwnProperty('secondaryPlaceholder')) {
+                    $(chipInput).attr('placeholder', options.secondaryPlaceholder)
+                }
+            }
+        }).on('chip.delete', function (e, chip) {
+            chipCount -= 1; // Decrement the chip count
+            // IF the chip count is now 0,
+            if (chipCount === 0) {
+                // Set the value of the placeholder to the primary placeholder, if present,
+                if (options.hasOwnProperty('placeholder')) {
+                    $(chipInput).attr('placeholder', options.placeholder);
+                }
+            }
+        });
+    }
+    // Set the initial placeholder
+    if (options.hasOwnProperty('placeholder')) {
+        $(chipInput).attr('placeholder', options.placeholder);
+    }
 }

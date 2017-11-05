@@ -34,13 +34,16 @@ $(document).ready(function () {
             contentType = 3;
         }
         // Set the value of the OtherNames field
-        $('#other-name-chips').material_chip({ data: makeChips(JSON.parse(document.forms['node-form']['OtherNames'].value)) });
+        var nameChips = makeChips(JSON.parse(document.forms['node-form']['OtherNames'].value));
+        customChips('#other-names-chips', { placeholder: "Other Name", secondaryPlaceholder: "+Name" }, nameChips);
+        if (nameChips.lenght > 0) {
+            $('label[for="other-name-chips"]').addClass('active');
+        }
         // If this is a media node,
-        console.log(contentType);
         if (contentType == 2) {
             // Set the value of the Genres field
             var genreChips = makeChips(JSON.parse(document.forms['node-form']['Genres'].value));
-            $('#genre-chips').material_chip({ data: genreChips });
+            customChips('#genre-chips', { placeholder: "Enter a Genre", secondaryPlaceholder: "+Genre" }, genreChips);
             if (genreChips.length > 0) {
                 $('label[for="genre-chips"]').addClass('active');
             }
@@ -54,8 +57,8 @@ $(document).ready(function () {
             shape: 'diamond',
             mass: 2,
             group: contentType,
-            label: createLabel(document.forms['node-form']['CommonName'].value, 15),
-            title: document.forms['node-form']['CommonName'].value,
+            label: document.forms['node-form']['CommonName'].value != "" ? createLabel(document.forms['node-form']['CommonName'].value, 15) : 'Source',
+            title: document.forms['node-form']['CommonName'].value != "" ? document.forms['node-form']['CommonName'].value : 'Source',
             nid: document.forms['node-form']['Id'].value
         };
         nodeData.add(source);
@@ -101,7 +104,7 @@ $(document).ready(function () {
                 $.ajax({
                     method: 'get',
                     url: '/edit/getInformation',
-                    data: { type: Number.parseInt($(this).val()), visual: true },
+                    data: { type: Number.parseInt($(this).val()) },
                     success: function (response) {
                         $('#node-information').empty().append(response);
                         setupInputEvents();
@@ -176,7 +179,7 @@ $(document).ready(function () {
     // Set up the relationship form
     setupRelationshipForm();
     // Set up materialize form fields
-    materializeSetup();
+    $('select').material_select();
 });
 
 function setupInputEvents(type) {
@@ -185,30 +188,25 @@ function setupInputEvents(type) {
     $('select').material_select();
     // Setup event handling for changes in the node form
     $('#node-form').find('input:not([type="hidden"])').on('change', updateSourceNode);
-    $('#other-name-chips').material_chip({ data: [] });
+    customChips('#other-name-chips', { placeholder: 'Second Name', secondaryPlaceholder: '+Name' });
     // If this is a media node,
     if (contentType == 2) {
         // Set up chips
-        $('#genre-chips').material_chip({ data: [] });
+        customChips('#genre-chips', { placeholder: 'Enter a Genre', secondaryPlaceholder: '+Genre' });
     }
     // Setup validation
 }
 
 function updateSourceNode(event) {
     var form = document.forms['node-form']; // Get the form
-    var displayName = contentType == 3 ? (form['GivenName'].value + ' ' + form['FamilyName'].value) : form['CommonName'].value;
+    var displayName = contentType == 3 ? (form['GivenName'].value + ' ' + form['FamilyName'].value).trim() : form['CommonName'].value;
     // Update the node
     nodeData.update({
         id: 'source',
         group: "" + form['ContentType'].value,
-        label: displayName !== null && displayName !== "" ? displayName : 'Source',
-        title: displayName !== null && displayName !== "" ? displayName : 'Source'
+        label: displayName != null && displayName != "" ? createLabel(displayName, 15) : 'Source',
+        title: displayName != null && displayName != "" ? displayName : 'Source'
     });
-}
-
-function materializeSetup() {
-    $('select').material_select();
-    $('#relationship-chips').material_chip();
 }
 
 function getChipData(element) {

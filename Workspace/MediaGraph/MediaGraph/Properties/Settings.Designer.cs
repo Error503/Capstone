@@ -49,5 +49,14 @@ namespace MediaGraph.Properties {
                 return ((string)(this["neo4jUrl"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("bolt://10.0.0.4:7687")]
+        public string neoInternal {
+            get {
+                return ((string)(this["neoInternal"]));
+            }
+        }
     }
 }

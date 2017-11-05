@@ -26,11 +26,12 @@ namespace MediaGraph.Code
         //private const string kMatchNodeByAnyName = "MATCH (n) WHERE n.commonName = $name OR $name IN n.otherNames RETURN n";
 
         private readonly IDriver driver;
+        private const bool kUseInternal = false;
 
         public Neo4jGraphDatabaseDriver()
         {
             // Create the database driver
-            driver = GraphDatabase.Driver(Properties.Settings.Default.neo4jUrl, 
+            driver = GraphDatabase.Driver(kUseInternal ? Properties.Settings.Default.neoInternal : Properties.Settings.Default.neo4jUrl, 
                 AuthTokens.Basic(Properties.Settings.Default.neo4jLogin, Properties.Settings.Default.neo4jPass));
         }
 
@@ -60,7 +61,6 @@ namespace MediaGraph.Code
                 {
                     // Create the node
                     IStatementResult result = action.Run(BuildNodeCreationQuery(node), new { props = node.GetPropertyMap() });
-
                     return result.Single()[0].As<INode>();
                 });
             }
@@ -363,7 +363,7 @@ namespace MediaGraph.Code
                 session.ReadTransaction(action =>
                 {
                     // Run the query
-                    IStatementResult statementResult = action.Run("MATCH (n) WHERE n.commonName STARTS WITH $text RETURN n.commonName, n.id", new { text = name });
+                    IStatementResult statementResult = action.Run("MATCH (n) WHERE LOWER(n.commonName) STARTS WITH $text RETURN n.commonName, n.id", new { text = name });
                     // Populate the dictionary
                     foreach(IRecord record in statementResult)
                     {
