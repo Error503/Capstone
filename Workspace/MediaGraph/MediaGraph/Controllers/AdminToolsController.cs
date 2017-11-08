@@ -242,7 +242,6 @@ namespace MediaGraph.Controllers
         [HttpPost]
         public ActionResult ViewRequest(RequestReviewViewModel request)
         {
-            //return Json(  );
             ActionResult result = View("Error");
             if (request != null)
             {
@@ -253,13 +252,9 @@ namespace MediaGraph.Controllers
                     fromDatabase = context.Requests.Single(x => x.Id == request.RequestId);
                     if (!fromDatabase.Reviewed)
                     {
-                        bool saveDatabase = false;
-                        // If the request has not be reviewed and is approved,
-                        if (request.Approved)
-                        {
-                            // Commit the changes to the database
-                            saveDatabase = CheckRequestsAndCommitChanges(request.NodeData, fromDatabase);
-                        }
+                        // Only save changes to the database if the request was rejected or if the request was 
+                        // approved and the database was updated
+                        bool saveDatabase = !request.Approved || (request.Approved && CheckRequestsAndCommitChanges(request.NodeData, fromDatabase));
                         // If we should delete requests when they are reviewed,
                         if (kDeleteOnReview)
                         {

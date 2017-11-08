@@ -25,7 +25,7 @@ namespace MediaGraph.Controllers
         public ActionResult NetworkData(Guid? id, string text)
         {
             GraphDataViewModel data = GetPaths(id, text);
-            return Json(data, JsonRequestBehavior.AllowGet);
+            return Json(new { success = data != null, data = data }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -51,7 +51,8 @@ namespace MediaGraph.Controllers
         [HttpGet]
         public ActionResult TimelineDataRange(DateTime start, DateTime end)
         {
-            return Json(GetTimelineElements(start, end), JsonRequestBehavior.AllowGet);
+            List<TimelineDisplayViewModel> data = GetTimelineElements(start, end);
+            return Json(new { success = data.Count > 0, data = data }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -98,7 +99,7 @@ namespace MediaGraph.Controllers
         #region Network Display Helper Methods
         private GraphDataViewModel GetPaths(Guid? id, string searchText)
         {
-            GraphDataViewModel result = new GraphDataViewModel();
+            GraphDataViewModel result = null;
             // Get the paths from the database
             List<IPath> paths = new List<IPath>();
             using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())

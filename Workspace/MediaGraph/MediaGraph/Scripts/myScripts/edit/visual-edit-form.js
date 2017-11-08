@@ -35,18 +35,12 @@ $(document).ready(function () {
         }
         // Set the value of the OtherNames field
         var nameChips = makeChips(JSON.parse(document.forms['node-form']['OtherNames'].value));
-        customChips('#other-names-chips', { placeholder: "Other Name", secondaryPlaceholder: "+Name" }, nameChips);
-        if (nameChips.lenght > 0) {
-            $('label[for="other-name-chips"]').addClass('active');
-        }
+        customChips('#other-name-chips', { placeholder: "Other Name", secondaryPlaceholder: "+Name" }, nameChips);
         // If this is a media node,
         if (contentType == 2) {
             // Set the value of the Genres field
             var genreChips = makeChips(JSON.parse(document.forms['node-form']['Genres'].value));
             customChips('#genre-chips', { placeholder: "Enter a Genre", secondaryPlaceholder: "+Genre" }, genreChips);
-            if (genreChips.length > 0) {
-                $('label[for="genre-chips"]').addClass('active');
-            }
         }
         // Create the network 
         nodeData = new vis.DataSet();
@@ -213,7 +207,6 @@ function getChipData(element) {
     // Get the chip data
     var chipData = $(element).material_chip('data');
     var result = [];
-    // Get the chip data
     for (var i = 0; i < chipData.length; i++) {
         result.push(chipData[i].tag);
     }

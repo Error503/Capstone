@@ -6,21 +6,29 @@
 main {
     flex: 1 0 auto;
 }
-.active-item {
-    font-size: 1.5em;
-}
-.small-text {
-    font-size: 0.8rem;
-}
-.info-display {
+/*.info-display {
     min-height: 200px;
     height: 250px;
-}
+}*/
 .scroll-list {
     height: 200px;
     max-height: 200px;
     overflow-y: scroll;
 }
-.pointer-item { 
+.relationship-group {
+    overflow-y: scroll;
+    height: 250px;
+    max-height: 250px;
+}
+.pointer-item {
     cursor: pointer;
+}
+.picker__header select {
+    display: inline-block !important;
+}
+.chips.disabled {
+    border-bottom-style: dotted;
+}
+#relationship-chips input, #genre-chips input, #other-name-chips input {
+    border-bottom: none;
 }

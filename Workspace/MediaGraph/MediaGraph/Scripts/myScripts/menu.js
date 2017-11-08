@@ -18,10 +18,13 @@ function createLabel(value, length) {
         });
         // Trim the label to length
         if (trimLength > 0 && result.length > trimLength) {
-            result = result.substring(0, trimLength - 3) + '...';
+            result = truncateLabel(result, trimLength);
         }
     }
     return result;
+}
+function truncateLabel(value, length) {
+    return (length != null && value.length > length) ? value.substring(0, length - 3) + '...' : value;
 }
 
 // Parses the given long value as a date
@@ -63,7 +66,7 @@ function setupAutocomplete(element, useClearing, callback) {
                         autocompleteData = {};
                         autocompleteStorage = {};
                         for (var i = 0; i < response.length; i++) {
-                            autocompleteData[createLabel(response[i].Item1)] = '';
+                            autocompleteData[truncateLabel(response[i].Item1)] = '';
                             autocompleteStorage[response[i].Item1.toLowerCase()] = response[i].Item2;
                         }
                         $(element).autocomplete({
@@ -98,32 +101,36 @@ function customChips(element, options, data) {
     $(element).material_chip({ data: data != null ? data : [] }); // Create the chips input
     var chipInput = $(element).find('input'); // Get the chips input
     var chipCount = 0;
-    console.log(options);
-    // If there are place holder options,
-    if (options.hasOwnProperty('placeholder') || options.hasOwnProperty('secondaryPlaceholder')) {
-        // Set up the events
-        $(element).on('chip.add', function (e, chip) {
-            chipCount += 1; // Increment the chip count
-            // If the chip count is now greater than 0,
-            if (chipCount > 0) {
-                // Set the value of the placeholder to the secondary placeholder,if present,
-                if (options.hasOwnProperty('secondaryPlaceholder')) {
-                    $(chipInput).attr('placeholder', options.secondaryPlaceholder)
-                }
+    // Set up the events on the chips input
+    $(element).on('chip.add', function (e, chip) {
+        chipCount += 1; // Increment the chip count
+        // If the chip count is now greater than 0,
+        if (chipCount > 0) {
+            // Set the value of the placeholder to the secondary placeholder,if present,
+            if (options.hasOwnProperty('secondaryPlaceholder')) {
+                $(chipInput).attr('placeholder', options.secondaryPlaceholder)
             }
-        }).on('chip.delete', function (e, chip) {
-            chipCount -= 1; // Decrement the chip count
-            // IF the chip count is now 0,
-            if (chipCount === 0) {
-                // Set the value of the placeholder to the primary placeholder, if present,
-                if (options.hasOwnProperty('placeholder')) {
-                    $(chipInput).attr('placeholder', options.placeholder);
-                }
+        }
+    }).on('chip.delete', function (e, chip) {
+        chipCount -= 1; // Decrement the chip count
+        // IF the chip count is now 0,
+        if (chipCount === 0) {
+            // Set the value of the placeholder to the primary placeholder, if present,
+            if (options.hasOwnProperty('placeholder')) {
+                $(chipInput).attr('placeholder', options.placeholder);
             }
-        });
-    }
+        }
+    });
+    // This will prevent the label from being placed into the input field
+    $(chipInput).on('blur', function (event) {
+        if (chipCount == 0) {
+            $('label[for="' + element.substring(1) + '"]').addClass('active');
+        }
+    });
     // Set the initial placeholder
-    if (options.hasOwnProperty('placeholder')) {
+    if (data != null && data.length > 0 && options.hasOwnProperty('secondaryPlaceholder')) {
+        $(chipInput).attr('placeholder', options.secondaryPlaceholder);
+    } else if (options.hasOwnProperty('placeholder')) {
         $(chipInput).attr('placeholder', options.placeholder);
     }
 }

@@ -30,7 +30,7 @@
             <li class="tab"><a href="#rel-tab">Relationships</a></li>
         </ul>
         <div id="node-tab">
-            @using (Html.BeginForm("ViewRequest", "AdminTools", FormMethod.Post, htmlAttributes: new { id = "node-form", autocomplete = "off" }))
+            @using (Html.BeginForm("ViewRequest", "AdminTools", FormMethod.Post, htmlAttributes: new { id = "node-form", autocomplete = "off", novalidate = "novalidate" }))
             {
                 <input type="hidden" name="Notes" value="@Model.Notes" />
                 <input type="hidden" name="RequestId" value="@Model.RequestId.ToString()" />

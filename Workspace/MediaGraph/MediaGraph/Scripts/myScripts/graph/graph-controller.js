@@ -2,6 +2,7 @@
 var display;
 var selectedType = 'network';
 $(document).ready(function () {
+    $('#create-node-modal').modal();
     // Event handling to clear the context menus
     document.onclick = function (event) {
         $('#context-popup').removeClass('active').addClass('inactive');
@@ -23,6 +24,16 @@ $(document).ready(function () {
             }
         });
     }
+    $(window).keydown(function (event) {
+        if (event.keyCode == 13) {
+            getInformation();
+            event.preventDefault();
+            return false;
+        }
+    });
+    $('#autocomplete-field').on('focus', function (event) {
+        $('input[name="id"]').val('');
+    });
     $('#search-button').on('click', function (event) {
         getInformation();
     });
@@ -30,7 +41,6 @@ $(document).ready(function () {
     setupAutocomplete($('input.autocomplete'), true, autocompleteCallback);
 
     function autocompleteCallback(value) {
-        console.log(value);
         document.forms['search-form']['id'].value = value.id;
         getInformation();
     }
@@ -59,14 +69,23 @@ function getInformation(position) {
         url: formAction,
         data: $('#search-form').serialize(),
         success: function (response) {
-            if (selectedType === 'network') {
-                updateNetwork(response, position);
+            if (response.success) {
+                if (selectedType === 'network') {
+                    updateNetwork(response.data, position);
+                } else {
+                    updateTimeline(response.data);
+                }
             } else {
-                updateTimeline(response);
+                console.log("MODAL");
+                $('#create-node-modal').modal('open');
             }
         },
         error: function (response) { console.log(response); }
     });
+}
+
+function closeModal() {
+    $('#create-node-modal').modal('close');
 }
 
 function updateNetwork(data, position) {

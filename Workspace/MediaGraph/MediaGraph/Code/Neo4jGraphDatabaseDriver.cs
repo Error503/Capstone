@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Configuration;
 
 namespace MediaGraph.Code
 {
@@ -31,8 +32,8 @@ namespace MediaGraph.Code
         public Neo4jGraphDatabaseDriver()
         {
             // Create the database driver
-            driver = GraphDatabase.Driver(kUseInternal ? Properties.Settings.Default.neoInternal : Properties.Settings.Default.neo4jUrl, 
-                AuthTokens.Basic(Properties.Settings.Default.neo4jLogin, Properties.Settings.Default.neo4jPass));
+            driver = GraphDatabase.Driver(kUseInternal ? ConfigurationManager.AppSettings["neoInternal"] : ConfigurationManager.AppSettings["neoExternal"],
+                AuthTokens.Basic(ConfigurationManager.AppSettings["neoLogin"], ConfigurationManager.AppSettings["neoPass"]));
         }
 
         /// <summary>

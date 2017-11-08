@@ -18,7 +18,7 @@ namespace MediaGraph
                 "~/Scripts/myScripts/menu.js"));
             bundles.Add(new ScriptBundle("~/bundles/validation").Include(
                 "~/Scripts/jquery.validate.js",
-                "~/Scripts/jquery.validate.unobtrusive.js",
+                //"~/Scripts/jquery.validate.unobtrusive.js",
                 "~/Scripts/myScripts/validation-adapter.js"));
             bundles.Add(new ScriptBundle("~/bundles/visualization").Include(
                 "~/Scripts/myScripts/graph/graph-controller.js",
