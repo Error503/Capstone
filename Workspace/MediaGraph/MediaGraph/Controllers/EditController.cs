@@ -75,7 +75,7 @@ namespace MediaGraph.Controllers
                 DatabaseRequestType requestType = 0;
                 using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
                 {
-                    requestType = driver.GetNode(model.Id) != null ? DatabaseRequestType.Update : DatabaseRequestType.Add;
+                    requestType = driver.GetNode(model.Id) != null ? DatabaseRequestType.Update : DatabaseRequestType.Create;
                 }
                 // Create the database request
                 CreateDatabaseRequest(model, requestType);

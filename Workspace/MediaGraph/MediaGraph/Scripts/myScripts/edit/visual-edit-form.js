@@ -146,7 +146,31 @@ $(document).ready(function () {
         }
     }).on('oncontext', function (props) {
         props.event.preventDefault(); // Prevent default functionality  
-    });
+        });
+    // Setup an event to handle screen resizing
+    var isScreenInSmallState = false;
+    // Check the screen size
+    checkScreenSize();
+    // Add an event handler for the window resizing
+    $(window).on('resize', checkScreenSize);
+
+    function checkScreenSize() {
+        // Get the screen width
+        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var isScreenSmall = screenWidth <= 992; // Materialize's setting for large screens
+        // If the state has changed,
+        if (isScreenSmall != isScreenInSmallState) {
+            // If the screen is currently small,
+            if (isScreenSmall) {
+                isScreenInSmallState = true;
+                options.interaction.navigationButtons = false;
+            } else {
+                isScreenInSmallState = false;
+                options.interaction.navigationButtons = true;
+            }
+            network.setOptions(options);
+        }
+    }
     // Setup the event for the form submission
     $('#submit-button').on('click', function (event) {
         var nodes = nodeData.get(); // Get the related nodes

@@ -2,59 +2,42 @@
 @model UserPage
 @{
     ViewBag.Title = "UserManagement";
+    Layout = "~/Views/AdminTools/_RequestsLayout.cshtml";
 }
-<article class="row">
-<h4 class="center-align">Manage Users</h4>
-    <section class="col s12 m5">
-        @Html.Partial("_UserManagementFilterPartial", new MediaGraph.ViewModels.AdminTools.UserManagementFilter())
-    </section>
-    <section class="col s12 m7">
-        <div id="user-list-container" >
-            <table>
-                <thead>
-                    <tr>
-                        <td>User name</td>
-                        <td>Role</td>
-                        <td>Update</td>
-                    </tr>
-                </thead>
-                <tbody id="user-list">
-                    @foreach(UserViewModel user in Model.Users)
+@section filter {
+    @Html.Partial("_UserManagementFilterPartial", new MediaGraph.ViewModels.AdminTools.UserManagementFilter())
+}
+@section requestList {
+    <div class="valign-wrapper">
+        <h5 class="center-align">Users</h5>
+        <button id="hide-button" type="button" class="waves-effect waves-light btn-flat" style="display:none;">Hide filter</button>
+    </div>
+    <ul id="user-list" class="collection list">
+        @foreach(UserViewModel user in Model.Users)
+        {
+            <li class="collection-item valign-wrapper">
+                <div class="col s4">@user.Username</div>
+                <div class="col s4 input-field">
+                    @Html.DropDownList("user-role-" + user.Id, new List<SelectListItem>
                     {
-                        <tr>
-                            <td>@user.Username</td>
-                            <td>
-                                @Html.DropDownList("user-role-" + user.Id, new List<SelectListItem>
-                                {
-                                    new SelectListItem { Value = "0", Text = "Member", Selected = user.Role == "0" },
-                                    new SelectListItem { Value = "1", Text = "Admin", Selected = user.Role == "1" },
-                                    new SelectListItem { Value = "2", Text = "Staff", Selected = user.Role == "2" }
-                                })
-                            </td>
-                            <td>
-                                <button type="button" data-user="@user.Id" class="waves-effect waves-blue btn-flat update-button">Update</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                        new SelectListItem { Value = "0", Text = "Member", Selected = user.Role == "0" },
+                        new SelectListItem { Value = "1", Text = "Admin", Selected = user.Role == "1" },
+                        new SelectListItem { Value = "2", Text = "Staff", Selected = user.Role == "2" }
+                    })
+                </div>
+                <div class="col s4"><button type="button" data-user="@user.Id" class="waves-effect waves-blue btn-flat update-button">Update</button></div>
+            </li>
+        }
+    </ul>
+}
+@section navigation {
+    <section class="col s12 offset-m5 m7 center">
+        <button id="previous-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_left</i></button>
+        <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@(Model.TotalPages == 0 ? 0 : Model.CurrentPage)" /> of <span id="total-pages">@Model.TotalPages</span></span>
+        <button id="next-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_right</i></button>
     </section>
-</article>
-<article class="row">
-    <section class="col offset-m5 m7">
-        <div class="center-align">
-            <button id="previous-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_left</i></button>
-            <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@Model.CurrentPage" /> of <span id="total-pages">@Model.TotalPages</span></span>
-            <button id="next-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_right</i></button>
-        </div>
-    </section>
-</article>
-
-@section css {
-    <link rel="stylesheet" type="text/css" href="~/Content/admin-tools/management-style.css" />    
 }
 @section scripts {
-    <script src="~/Scripts/myScripts/admin-tools/user-manager.js"></script>
     <script src="~/Scripts/myScripts/admin-tools/request-base.js"></script>
+    <script src="~/Scripts/myScripts/admin-tools/user-manager.js"></script>
 }

@@ -1,4 +1,7 @@
-﻿<article class="row">
+﻿@{ 
+    Layout = "~/Views/Shared/_MaterialLayout.cshtml";
+}
+<article class="row">
     <section id="filter-section" class="col s12 m5">
         <div id="filter-wrapper">
             <h5 class="center-align">Filter</h5>
@@ -14,3 +17,13 @@
 <article class="row">
     @RenderSection("navigation", true)
 </article>
+
+@section scripts {
+    @RenderSection("scripts", false)    
+}
+@section headScripts {
+    @RenderSection("headScripts", false)
+}
+@section css {
+    @RenderSection("css", false)    
+}

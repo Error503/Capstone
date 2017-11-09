@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNet.Identity
-<div class="navbar-fixed">
+﻿<div class="navbar-fixed">
     <nav>
         <div class="nav-wrapper green lighten-1">
             @Html.ActionLink("Logo", "Index", "Home", new { area = "" }, new { @class = "brand-logo center" })
@@ -9,7 +8,7 @@
                 <li>@Html.ActionLink("Visualization", "Index", "Graph")</li>
                 @if(User.IsInRole("admin") || User.IsInRole("staff"))
                 {
-                    <li><a class="dropdown-button" href="#!" data-activates="admin-dropdown">Admin Tools <i class="material-icons right">arrow_drop_down</i></a></li>
+                    <li><a class="dropdown-button" data-activates="admin-dropdown" data-belowOrigin="true">Admin Tools <i class="material-icons right">arrow_drop_down</i></a></li>
                 }
             </ul>
             @Html.Partial("_LoginPartial")

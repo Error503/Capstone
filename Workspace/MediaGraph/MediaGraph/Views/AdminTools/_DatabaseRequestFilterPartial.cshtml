@@ -12,32 +12,31 @@
 @using(Ajax.BeginForm("RequestPage", "AdminTools", null, options, new { id = "filterForm", autocomplete = "off" }))
 {
     @Html.HiddenFor(x => Model.PageNumber)
-    <div class="input-field">
+    <div class="col s6 input-field">
         @Html.LabelFor(x => x.SubmittedBy)
         @Html.TextBoxFor(x => x.SubmittedBy)
     </div>
-    <div class="input-field">
+    <div class="col s6 input-field">
         @Html.LabelFor(x => x.NodeName)
         @Html.TextBoxFor(x => x.NodeName)
     </div>
-    <div class="input-field">
+    <div class="col s12 input-field">
         @Html.LabelFor(x => x.RequestType, new { @class = "active" })
         @Html.EnumDropDownListFor(x => x.RequestType, "All Request Types")
     </div>
-    <h6 class="center-align">Submission Date</h6>
-    <div>
+    <div class="col s6">
         <div class="input-field">
             @Html.LabelFor(x => x.LowerBoundDate, new { @class = "active" })
         </div>
         <input type="text" class="datepicker" name="LowerBoundDate" value="@(Model.LowerBoundDate?.ToString("yyyy-mm-dd"))" />
     </div>
-    <div>
+    <div class="col s6">
         <div class="input-field">
             @Html.LabelFor(x => x.UpperBoundDate, new { @class = "active" })
         </div>
         <input type="text" class="datepicker" name="UpperBoundDate" value="@(Model.UpperBoundDate?.ToString("yyyy-mm-dd"))" />
     </div>
-    <div class="input-field">
+    <div class="col s12 input-field">
         @Html.LabelFor(x => x.ResultsPerPage, new { @class = "active" })
         @Html.DropDownListFor(x => x.ResultsPerPage, new List<SelectListItem>
         {
@@ -48,6 +47,6 @@
         })
     </div>
     <div class="center">
-        <button type="submit" class="waves-effect waves-light btn">Filter <i class="material-icons right">filter_list</i></button>
+        <button id="filter-button" type="submit" class="waves-effect waves-light green darken-2 btn z-depth-2">Filter <i class="material-icons right">filter_list</i></button>
     </div>
 }

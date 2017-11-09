@@ -460,7 +460,6 @@
     <Content Include="Views\Shared\_MaterialLayout.cshtml" />
     <Content Include="Views\Shared\_NavBarPartial.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
-    <Content Include="Views\AdminTools\Index.cshtml" />
     <Content Include="Views\Shared\_ContainerLayout.cshtml" />
     <Content Include="Views\AdminTools\UserManagement.cshtml" />
     <Content Include="Views\AdminTools\DatabaseRequests.cshtml" />
@@ -468,7 +467,6 @@
     <Content Include="Views\Edit\OldIndex.cshtml" />
     <Content Include="Views\AdminTools\_DatabaseRequestFilterPartial.cshtml" />
     <Content Include="Views\AdminTools\_UserManagementFilterPartial.cshtml" />
-    <Content Include="Views\Shared\_UpdatedNavBarPartial.cshtml" />
     <Content Include="Views\Edit\Index.cshtml" />
     <Content Include="Scripts\vis\vis.map" />
     <Content Include="Scripts\vis\vis.js.map" />
@@ -478,7 +476,7 @@
     <Content Include="Views\Shared\_PersonInformationPartial.cshtml" />
     <Content Include="Views\Shared\_NodeFormPartial.cshtml" />
     <Content Include="Views\Graph\_CreateNodeCard.cshtml" />
-    <Content Include="Views\AdminTools\_RequestLayoutPage.cshtml" />
+    <Content Include="Views\AdminTools\_RequestsLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

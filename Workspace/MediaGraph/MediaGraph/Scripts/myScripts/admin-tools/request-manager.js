@@ -50,7 +50,7 @@ function updateDisplay(list) {
     function getUpdateTypeString(type) {
         var str = "Unknown";
         if (type === 1) {
-            str = "Addition";
+            str = "Create";
         } else if (type === 2) {
             str = "Update";
         } else if (type === 3) {

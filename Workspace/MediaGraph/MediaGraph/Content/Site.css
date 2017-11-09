@@ -32,3 +32,16 @@ main {
 #relationship-chips input, #genre-chips input, #other-name-chips input {
     border-bottom: none;
 }
+
+/* Admin Management Pages */
+.list {
+    overflow-y: scroll;
+    min-height: 54vh;
+    max-height: 54vh;
+}
+
+#page-selection-box {
+    width: 50px;
+    text-align: center;
+    border-radius: 5px;
+}

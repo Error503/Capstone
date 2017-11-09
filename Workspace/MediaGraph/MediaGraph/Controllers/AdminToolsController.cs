@@ -18,12 +18,6 @@ namespace MediaGraph.Controllers
         // Exclude the default admin, myself, from being displayed
         private static readonly string[] kExcludedUsers = new string[] { "a8ea39f9-e1b1-4ecb-bc88-7d22f5d2b165" };
 
-        // GET: AdminTools
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         #region User Management
         // GET: AdminTools/UserManagement
         [Authorize(Roles = "staff")]
@@ -294,7 +288,7 @@ namespace MediaGraph.Controllers
             bool result = false;
             using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
             {
-                if(fromDatabase.RequestType == DatabaseRequestType.Add)
+                if(fromDatabase.RequestType == DatabaseRequestType.Create)
                 {
                     result = driver.AddNode(fromForm.ToModel());
                 }

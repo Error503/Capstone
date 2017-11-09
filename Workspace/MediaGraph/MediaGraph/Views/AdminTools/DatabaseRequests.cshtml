@@ -2,70 +2,60 @@
 @model DatabaseRequestPage
 @{
     ViewBag.Title = "Database Requests";
+    Layout = "~/Views/AdminTools/_RequestsLayout.cshtml";
 }
 
-<div>
-    <article class="row">
-        <section id="filter" class="col s12 m5">
-            <div class="container">
-                <h5 class="center-align">Filter</h5>
-                @Html.Partial("_DatabaseRequestFilterPartial", new MediaGraph.ViewModels.AdminTools.DatabaseRequestFilter())
-            </div>
-        </section>
-        <section class="col s12 m7">
-            <div id="request-list-container" class="col s12">
-                <h5 class="center-align">Requests</h5>
-                <div id="request-list" class="collection list">
-                    @if (Model.Requests.Count() > 0)
-                    {
-                        foreach (DatabaseRequestViewModel request in Model.Requests)
+@section filter {
+    @Html.Partial("_DatabaseRequestFilterPartial", new MediaGraph.ViewModels.AdminTools.DatabaseRequestFilter())    
+}
+@section requestList {
+    <div class="valign-wrapper">
+        <h5 class="center-align">Requests</h5>
+        <button id="hide-button" type="button" class="waves-effect waves-light btn-flat" style="display:none;">Hide filter</button>
+    </div>
+    <div id="request-list" class="collection list">
+        @if(Model.Requests.Count() > 0)
+        {
+            foreach(DatabaseRequestViewModel request in Model.Requests)
+            {
+                <a href="/admintools/viewrequest/@request.RequestId.ToString()" class="collection-item">
+                    @{ 
+                        if (!request.Reviewed)
                         {
-
-                            <a href="/admintools/viewrequest/@request.RequestId" class="collection-item">
-                                @{
-                                    if (!request.Reviewed)
-                                    {
-                                        <span class="new badge"></span>
-                                    }
-                                    else
-                                    {
-                                        if (request.Approved)
-                                        {
-                                            <span class="new badge green" data-badge-caption="approved"></span>
-                                        }
-                                        else
-                                        {
-                                            <span class="new badge red" data-badge-caption="rejected"></span>
-                                        }
-                                    }
-                                }
-                                [@request.GetRequestTypeString()] @request.NodeData.CommonName
-                            </a>
+                            <span class="new badge"></span>
+                        }
+                        else
+                        {
+                            if (request.Approved)
+                            {
+                                <span class="new badge green" data-badge-caption="approved"></span>
+                            }
+                            else
+                            {
+                                <span class="new badge red" data-badge-caption="rejected"></span>
+                            }
                         }
                     }
-                    else
-                    {
-                        <div class="center-align">No Results</div>
-                    }
-                </div>
-            </div>
-        </section>
-    </article>
-    <article class="row">
-        <section class="col s12 offset-m5 m7 center">
-            <button id="previous-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_left</i></button>
-            <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@(Model.TotalPages == 0 ? 0 : Model.CurrentPage)" /> of <span id="total-pages">@Model.TotalPages</span></span>
-            <button id="next-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_right</i></button>
-        </section>
-    </article>
-</div>
-
+                    [@request.GetRequestTypeString()] @request.NodeData.CommonName
+                </a>
+            }
+        }
+        else
+        {
+            <div class="center-align">No Results</div>
+        }
+    </div>
+}
+@section navigation {
+    <section class="col s12 offset-m5 m7 center">
+        <button id="previous-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_left</i></button>
+        <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@(Model.TotalPages == 0 ? 0 : Model.CurrentPage)" /> of <span id="total-pages">@Model.TotalPages</span></span>
+        <button id="next-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_right</i></button>
+    </section>
+}
 @section scripts {
     <script src="~/Scripts/myScripts/admin-tools/request-base.js"></script>
     <script src="~/Scripts/myScripts/admin-tools/request-manager.js"></script>
-}
-@section css {
-    <link rel="stylesheet" type="text/css" href="~/Content/admin-tools/management-style.css" />    
 }
 
 

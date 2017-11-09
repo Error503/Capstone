@@ -72,7 +72,7 @@ namespace MediaGraph.Models
 
     public enum DatabaseRequestType : byte
     {
-        Add = 1,
+        Create = 1,
         Update = 2,
         Delete = 3
     }

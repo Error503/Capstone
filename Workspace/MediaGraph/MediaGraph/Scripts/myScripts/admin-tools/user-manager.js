@@ -8,7 +8,6 @@ function searchCompleted() {
 }
 
 function searchSuccessful(response) {
-    console.log(response);
     currentPage = response.CurrentPage;
     totalPages = response.TotalPages == 0 ? 1 : response.TotalPages;
     updateDisplay(response.Users);
@@ -41,14 +40,14 @@ function updateDisplay(list) {
     if (list.length > 0) {
         // Populate the list
         for (var i = 0; i < list.length; i++) {
-            $('#user-list').append('<tr>' +
-                '<td>' + list[i].Username + '</td>' +
-                '<td>' + getSelectList(list[i]) + '</td>' +
-                '<td><button type="button" data-user="' + list[i].Id + '" class="waves-effect waves-blue btn-flat update-button">Update</button></td>' +
-                '</tr>');
+            $('#user-list').append('<li class="collection-item valign-wrapper">' +
+                '<div class="col s4">' + list[i].Username + '</div>' +
+                '<div class="col s4 input-field">' + getSelectList(list[i]) + '</div>' +
+                '<div class="col s4"><button type="button" data-user="' + list[i].Id + '" class="waves-effect waves-blue btn-flat update-button">Update</button></div>' +
+                '</li>');
         }
     } else {
-        $('#user-list').append('<tr><td></td><td>No Results</td><td></td></tr>');
+        $('#user-list').append('<div class="center-align">No Results</div>');
     }
 
     function getSelectList(user) {

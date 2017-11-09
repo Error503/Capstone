@@ -18,6 +18,47 @@ function updateSytling() {
 }
 
 $(document).ready(function () {
+    var isScreenInSmallState = false;
+    // Check the screen size
+    checkScreenSize();
+    // Add an event handler for the window resizing
+    $(window).on('resize', checkScreenSize);
+
+    function checkScreenSize() {
+        // Get the screen width
+        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var isScreenSmall = screenWidth <= 600;
+        // If the state has changed,
+        if (isScreenSmall != isScreenInSmallState) {
+            // If the screen is currently small,
+            if (isScreenSmall) {
+                isScreenInSmallState = true;
+                var filterWrapper = $('#filter-wrapper'); // Get the filter content
+                filterWrapper.children('h5').hide(); // Hide the title
+                $('#filter-section').empty().append('<ul class="collapsible" data-collapsible="accordian">' +
+                    '<li><div class="collapsible-header"><i class="material-icons">filter_list</i>Filter</div>' +
+                    '<div class="collapsible-body">' + filterWrapper[0].outerHTML + '</div></li></ul>');
+                $('.collapsible').collapsible();
+                $('#hide-button').show();
+            } else {
+                isScreenInSmallState = false;
+                var filterWrapper = $('#filter-wrapper'); // Get the filter content
+                filterWrapper.children('h5').show(); // Show the title
+                $('#filter-section').empty().append(filterWrapper[0].outerHTML);
+                $('#hide-button').hide();
+            }
+        }
+    }
+    $('#filter-button').on('click', function (event) {
+        // If the screen is in the small state,
+        if (isScreenInSmallState) {
+            // Close the collapsible
+            $('.collapsible').collapsible('close', 0);
+        }
+    });
+    $('#hide-button').on('click', function (event) {
+        $('.collapsible').collapsible('close', 0);
+    });
     $('select').material_select();
     $('.datepicker').pickadate({
         format: 'yyyy-mm-dd',
