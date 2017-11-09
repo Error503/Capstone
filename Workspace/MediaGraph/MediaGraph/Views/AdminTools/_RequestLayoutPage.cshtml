@@ -1,0 +1,16 @@
+﻿<article class="row">
+    <section id="filter-section" class="col s12 m5">
+        <div id="filter-wrapper">
+            <h5 class="center-align">Filter</h5>
+            @RenderSection("filter", true)
+        </div>
+    </section>
+    <section class="col s12 m7">
+        <div id="request-section" class="col s12">
+            @RenderSection("requestList", true)
+        </div>
+    </section>
+</article>
+<article class="row">
+    @RenderSection("navigation", true)
+</article>

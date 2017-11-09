@@ -141,7 +141,7 @@ namespace MediaGraph.ViewModels.Edit
             result.ReleaseDate = model.ReleaseDate.HasValue ? DateValueConverter.ToDateTime(model.ReleaseDate.Value) : default(DateTime?);
             result.DeathDate = model.DeathDate.HasValue ? DateValueConverter.ToDateTime(model.DeathDate.Value) : default(DateTime?);
             // Add the relationships
-            //result.Relationships = model.Relationships;
+            result.Relationships = ConvertRelationships(model.Relationships);
 
             return result;
         }
@@ -358,6 +358,7 @@ namespace MediaGraph.ViewModels.Edit
             {
                 SourceId = model.SourceId,
                 TargetId = model.TargetId,
+                TargetType = model.TargetType,
                 TargetName = model.TargetName,
                 Roles = model.Roles
             };

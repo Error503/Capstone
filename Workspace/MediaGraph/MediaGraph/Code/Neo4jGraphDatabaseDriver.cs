@@ -127,7 +127,7 @@ namespace MediaGraph.Code
                 else
                 {
                     // This relationship goes Source -> Target
-                    builder.AppendFormat(kCreateRelationshipStatement, "n", relModel.GetNodeLabel(), relProps, identifier);
+                    builder.AppendFormat(kCreateRelationshipStatement, "n", Enum.GetName(typeof(NodeContentType), sourceType), relProps, identifier);
                 }
                 builder.AppendLine();
                 // Incremenet targetIndex

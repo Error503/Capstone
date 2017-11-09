@@ -101,6 +101,35 @@ function customChips(element, options, data) {
     $(element).material_chip({ data: data != null ? data : [] }); // Create the chips input
     var chipInput = $(element).find('input'); // Get the chips input
     var chipCount = 0;
+    // If there is tooltip settings
+    if (options.hasOwnProperty('tooltip')) {
+        chipInput.addClass('tooltipped').tooltip(options.tooltip);
+    }
+
+    // Chip auto capture
+    chipInput.on('blur', function (event) {
+        var val = $(this).val();
+        // If there is content in the input field,
+        if (val.length > 0) {
+            chipInput.tooltip('remove');
+            // Get the exsiting chip data
+            var existing = $(element).material_chip('data');
+            // If the new value is not in the existing chips
+            var found = false;
+            for (var i = 0; i < existing.length && !found; i++) {
+                found = existing[i].tag == val;
+            }
+            // If the value was not found,
+            if (!found) {
+                existing.push({ tag: val }); // Add the value
+                // Update the chip input
+                customChips(element, options, existing);
+            } else {
+                $(this).val(''); // Clear the value
+            }
+        }
+    });
+
     // Set up the events on the chips input
     $(element).on('chip.add', function (e, chip) {
         chipCount += 1; // Increment the chip count
@@ -108,7 +137,7 @@ function customChips(element, options, data) {
         if (chipCount > 0) {
             // Set the value of the placeholder to the secondary placeholder,if present,
             if (options.hasOwnProperty('secondaryPlaceholder')) {
-                $(chipInput).attr('placeholder', options.secondaryPlaceholder)
+                chipInput.attr('placeholder', options.secondaryPlaceholder)
             }
         }
     }).on('chip.delete', function (e, chip) {
@@ -117,7 +146,7 @@ function customChips(element, options, data) {
         if (chipCount === 0) {
             // Set the value of the placeholder to the primary placeholder, if present,
             if (options.hasOwnProperty('placeholder')) {
-                $(chipInput).attr('placeholder', options.placeholder);
+                chipInput.attr('placeholder', options.placeholder);
             }
         }
     });
@@ -129,8 +158,8 @@ function customChips(element, options, data) {
     });
     // Set the initial placeholder
     if (data != null && data.length > 0 && options.hasOwnProperty('secondaryPlaceholder')) {
-        $(chipInput).attr('placeholder', options.secondaryPlaceholder);
+        chipInput.attr('placeholder', options.secondaryPlaceholder);
     } else if (options.hasOwnProperty('placeholder')) {
-        $(chipInput).attr('placeholder', options.placeholder);
+        chipInput.attr('placeholder', options.placeholder);
     }
 }

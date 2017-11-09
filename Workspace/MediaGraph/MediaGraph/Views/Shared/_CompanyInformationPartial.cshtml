@@ -5,7 +5,7 @@
 </div>
 <div class="col s12 input-field">
     <label for="other-name-chips" class="active">Other Names</label>
-    <div id="other-name-chips" class="chips"></div>
+    <div id="other-name-chips" class="chips tooltipped" data-position="top" data-delay="50" data-tooltip="Enter a name and press enter."></div>
 </div>
 <div class="col s12 m6 input-field">
     <input id="@Html.NameFor(x => x.ReleaseDate)" type="date" name="@Html.NameFor(x => x.ReleaseDate)" class="validate" value="@MediaGraph.Code.DateValueConverter.ToDisplayFormat(Model.ReleaseDate)" />

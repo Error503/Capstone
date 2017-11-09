@@ -45,7 +45,7 @@ namespace MediaGraph.Controllers
                 }
             }
 
-            return Json(new { ReleaseDate = model.ReleaseDate, DeathDate = model.DeathDate }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = model != null,  ReleaseDate = model?.ReleaseDate, DeathDate = model?.DeathDate }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]

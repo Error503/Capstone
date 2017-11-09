@@ -8,22 +8,25 @@ $(document).ready(function () {
         $('#context-popup').removeClass('active').addClass('inactive');
         $('#info-popup').removeClass('active').addClass('inactive');
     };
-    // Set up events for the visualization options
-    var radioButtons = document.forms['visualization-options'].visualizationType;
-    for (var i = 0; i < radioButtons.length; i++) {
-        $(radioButtons[i]).on('click', function (event) {
-            if ($(this).val() !== selectedType) {
-                // Destroy the current visualization
-                $('#visualization-target').empty().removeClass('network-display timeline-display');
-                display.clear();
-                if ($(this).val() === 'network') {
-                    initializeNetworkDisplay();
-                } else if ($(this).val() === 'timeline') {
-                    initializeTimelineDisplay();
-                }
-            }
-        });
-    }
+    $('#switch-visualization-button').on('click', function (event) {
+        // Destroy the current visualization
+        $('#visualization-target').empty().removeClass('network-display timeline-display');
+        display.clear();
+        // Create the new visualization
+        if (selectedType == 'network') {
+            // Switch to the timeline display
+            initializeTimelineDisplay();
+            $(this).html('Network');
+        } else {
+            // Switch to the network display
+            initializeNetworkDisplay();
+            $(this).html('Timeline');
+        }
+    });
+    $('#color-blind-option').on('change', function (event) {
+        console.log("Changing color palette");
+    }).material_select();
+
     $(window).keydown(function (event) {
         if (event.keyCode == 13) {
             getInformation();
@@ -35,7 +38,9 @@ $(document).ready(function () {
         $('input[name="id"]').val('');
     });
     $('#search-button').on('click', function (event) {
-        getInformation();
+        if ($('#autocomplete-field').val() != '') {
+            getInformation();
+        }
     });
     // Set up autocomplete
     setupAutocomplete($('input.autocomplete'), true, autocompleteCallback);
@@ -73,7 +78,7 @@ function getInformation(position) {
                 if (selectedType === 'network') {
                     updateNetwork(response.data, position);
                 } else {
-                    updateTimeline(response.data);
+                    updateTimeline({ ReleaseDate: response.ReleaseDate, DeathDate: response.DeathDate });
                 }
             } else {
                 console.log("MODAL");

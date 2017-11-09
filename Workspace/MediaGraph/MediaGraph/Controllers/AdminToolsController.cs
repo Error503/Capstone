@@ -33,6 +33,7 @@ namespace MediaGraph.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "staff")]
         public ActionResult UserPage(UserManagementFilter filter)
         {
             return Json(GetUserPage(filter));
@@ -83,6 +84,7 @@ namespace MediaGraph.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "staff")]
         public ActionResult GetUserPage(string username, string email, int page = 1, int resultsPerPage = 25)
         {
             ActionResult result = Json(new { PageCount = 0, Users = 0 }, JsonRequestBehavior.AllowGet);
@@ -134,6 +136,7 @@ namespace MediaGraph.Controllers
 
         // AdminTools/UpdateUser
         [HttpPost]
+        [Authorize(Roles = "staff")]
         public ActionResult UpdateUser(string id, string role)
         {
             ActionResult result = new HttpStatusCodeResult(HttpStatusCode.InternalServerError);

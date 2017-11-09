@@ -53,6 +53,9 @@
     {
         <li><div class="divider"></div></li>
         <li>@Html.ActionLink("View Requests", "DatabaseRequests", "AdminTools")</li>
-        <li>@Html.ActionLink("Manage Users", "UserManagement", "AdminTools")</li>
+        if (User.IsInRole("staff"))
+        {
+            <li>@Html.ActionLink("Manage Users", "UserManagement", "AdminTools")</li>
+        }
     }
 </ul>

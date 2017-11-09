@@ -20,6 +20,24 @@ var edgeData;
 var network;
 var nodeValidator;
 var contentType = 0;
+var otherNamesChipSettings = {
+    placeholder: 'Other Name',
+    secondaryPlaceholder: '+Name',
+    tooltip: {
+        delay: 150,
+        tooltip: 'Enter a name and press enter.',
+        position: 'top'
+    }
+};
+var genreChipsSettings = {
+    placeholder: 'Genre',
+    secondaryPlaceholder: '+Genre',
+    tooltip: {
+        delay: 150,
+        tooltip: 'Enter a genre and press enter.',
+        position: 'top'
+    }
+};
 
 $(document).ready(function () {
     // If there is a content type defined
@@ -35,12 +53,12 @@ $(document).ready(function () {
         }
         // Set the value of the OtherNames field
         var nameChips = makeChips(JSON.parse(document.forms['node-form']['OtherNames'].value));
-        customChips('#other-name-chips', { placeholder: "Other Name", secondaryPlaceholder: "+Name" }, nameChips);
+        customChips('#other-name-chips', otherNamesChipSettings, nameChips);
         // If this is a media node,
         if (contentType == 2) {
             // Set the value of the Genres field
             var genreChips = makeChips(JSON.parse(document.forms['node-form']['Genres'].value));
-            customChips('#genre-chips', { placeholder: "Enter a Genre", secondaryPlaceholder: "+Genre" }, genreChips);
+            customChips('#genre-chips', genreChipsSettings, genreChips);
         }
         // Create the network 
         nodeData = new vis.DataSet();
@@ -182,11 +200,11 @@ function setupInputEvents(type) {
     $('select').material_select();
     // Setup event handling for changes in the node form
     $('#node-form').find('input:not([type="hidden"])').on('change', updateSourceNode);
-    customChips('#other-name-chips', { placeholder: 'Second Name', secondaryPlaceholder: '+Name' });
+    customChips('#other-name-chips', otherNamesChipSettings);
     // If this is a media node,
     if (contentType == 2) {
         // Set up chips
-        customChips('#genre-chips', { placeholder: 'Enter a Genre', secondaryPlaceholder: '+Genre' });
+        customChips('#genre-chips', genreChipsSettings);
     }
     // Setup validation
 }

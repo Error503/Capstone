@@ -15,6 +15,7 @@
     };
     var elementData = new vis.DataSet();
     var timeline = new vis.Timeline(document.getElementById(elementId), elementData, options != null ? options : default_options);
+    var colorOption = 0;
 
     timeline.on('click', function (props) {
         if (props.what === 'item') {
@@ -67,7 +68,8 @@
         addNode: addNode,
         clear: clearData,
         destroy: destroyTimeline,
-        goToDate: goToDate
+        goToDate: goToDate,
+        changeColorPalette: changeColorPalette
     };
 
     // ===== Functions =====
@@ -115,6 +117,10 @@
         elementData.clear();
     }
 
+    function changeColorPalette(option) {
+
+    }
+
     function destroyTimeline() {
         timeline.destroy();
     }
@@ -143,9 +149,11 @@
             url: '/graph/timelinedatarange',
             data: { start: start, end: end },
             success: function (response) {
-                clearData(); // Clear the display
-                for (var i = 0; i < response.length; i++) {
-                    addNode(response[i]);
+                if (response.success) {
+                    clearData(); // Clear the display
+                    for (var i = 0; i < response.data.length; i++) {
+                        addNode(response.data[i]);
+                    }
                 }
             },
             error: function (response) { console.error(response); }

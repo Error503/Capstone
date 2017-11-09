@@ -5,22 +5,30 @@
         width: '100%',
         clickToUse: false,
         groups: {
-            "1": { color: { background: '#63CE4B' } },
-            "2": { color: { background: '#CD7ED1' } },
-            "3": { color: { background: '#5BC5D9' } },
-            "cluster1": { color: { background: '#63CE4B' } },
-            "cluster2": { color: { background: '#CD7ED1' } },
-            "cluster3": { color: { background: '#5BC5D9' } }
+            // Full color
+            "pal0-1": { color: { background: '#63CE4B' } },
+            "pal0-2": { color: { background: '#CD7ED1' } },
+            "pal0-3": { color: { background: '#5BC5D9' } },
+            // Colorblind option 1 
+            "pal1-1": { color: { background: '#63CE4B' } },
+            "pal1-2": { color: { background: '#7523ff' } },
+            "pal1-3": { color: { background: '#3578ba' } },
+            // Color blind option 2
+            "pal2-1": { color: { background: '#63CE4B' } },
+            "pal2-2": { color: { background: '#7523ff' } },
+            "pal2-3": { color: { background: '#3578BA' } }
         },
         interaction: {
             tooltipDelay: 100,
-            navigationButtons: true,
+            navigationButtons: window.innerWidth > 600,
             selectConnectedEdges: false
         }
     };
     var nodeData = new vis.DataSet();
     var edgeData = new vis.DataSet();
-    var network = new vis.Network(document.getElementById(elementId), { nodes: nodeData, edges: edgeData }, options != null ? options : default_options);
+    var storedOptions = options || default_options;
+    var network = new vis.Network(document.getElementById(elementId), { nodes: nodeData, edges: edgeData }, storedOptions);
+    var colorPalette = 0;
 
     // Set up events
     network.on('selectNode', function (props) {
@@ -81,6 +89,17 @@
 
         return options;
     }
+    // Handler for the window resize event since I want to remove the navigation
+    // buttons on small screens
+    $(window).on('resize', function (event) {
+        // Get the screen size
+        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        // Update the value of the stored options
+        // If the screen width is less than or equal to 600 pixels (Materialize's screen size for small screens)
+        storedOptions.interaction.navigationButtons = screenWidth > 600;
+        // Update the options
+        network.setOptions(storedOptions);
+    });
 
     return {
         nodes: nodeData,
@@ -91,13 +110,14 @@
         addEdge: addEdge,
         clear: clearData,
         clusterConnections: clusterSelectedNodeConnections,
+        changeColorPalette: changeColorPalette
     };
 
     function addNode(data, position) {
         if (nodeData.get(data.Id) == null) {
             nodeData.add({
                 id: data.Id,
-                group: data.DataType,
+                group: 'pal' + colorPalette + ' - ' + data.DataType,
                 title: createLabel(data.CommonName),
                 label: createLabel(data.CommonName, LABEL_LENGTH),
                 mass: 1.5,
@@ -126,6 +146,7 @@
     function clearData() {
         this.nodes.clear();
         this.edges.clear();
+        this.graphic.destroy();
     }
     function clusterSelectedNodeConnections() {
         var parentNode = nodeData.get(network.getSelection().nodes[0]);
@@ -139,9 +160,14 @@
                 label: parentNode.label,
                 shape: 'diamond',
                 mass: 3,
-                group: 'cluster' + parentNode.group,
+                group: 'pal' + colorPalette + '-' + parentNode.group,
             }
         });
+    }
+
+    // Changes the colorblind color options
+    function changeColorPalette(option) {
+        // Update all of the nodes in the graph to the new palette
     }
 
     function getNodePaths(id, position) {

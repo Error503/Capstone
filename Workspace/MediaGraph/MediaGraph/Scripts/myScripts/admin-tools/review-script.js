@@ -33,6 +33,8 @@
         $('#relationship-form').find('input:not([hidden])').attr('disabled', 'disabled');
         $('.chips').addClass('disabled');
         $('#relationship-form').find('select').attr('disabled', 'disabled').material_select();
+        // Hide the remove chip icon
+        $('.chips .chip i').hide();
         isEditing = false;
     }
 
@@ -42,6 +44,8 @@
         $('#relationship-form').find('input:not([hidden])').removeAttr('disabled');
         $('.chips').removeClass('disabled');
         $('#relationship-form').find('select').removeAttr('disabled').material_select();
+        // Show the remove chip icon
+        $('.chips .chip i').show();
         isEditing = true;
     }
 });

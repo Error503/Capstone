@@ -26,7 +26,7 @@ namespace MediaGraph.Models.Component
         //[JsonProperty("links")]
         //public Dictionary<string, string> Links { get; set; }
 
-        public List<RelationshipModel> Relationships { get; set; }
+        public List<RelationshipModel> Relationships { get; set; } = new List<RelationshipModel>();
 
         /// <summary>
         /// Returns the string represtation of this node's labels.
@@ -150,6 +150,8 @@ namespace MediaGraph.Models.Component
                     TargetName = relatedNode["commonName"].As<string>(),
                     Roles = relationship["roles"].As<List<string>>()
                 };
+                // Add the relationship
+                Relationships.Add(relModel);
             }
         }
     }
