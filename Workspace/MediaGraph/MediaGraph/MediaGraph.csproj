@@ -477,6 +477,8 @@
     <Content Include="Views\Shared\_NodeFormPartial.cshtml" />
     <Content Include="Views\Graph\_CreateNodeCard.cshtml" />
     <Content Include="Views\AdminTools\_RequestsLayout.cshtml" />
+    <Content Include="Views\Graph\_HelpCardPartial.cshtml" />
+    <Content Include="Views\Edit\_HelpModalPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

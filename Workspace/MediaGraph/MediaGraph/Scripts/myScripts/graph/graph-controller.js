@@ -2,7 +2,7 @@
 var display;
 var selectedType = 'network';
 $(document).ready(function () {
-    $('#create-node-modal').modal();
+    $('.modal').modal();
     // Event handling to clear the context menus
     document.onclick = function (event) {
         $('#context-popup').removeClass('active').addClass('inactive');
@@ -25,6 +25,7 @@ $(document).ready(function () {
     });
     $('#color-blind-option').on('change', function (event) {
         console.log("Changing color palette");
+        display.changeColorPalette(Number.parseInt($(this).val()));
     }).material_select();
 
     $(window).keydown(function (event) {

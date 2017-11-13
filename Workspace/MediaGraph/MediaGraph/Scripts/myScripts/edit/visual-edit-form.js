@@ -164,9 +164,11 @@ $(document).ready(function () {
             if (isScreenSmall) {
                 isScreenInSmallState = true;
                 options.interaction.navigationButtons = false;
+                options.clickToUse = true;
             } else {
                 isScreenInSmallState = false;
                 options.interaction.navigationButtons = true;
+                options.clickToUse = false;
             }
             network.setOptions(options);
         }

@@ -27,7 +27,7 @@ $(document).ready(function () {
     function checkScreenSize() {
         // Get the screen width
         var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        var isScreenSmall = screenWidth <= 600;
+        var isScreenSmall = screenWidth <= 600; // Materialize's setting for small screens
         // If the state has changed,
         if (isScreenSmall != isScreenInSmallState) {
             // If the screen is currently small,

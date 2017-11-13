@@ -9,6 +9,10 @@
 .visualization.full {
     height: 59vh;
 }
+.info-button {
+    padding-left: 5px;
+    padding-right: 5px;
+}
 .network-display {
     border: 1px solid #808080;
 }
@@ -32,7 +36,7 @@
 #info-table {
     font-size: 12px;
 }
-.vis-item.vis-dot.type-1 {
+/*.vis-item.vis-dot.type-1 {
     border-color: #63CE4B;
 }
 .vis-item.vis-dot.type-2 {
@@ -46,4 +50,52 @@
 }
 .vis-item.death {
     color: #ED2121;
+}*/
+/* Full color */
+.pal0-1 {
+    border-color: #63CE4B;
+}
+.pal0-2 {
+    border-color: #CD7ED1;
+}
+.pal0-3 {
+    border-color: #5BC5D9;
+}
+/* Deuteranopia */
+.pal1-1 {
+
+}
+.pal1-2 {
+
+}
+.pal1-3 {
+
+}
+/* Protanopia */
+.pal2-1 {
+}
+
+.pal2-2 {
+}
+
+.pal2-3 {
+}
+/* Tritanopia */
+.pal3-1 {
+}
+
+.pal3-2 {
+}
+
+.pal3-3 {
+}
+/* Grayscale */
+.pal4-1 {
+    border-color: #E5E5E5;
+}
+.pal4-2 {
+    border-color: #404040;
+}
+.pal4-3 {
+    border-color: #AAAAAA;
 }

@@ -27,7 +27,7 @@ namespace MediaGraph.Code
         //private const string kMatchNodeByAnyName = "MATCH (n) WHERE n.commonName = $name OR $name IN n.otherNames RETURN n";
 
         private readonly IDriver driver;
-        private const bool kUseInternal = false;
+        private const bool kUseInternal = true;
 
         public Neo4jGraphDatabaseDriver()
         {

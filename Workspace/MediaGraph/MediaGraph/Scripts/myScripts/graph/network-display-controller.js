@@ -6,17 +6,25 @@
         clickToUse: false,
         groups: {
             // Full color
-            "pal0-1": { color: { background: '#63CE4B' } },
-            "pal0-2": { color: { background: '#CD7ED1' } },
-            "pal0-3": { color: { background: '#5BC5D9' } },
-            // Colorblind option 1 
-            "pal1-1": { color: { background: '#63CE4B' } },
-            "pal1-2": { color: { background: '#7523ff' } },
-            "pal1-3": { color: { background: '#3578ba' } },
-            // Color blind option 2
-            "pal2-1": { color: { background: '#63CE4B' } },
-            "pal2-2": { color: { background: '#7523ff' } },
-            "pal2-3": { color: { background: '#3578BA' } }
+            "pal0-1": { color: { background: '#63CE4B', border: '#53AD3F' } },
+            "pal0-2": { color: { background: '#CD7ED1', border: '#8C568F' } },
+            "pal0-3": { color: { background: '#5BC5D9', border: '#35747F' } },
+            // Colorblind option 1 - Deutranopia
+            "pal1-1": { color: { background: '#63CE4B', border: '#000000' } },
+            "pal1-2": { color: { background: '#7523ff', border: '#000000' } },
+            "pal1-3": { color: { background: '#3578ba', border: '#000000' } },
+            // Colorblind option 2 - Protanopia
+            "pal2-1": { color: { background: '#63CE4B', border: '#000000' } },
+            "pal2-2": { color: { background: '#7523ff', border: '#000000' } },
+            "pal2-3": { color: { background: '#3578BA', border: '#000000' } },
+            // Colorblind option 3 - Tritanopia
+            "pal2-1": { color: { background: '#63CE4B', border: '#000000' } },
+            "pal2-2": { color: { background: '#7523ff', border: '#000000' } },
+            "pal2-3": { color: { background: '#3578BA', border: '#000000' } },
+            // Color blind option 3 - Grayscale
+            "pal4-1": { color: { background: '#E5E5E5', border: '#7F7F7F' }, shape: 'square' },
+            "pal4-2": { color: { background: '#404040', border: '#7F7F7F' }, shape: 'dot' },
+            "pal4-3": { color: { background: '#AAAAAA', border: '#7F7F7F' }, shape: 'triangle' }
         },
         interaction: {
             tooltipDelay: 100,
@@ -61,6 +69,7 @@
                     edgeData.update(edges[i]);
                 }
             } else {
+                console.log(props.nodes[0]);
                 getNodePaths(props.nodes[0], props.pointer.canvas); // Expand relationships
             }
         }
@@ -82,24 +91,39 @@
             { text: 'Flag for Deletion', link: 'javascript:flag();' }
         ];
         // If the node is a media node, 
-        if (nodeData.get(id).group === 2) {
+        if (nodeData.get(id).group.match(/(\d)$/)[1] == "2") {
             // Add the cluster option
             options.unshift({ text: 'Cluster Connections', link: 'javascript:display.clusterConnections();' });
         }
 
         return options;
     }
-    // Handler for the window resize event since I want to remove the navigation
-    // buttons on small screens
-    $(window).on('resize', function (event) {
-        // Get the screen size
+    // Setup an event to handle screen resizing
+    var isScreenInSmallState = false;
+    // Check the screen size
+    checkScreenSize();
+    // Add an event handler for the window resizing
+    $(window).on('resize', checkScreenSize);
+
+    function checkScreenSize() {
+        // Get the screen width
         var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        // Update the value of the stored options
-        // If the screen width is less than or equal to 600 pixels (Materialize's screen size for small screens)
-        storedOptions.interaction.navigationButtons = screenWidth > 600;
-        // Update the options
-        network.setOptions(storedOptions);
-    });
+        var isScreenSmall = screenWidth <= 992; // Materialize's setting for large screens
+        // If the state has changed,
+        if (isScreenSmall != isScreenInSmallState) {
+            // If the screen is currently small,
+            if (isScreenSmall) {
+                isScreenInSmallState = true;
+                storedOptions.interaction.navigationButtons = false;
+                storedOptions.clickToUse = true;
+            } else {
+                isScreenInSmallState = false;
+                storedOptions.interaction.navigationButtons = true;
+                storedOptions.clickToUse = false;
+            }
+            network.setOptions(storedOptions);
+        }
+    }
 
     return {
         nodes: nodeData,
@@ -117,7 +141,7 @@
         if (nodeData.get(data.Id) == null) {
             nodeData.add({
                 id: data.Id,
-                group: 'pal' + colorPalette + ' - ' + data.DataType,
+                group: 'pal' + colorPalette + '-' + data.DataType,
                 title: createLabel(data.CommonName),
                 label: createLabel(data.CommonName, LABEL_LENGTH),
                 mass: 1.5,
@@ -160,14 +184,23 @@
                 label: parentNode.label,
                 shape: 'diamond',
                 mass: 3,
-                group: 'pal' + colorPalette + '-' + parentNode.group,
+                group: parentNode.group,
             }
         });
     }
 
     // Changes the colorblind color options
     function changeColorPalette(option) {
+        colorPalette = option;   // Update the color palette option
+        console.log(colorPalette);
+        var nodes = nodeData.get(); // Get all of the nodes
         // Update all of the nodes in the graph to the new palette
+        for (var i = 0; i < nodes.length; i++) {
+            // Change the node's group
+            nodes[i].group = 'pal' + colorPalette + '-' + nodes[i].group.match(/(\d)$/)[1];
+            // Update the node
+            nodeData.update(nodes[i]);
+        }
     }
 
     function getNodePaths(id, position) {
@@ -176,11 +209,13 @@
             url: '/graph/networkdata',
             data: { searchText: null, id: id },
             success: function (response) {
-                addNode(response.Source, position); // Add the source node
-                // Add the related nodes and their edges
-                for (var i = 0; i < response.RelatedNodes.length; i++) {
-                    addNode(response.RelatedNodes[i], position);  
-                    addEdge(response.Source.Id, response.RelatedNodes[i]);
+                if (response.success) {
+                    addNode(response.data.Source, position); // Add the source node
+                    // Add the related nodes and their edges
+                    for (var i = 0; i < response.data.RelatedNodes.length; i++) {
+                        addNode(response.data.RelatedNodes[i], position);
+                        addEdge(response.data.Source.Id, response.data.RelatedNodes[i]);
+                    }
                 }
             },
             error: function (response) { console.error(response); }
