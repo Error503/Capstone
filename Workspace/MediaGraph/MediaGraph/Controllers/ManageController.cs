@@ -277,6 +277,34 @@ namespace MediaGraph.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteAccount()
+        {
+            ActionResult result;
+
+            // Get the application user
+            ApplicationUser toDelete = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            // Sign the user out
+            AuthenticationManager.SignOut(User.Identity.AuthenticationType);
+            // Delete the user
+            IdentityResult userDeletedResult = await UserManager.DeleteAsync(toDelete);
+            
+            // If the deletion was successful
+            if(userDeletedResult.Succeeded)
+            {
+                result = RedirectToActionPermanent("AccountDeleted", "Home");
+            }
+            else
+            {
+                ViewBag.StatusMessage = "An error has occurred. Your account has not been deleted";
+                result = View("Index");
+            }
+
+            // Return the result
+            return result;
+        }
+
         //
         // GET: /Manage/ManageLogins
         public async Task<ActionResult> ManageLogins(ManageMessageId? message)

@@ -1,4 +1,5 @@
-﻿using MediaGraph.Models;
+﻿using MediaGraph.Code;
+using MediaGraph.Models;
 using MediaGraph.ViewModels.Edit;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,23 @@ namespace MediaGraph.Controllers
         public ActionResult About()
         {
             return View();
+        }
+
+        public ActionResult AccountDeleted()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult TestConnection()
+        {
+            List<AutocompleteRecord> results = new List<AutocompleteRecord>();
+            using (AutocompleteDatabaseDriver driver = new AutocompleteDatabaseDriver())
+            {
+                results = driver.Search("text");
+            }
+
+            return Json(results, JsonRequestBehavior.AllowGet);
         }
     }
 }

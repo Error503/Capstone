@@ -356,6 +356,7 @@ namespace MediaGraph.Code
         /// </summary>
         /// <param name="name">The name of the node for which to search</param>
         /// <returns>A collection of key value pairs that represent the nodes that match the given string</returns>
+        [Obsolete]
         public Dictionary<string, string> SearchForNodes(string name)
         {
             Dictionary<string, string> results = new Dictionary<string, string>();
@@ -382,6 +383,7 @@ namespace MediaGraph.Code
         /// <param name="contentType">The content type of the nodes to search</param>
         /// <param name="name">The name being searched</param>
         /// <returns>A collection of key-value pairs representing the matching nodes</returns>
+        [Obsolete]
         public Dictionary<string, string> SearchForNodes(NodeContentType contentType, string name)
         {
             Dictionary<string, string> results = new Dictionary<string, string>();

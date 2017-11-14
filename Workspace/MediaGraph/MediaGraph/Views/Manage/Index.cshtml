@@ -1,9 +1,8 @@
-﻿    @model MediaGraph.Models.IndexViewModel
+﻿@model MediaGraph.Models.IndexViewModel
 @{
     ViewBag.Title = "Manage Account";
     Layout = "~/Views/Shared/_ContainerLayout.cshtml";
 }
-
 <article class="row">
     <section class="col s12 m6">
         <h4>Account Settings</h4>
@@ -20,11 +19,8 @@
                     @Html.ActionLink("Create password", "SetPassword")
                 }
             </dd>
-            @* I'm not sure if I'll be adding account deletion, but I will add it in here for the future. *@
-            @*<dt>Delete Account:</dt>
-            <dd>
-                @Html.ActionLink("Delete Account", "DeleteAccount")
-            </dd>*@
+            <dt>Delete Account:</dt>
+            <dd><a href="#delete-account-modal" class="modal-trigger">Delete Account</a></dd>
         </dl>
 
     </section>
@@ -35,3 +31,17 @@
         </div>
     </section>
 </article>
+<div id="delete-account-modal" class="modal">
+    @using (Html.BeginForm("DeleteAccount", "Manage", FormMethod.Post, htmlAttributes: new { id = "delete-form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="modal-content">
+            <h4 class="center-align">Confirmation</h4>
+            <p class="flow-text">Are you sure you want to delete your account? All information regarding your account will be deleted.</p>
+        </div>
+        <div class="modal-footer">
+            <a class="modal-action waves-effect waves-red btn-flat" href="javascript:document.getElementById('delete-form').submit();">Delete</a>
+            <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+        </div>
+    }
+</div>

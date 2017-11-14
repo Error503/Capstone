@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
     $(".button-collapse").sideNav();
     $('.dropdown-button').dropdown();
+    $('.modal').modal();
 });
 
 // Creates a captialized label out of the given string that fits within the given length
