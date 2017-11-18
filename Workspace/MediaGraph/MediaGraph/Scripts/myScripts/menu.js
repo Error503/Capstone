@@ -67,15 +67,15 @@ function setupAutocomplete(element, useClearing, callback) {
                         autocompleteData = {};
                         autocompleteStorage = {};
                         for (var i = 0; i < response.length; i++) {
-                            autocompleteData[truncateLabel(response[i].Item1)] = '';
-                            autocompleteStorage[response[i].Item1.toLowerCase()] = response[i].Item2;
+                            autocompleteData[truncateLabel(response[i].MatchedName)] = '';
+                            autocompleteStorage[response[i].MatchedName] = response[i].Id;
                         }
                         $(element).autocomplete({
                             data: autocompleteData,
                             limit: 20,
                             onAutocomplete: function (selection) {
                                 wasCompleted = true;
-                                callback({ value: selection, id: autocompleteStorage[selection.toLowerCase()] });
+                                callback({ value: selection, id: autocompleteStorage[selection] });
                             },
                             minLength: minimumLength - 1
                         })

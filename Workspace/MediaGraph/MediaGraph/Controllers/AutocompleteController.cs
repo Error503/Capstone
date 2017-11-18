@@ -17,7 +17,7 @@ namespace MediaGraph.Controllers
         {
             List<AutocompleteRecord> results = new List<AutocompleteRecord>();
             // Query the autocomplete database
-            using (AutocompleteDatabaseDriver autocompleteDriver = new AutocompleteDatabaseDriver())
+            using (CassandraDriver autocompleteDriver = new CassandraDriver())
             {
                 results = await autocompleteDriver.SearchAsync(t);
             }

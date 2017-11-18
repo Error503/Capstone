@@ -88,6 +88,19 @@ namespace MediaGraph.Controllers
 
         private void CreateDatabaseRequest(BasicNodeViewModel model, DatabaseRequestType type)
         {
+            // Check the relationships
+            foreach(RelationshipViewModel rel in model.Relationships)
+            {
+                // If the referenced node does not have an id,
+                if(!rel.TargetId.HasValue)
+                {
+                    // Give the referenced node an id
+                    rel.TargetId = Guid.NewGuid();
+                    // Set the value of IsNewAddition to true
+                    rel.IsNewAddition = true;
+                }
+            }
+
             using (ApplicationDbContext context = ApplicationDbContext.Create())
             {
                 // Get the user that submitted the request

@@ -180,6 +180,7 @@ namespace MediaGraph.Controllers
             return Json(GetRequestPage(filter));
         }
 
+        [NonAction]
         private DatabaseRequestPage GetRequestPage(DatabaseRequestFilter filter)
         {
             DatabaseRequestPage result = new DatabaseRequestPage();
@@ -283,23 +284,30 @@ namespace MediaGraph.Controllers
             return result;
         }
 
+        [NonAction]
         private bool CheckRequestsAndCommitChanges(BasicNodeViewModel fromForm, DatabaseRequest fromDatabase)
         {
-            bool result = false;
-            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            bool result = true;
+            
+            try
             {
-                if(fromDatabase.RequestType == DatabaseRequestType.Create)
+                DatabaseSystemDriver systemDriver = new DatabaseSystemDriver();
+                if (fromDatabase.RequestType == DatabaseRequestType.Create)
                 {
-                    result = driver.AddNode(fromForm.ToModel());
+                    systemDriver.AddNode(fromForm.ToModel());
                 }
-                else if(fromDatabase.RequestType == DatabaseRequestType.Update)
+                else if (fromDatabase.RequestType == DatabaseRequestType.Update)
                 {
-                    result = driver.UpdateNode(fromForm.ToModel());
+                    systemDriver.UpdateNode(fromForm.ToModel());
                 }
-                else if(fromDatabase.RequestType == DatabaseRequestType.Delete)
+                else if (fromDatabase.RequestType == DatabaseRequestType.Delete)
                 {
-                    result = driver.DeleteNode(fromForm.Id);
+                    systemDriver.DeleteNode(fromForm.Id);
                 }
+            }
+            catch
+            {
+                result = false;
             }
 
             return result;

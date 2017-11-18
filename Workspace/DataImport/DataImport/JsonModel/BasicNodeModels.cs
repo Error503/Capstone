@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace MediaGraph.Models.Component
+namespace DataImport.JsonModel
 {
     [JsonObject]
     public class BasicNodeModel
@@ -91,16 +91,16 @@ namespace MediaGraph.Models.Component
                     };
 
                     // If the family and given name was not populated and there is a common name,
-                    if(((PersonNodeModel)result).FamilyName == null && ((PersonNodeModel)result).GivenName == null &&
+                    if (((PersonNodeModel)result).FamilyName == null && ((PersonNodeModel)result).GivenName == null &&
                         node.Properties.ContainsKey("commonName"))
                     {
                         // Parse the names out of the common name
                         string[] nameParts = node.Properties["commonName"].As<string>().Split(' ');
                         string givenName = "";
                         string familyName = "";
-                        for(int i = 0; i < nameParts.Length; i++)
+                        for (int i = 0; i < nameParts.Length; i++)
                         {
-                            if(i != nameParts.Length - 1)
+                            if (i != nameParts.Length - 1)
                             {
                                 givenName += $"{nameParts[i]} ";
                             }
@@ -139,7 +139,7 @@ namespace MediaGraph.Models.Component
         {
             NodeContentType relatedType;
             Guid relatedId;
-            if(Guid.TryParse(relatedNode["id"].As<string>(), out relatedId) && Enum.TryParse<NodeContentType>(relatedNode.Labels[0], out relatedType))
+            if (Guid.TryParse(relatedNode["id"].As<string>(), out relatedId) && Enum.TryParse<NodeContentType>(relatedNode.Labels[0], out relatedType))
             {
                 // Create the relationship
                 RelationshipModel relModel = new RelationshipModel
@@ -208,6 +208,7 @@ namespace MediaGraph.Models.Component
         public string TargetName { get; set; }
         public IEnumerable<string> Roles { get; set; }
 
+        // Under the new system of all nodes have ids, this will determine if the node is new
         public bool IsNewAddition { get; set; } = false;
 
         /// <summary>
@@ -218,7 +219,7 @@ namespace MediaGraph.Models.Component
         public string GetNodeLabel()
         {
             if (TargetType == 0)
-                throw new ArgumentException("TargetType is invalid!!!", "TargetType");
+                throw new ArgumentException($"TargetType is invalid!!! {TargetName}", "TargetType");
             return Enum.GetName(typeof(NodeContentType), TargetType);
         }
     }

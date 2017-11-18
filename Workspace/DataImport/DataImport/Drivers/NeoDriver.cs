@@ -1,6 +1,4 @@
-﻿using MediaGraph.Models;
-using MediaGraph.Models.Component;
-using Neo4j.Driver.V1;
+﻿using Neo4j.Driver.V1;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Configuration;
-using System.Threading.Tasks;
+using DataImport.JsonModel;
 
-namespace MediaGraph.Code
+namespace DataImport.Drivers
 {
-    public class Neo4jGraphDatabaseDriver : IGraphDatabaseDriver
+    public class NeoDriver : IDisposable
     {
         private const string kNodeCreationStatement = "CREATE (n:{0} $props) ";
         private const string kMatchNodeQuery = "MATCH (n {id: $id}) RETURN n";
@@ -29,13 +27,10 @@ namespace MediaGraph.Code
 
         private readonly IDriver driver;
 
-        private const bool kUseInternal = false;
-
-        public Neo4jGraphDatabaseDriver()
+        public NeoDriver()
         {
             // Create the database driver
-            driver = GraphDatabase.Driver(kUseInternal ? ConfigurationManager.AppSettings["neoInternal"] : ConfigurationManager.AppSettings["neoExternal"],
-                AuthTokens.Basic(ConfigurationManager.AppSettings["neoLogin"], ConfigurationManager.AppSettings["neoPass"]));
+            driver = GraphDatabase.Driver("bolt://medianeodata.southcentralus.cloudapp.azure.com:7687", AuthTokens.Basic("neo4j", "yN28owNM10Qloz"));
         }
 
         /// <summary>
@@ -68,9 +63,10 @@ namespace MediaGraph.Code
                 });
             }
 
+            Program.LogInColor($"Neo4j: Added {node.CommonName} with id {node.Id} to graph.", ConsoleColor.DarkGreen);
             return sessionResult != null;
         }
-        
+
         /// <summary>
         /// Creates a single large query for the creation of a node and it's direct relationships.
         /// </summary>
@@ -94,7 +90,7 @@ namespace MediaGraph.Code
         private void BuildRelationshipMergeStatement(StringBuilder builder, IEnumerable<RelationshipModel> relationships, NodeContentType sourceType)
         {
             int targetIndex = 0;
-            foreach(RelationshipModel relModel in relationships)
+            foreach (RelationshipModel relModel in relationships)
             {
                 string identifier = $"targetRel{targetIndex}";
                 builder.AppendFormat("MERGE ({0}:{1} ", identifier, relModel.GetNodeLabel());
@@ -103,16 +99,16 @@ namespace MediaGraph.Code
                 builder.Append("{").AppendFormat("id: '{0}'", relModel.TargetId).Append("})").AppendLine();
 
                 // If the related node is a new addition,
-                if (relModel.IsNewAddition)
+                if(relModel.IsNewAddition)
                 {
                     // Set the commonName of related node
-                    builder.AppendFormat("ON CREATE SET {0}.commonName: '{1}'", identifier, relModel.TargetName);
+                    builder.AppendFormat("ON CREATE SET {0}.commonName = '{1}'", identifier, relModel.TargetName).AppendLine();
                 }
 
                 // Append the creation statement for the relationship
                 string relProps = "{roles: " + JsonConvert.SerializeObject(relModel.Roles) + "}";
                 // If this is a media node,
-                if(sourceType == NodeContentType.Media)
+                if (sourceType == NodeContentType.Media)
                 {
                     // This relationship goes Target -> Source
                     builder.AppendFormat(kCreateRelationshipStatement, identifier, relModel.GetNodeLabel(), relProps, "n");
@@ -128,7 +124,7 @@ namespace MediaGraph.Code
             }
         }
 
-#region Update Methods
+        #region Update Methods
         public bool UpdateNode(BasicNodeModel model)
         {
             bool success = false;
@@ -138,7 +134,7 @@ namespace MediaGraph.Code
                 {
                     IStatementResult result = action.Run(kMatchNodeQuery, new Dictionary<string, object> { { "id", model.Id.ToString() } });
                     // We found a node to delete
-                    if(result.FirstOrDefault() != null)
+                    if (result.FirstOrDefault() != null)
                     {
                         // Delete the node
                         Delete(action, model.Id);
@@ -160,7 +156,7 @@ namespace MediaGraph.Code
         {
             return transaction.Run(BuildNodeCreationQuery(node), new { props = node.GetPropertyMap() }).Summary.Counters.NodesCreated > 0;
         }
-#endregion
+        #endregion
 
 
         /// <summary>
@@ -230,9 +226,9 @@ namespace MediaGraph.Code
                 {
                     IStatementResult statementResult = action.Run(kMatchNodeAndRelationshipsQuery, new Dictionary<string, object> { { "id", id.ToString() } });
                     // Get the relationships
-                    foreach(IRecord record in statementResult)
+                    foreach (IRecord record in statementResult)
                     {
-                        if(node == null)
+                        if (node == null)
                         {
                             node = BasicNodeModel.FromINode(record[0].As<INode>());
                         }
@@ -256,7 +252,7 @@ namespace MediaGraph.Code
                     // Run the query
                     IStatementResult result = action.Run(kMatchPathQuery, new { id = id.ToString() });
                     // Add each of the paths to return object
-                    foreach(IRecord record in result)
+                    foreach (IRecord record in result)
                     {
                         paths.Add(record[0].As<IPath>());
                     }
@@ -266,8 +262,6 @@ namespace MediaGraph.Code
             return paths;
         }
 
-        // Method obsolete due to nodes will always have an id if they are in the database
-        [Obsolete]
         public List<IPath> GetPaths(string commonName)
         {
             List<IPath> paths = new List<IPath>();
@@ -280,7 +274,7 @@ namespace MediaGraph.Code
                     // Run the query
                     IStatementResult result = action.Run(kMatchPathsByNameQuery, new { name = commonName });
                     // Add each of the paths to the result
-                    foreach(IRecord record in result)
+                    foreach (IRecord record in result)
                     {
                         paths.Add(record[0].As<IPath>());
                     }
@@ -288,16 +282,6 @@ namespace MediaGraph.Code
             }
 
             return paths;
-        }
-
-        /// <summary>
-        /// Asynchronously gets the paths of the specified node.
-        /// </summary>
-        /// <param name="id">The unique id of the node</param>
-        /// <returns>A collection of paths from the specified node</returns>
-        public async Task<List<IPath>> GetPathsAsync(Guid id)
-        {
-            return await Task.Run(() => { return GetPaths(id); });
         }
 
         /// <summary>
@@ -321,7 +305,7 @@ namespace MediaGraph.Code
                             { "upperBound", DateValueConverter.ToLongValue(end) }
                         });
                     // Add the nodes 
-                    foreach(IRecord record in result)
+                    foreach (IRecord record in result)
                     {
                         nodeModels.Add(BasicNodeModel.FromINode(record[0].As<INode>()));
                     }
@@ -329,17 +313,6 @@ namespace MediaGraph.Code
             }
 
             return nodeModels;
-        }
-        
-        /// <summary>
-        /// Asynchronously gets the nodes that are located between the given dates.
-        /// </summary>
-        /// <param name="start">The lower bound date</param>
-        /// <param name="end">The upper bound date</param>
-        /// <returns>A collection of nodes located between the given dates</returns>
-        public async Task<List<BasicNodeModel>> GetNodesBetweenDatesAsync(DateTime start, DateTime end)
-        {
-            return await Task.Run(() => { return GetNodesBetweenDates(start, end); });
         }
 
         public IRecord GetRelationship(Guid source, Guid target)
@@ -364,7 +337,7 @@ namespace MediaGraph.Code
             return relationship;
         }
 
-#region Simple Autocomplete Functionality
+        #region Simple Autocomplete Functionality
         /// <summary>
         /// A simple implementation of autocomplete functionality using Neo4j itself.
         /// This simple implementation will not check for matches in the 'otherNames' property
@@ -383,7 +356,7 @@ namespace MediaGraph.Code
                     // Run the query
                     IStatementResult statementResult = action.Run("MATCH (n) WHERE LOWER(n.commonName) STARTS WITH $text RETURN n.commonName, n.id", new { text = name });
                     // Populate the dictionary
-                    foreach(IRecord record in statementResult)
+                    foreach (IRecord record in statementResult)
                     {
                         results.Add(record[0].As<string>(), record[1].As<string>());
                     }
@@ -412,7 +385,7 @@ namespace MediaGraph.Code
                     // Run the query
                     IStatementResult statementResult = action.Run(queryBase, new { text = name });
                     // Populate the result
-                    foreach(IRecord record in statementResult)
+                    foreach (IRecord record in statementResult)
                     {
                         results.Add(record[0].As<string>(), record[1].As<string>());
                     }
@@ -421,6 +394,6 @@ namespace MediaGraph.Code
 
             return results;
         }
-#endregion
+        #endregion
     }
 }

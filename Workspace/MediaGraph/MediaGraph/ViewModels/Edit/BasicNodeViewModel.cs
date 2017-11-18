@@ -330,6 +330,8 @@ namespace MediaGraph.ViewModels.Edit
         public string TargetName { get; set; }
         public IEnumerable<string> Roles { get; set; }
 
+        public bool IsNewAddition { get; set; } = false;
+
         /// <summary>
         /// Converts the roles collection into a string.
         /// </summary>

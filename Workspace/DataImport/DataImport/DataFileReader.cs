@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.IO;
+using DataImport.JsonModel;
+using Newtonsoft.Json;
 
 namespace DataImport
 {
@@ -24,6 +26,16 @@ namespace DataImport
         public static DataFileObject ReadDataFile(string filePath)
         {
             return xmlReader.Deserialize(File.Open(filePath, FileMode.Open)) as DataFileObject; 
+        }
+
+        public static List<BasicNodeModel> ReadJson(string filePath)
+        {
+            List<BasicNodeModel> models = new List<BasicNodeModel>();
+            using (StreamReader stream = new StreamReader(File.Open(filePath, FileMode.Open)))
+            {
+                models = JsonConvert.DeserializeObject<List<BasicNodeModel>>(stream.ReadToEnd()) as List<BasicNodeModel>;
+            }
+            return models;
         }
     }
 }
