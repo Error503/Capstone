@@ -4,5 +4,22 @@
 }
 
 <article class="row">
-    <h4>Content</h4>
+    <section class="col s12 m4">
+        <div class="card-panel green accent-1 z-depth-2">
+            <div class="valign-wrapper">
+                @Html.ActionLink("Visualize", "Index", "Graph")
+            </div>
+        </div>
+    </section>
+    <section class="col s12 m4">
+        <h4 class="center-align">Welcome to @(System.Configuration.ConfigurationManager.AppSettings["websiteName"])</h4>
+        <p class="flow-text center-align">Visualize the relationship between all of your favorite media.</p>
+    </section>
+    <section class="col s12 m4">
+        <div class="card-panel green accent-1 z-depth-2">
+            <div class="valign-wrapper">
+                @Html.ActionLink("Contribute", "Index", "Edit")
+            </div>
+        </div>
+    </section>
 </article>

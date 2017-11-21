@@ -187,6 +187,7 @@ namespace MediaGraph.ViewModels.Edit
             {
                 relationships.Add(new RelationshipModel
                 {
+                    IsNewAddition = vm.IsNewAddition,
                     SourceId = vm.SourceId,
                     TargetId = vm.TargetId,
                     TargetType = vm.TargetType,

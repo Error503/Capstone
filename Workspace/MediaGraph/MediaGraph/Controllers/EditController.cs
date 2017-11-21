@@ -34,7 +34,7 @@ namespace MediaGraph.Controllers
                     ViewBag.Title = "Edit Node Data";
                     BasicNodeViewModel viewModel = null;
                     // Get the node to edit
-                    using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+                    using (NeoDriver driver = new NeoDriver())
                     {
                         BasicNodeModel model = driver.GetNodeAndRelationships(parsedId);
                         viewModel = BasicNodeViewModel.FromModel(model);
@@ -73,14 +73,15 @@ namespace MediaGraph.Controllers
             if(ModelState.IsValid)
             {
                 DatabaseRequestType requestType = 0;
-                using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+                using (NeoDriver driver = new NeoDriver())
                 {
+                    // TODO: This will no longer work to check if this is an update or creation request
                     requestType = driver.GetNode(model.Id) != null ? DatabaseRequestType.Update : DatabaseRequestType.Create;
                 }
                 // Create the database request
                 CreateDatabaseRequest(model, requestType);
                 // Redirect to the accepted page
-                result = RedirectToAction("Accepted", "Edit", null);
+                result = RedirectToAction("Accepted", "Edit");
             }
 
             return result;
@@ -134,7 +135,7 @@ namespace MediaGraph.Controllers
             Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             BasicNodeModel toDelete = null;
 
-            using(Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            using(NeoDriver driver = new NeoDriver())
             {
                 toDelete = driver.GetNode(id);
             }

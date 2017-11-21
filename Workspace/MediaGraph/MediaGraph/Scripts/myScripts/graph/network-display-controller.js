@@ -6,25 +6,25 @@
         clickToUse: false,
         groups: {
             // Full color
-            "pal0-1": { color: { background: '#63CE4B', border: '#53AD3F' } },
-            "pal0-2": { color: { background: '#CD7ED1', border: '#8C568F' } },
-            "pal0-3": { color: { background: '#5BC5D9', border: '#35747F' } },
-            // Colorblind option 1 - Deutranopia
-            "pal1-1": { color: { background: '#63CE4B', border: '#000000' } },
-            "pal1-2": { color: { background: '#7523ff', border: '#000000' } },
-            "pal1-3": { color: { background: '#3578ba', border: '#000000' } },
-            // Colorblind option 2 - Protanopia
-            "pal2-1": { color: { background: '#63CE4B', border: '#000000' } },
-            "pal2-2": { color: { background: '#7523ff', border: '#000000' } },
-            "pal2-3": { color: { background: '#3578BA', border: '#000000' } },
-            // Colorblind option 3 - Tritanopia
-            "pal2-1": { color: { background: '#63CE4B', border: '#000000' } },
-            "pal2-2": { color: { background: '#7523ff', border: '#000000' } },
-            "pal2-3": { color: { background: '#3578BA', border: '#000000' } },
-            // Color blind option 3 - Grayscale
-            "pal4-1": { color: { background: '#E5E5E5', border: '#7F7F7F' }, shape: 'square' },
-            "pal4-2": { color: { background: '#404040', border: '#7F7F7F' }, shape: 'dot' },
-            "pal4-3": { color: { background: '#AAAAAA', border: '#7F7F7F' }, shape: 'triangle' }
+            "pal0-1": { color: { background: '#63CE4B', border: '#53AD3F' } }, // Green
+            "pal0-2": { color: { background: '#CD7ED1', border: '#8C568F' } }, // Purple
+            "pal0-3": { color: { background: '#5BC5D9', border: '#35747F' } }, // Blue
+            // Colorblind option 1 - Deutranopia (Red-Green)
+            "pal1-1": { color: { background: '#50DE00', border: '#000000' } }, // Green eq
+            "pal1-2": { color: { background: '#1600F2', border: '#000000' } }, // Blue eq
+            "pal1-3": { color: { background: '#910D00', border: '#000000' } }, // Red eq
+            //// Colorblind option 2 - Protanopia (Red-Green)  -- Unused (Same as above)
+            //"pal2-1": { color: { background: '#0EDE00', border: '#000000' } }, // Green eq
+            //"pal2-2": { color: { background: '#9A00F2', border: '#000000' } }, // Red eq
+            //"pal2-3": { color: { background: '#910D00', border: '#000000' } }, // Blue eq
+            // Colorblind option 3 - Tritanopia (Blue-Yellow)
+            "pal3-1": { color: { background: '#05E500', border: '#000000' } }, // Green eq
+            "pal3-2": { color: { background: '#6100A3', border: '#000000' } }, // Purple eq
+            "pal3-3": { color: { background: '#910D00', border: '#000000' } }, // Red eq
+            // Color blind option 3 - Monochrome
+            "pal4-1": { color: { background: '#757575', border: '#000000' }, shape: 'square' },
+            "pal4-2": { color: { background: '#262626', border: '#000000' }, shape: 'dot' },
+            "pal4-3": { color: { background: '#E8E8E8', border: '#000000' }, shape: 'triangle' }
         },
         interaction: {
             tooltipDelay: 100,
@@ -98,32 +98,6 @@
 
         return options;
     }
-    // Setup an event to handle screen resizing
-    var isScreenInSmallState = false;
-    // Check the screen size
-    checkScreenSize();
-    // Add an event handler for the window resizing
-    $(window).on('resize', checkScreenSize);
-
-    function checkScreenSize() {
-        // Get the screen width
-        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        var isScreenSmall = screenWidth <= 992; // Materialize's setting for large screens
-        // If the state has changed,
-        if (isScreenSmall != isScreenInSmallState) {
-            // If the screen is currently small,
-            if (isScreenSmall) {
-                isScreenInSmallState = true;
-                storedOptions.interaction.navigationButtons = false;
-                storedOptions.clickToUse = true;
-            } else {
-                isScreenInSmallState = false;
-                storedOptions.interaction.navigationButtons = true;
-                storedOptions.clickToUse = false;
-            }
-            network.setOptions(storedOptions);
-        }
-    }
 
     return {
         nodes: nodeData,
@@ -134,8 +108,26 @@
         addEdge: addEdge,
         clear: clearData,
         clusterConnections: clusterSelectedNodeConnections,
-        changeColorPalette: changeColorPalette
+        changeColorPalette: changeColorPalette,
+        checkScreenSize: checkScreenSize
     };
+
+    // Create a method that will handle screen resizing
+    var isInSmallScreenMode = false;
+    function checkScreenSize(screenWidth) {
+        var isSmallScreen = screenWidth <= 992; // Materialize's setting for large screens
+        // If the state has changed
+        if (isInSmallScreenMode != isSmallScreen) {
+            isInSmallScreenMode = true;
+            storedOptions.interaction.navigationButtons = false;
+            storedOptions.clickToUse = true;
+        } else {
+            isScreenInSmallState = false;
+            storedOptions.interaction.navigationButtons = true;
+            storedOptions.clickToUse = false;
+        }
+        network.setOptions(storedOptions);
+    }
 
     function addNode(data, position) {
         if (nodeData.get(data.Id) == null) {
@@ -163,7 +155,10 @@
                 from: sourceId,
                 to: target.Id,
                 label: capitalizedLabel,
-                font: { align: 'top' }
+                font: { align: 'top' },
+                color: {
+                    color: '#777777'
+                }
             });
         }
     }
@@ -192,15 +187,17 @@
     // Changes the colorblind color options
     function changeColorPalette(option) {
         colorPalette = option;   // Update the color palette option
-        console.log(colorPalette);
-        var nodes = nodeData.get(); // Get all of the nodes
+        var nData = nodeData.get(); // Get all of the nodes
         // Update all of the nodes in the graph to the new palette
-        for (var i = 0; i < nodes.length; i++) {
+        for (var i = 0; i < nData.length; i++) {
             // Change the node's group
-            nodes[i].group = 'pal' + colorPalette + '-' + nodes[i].group.match(/(\d)$/)[1];
-            // Update the node
-            nodeData.update(nodes[i]);
+            nData[i].group = 'pal' + colorPalette + '-' + nData[i].group.match(/(\d)$/)[1];
         }
+        // Workaround of nodeData.update(nData) causing a stack overflow because of the
+        // resulting phsyics simulation of the update
+        // Clearing the data and adding all of the data again fixes this issue
+        nodeData.clear();
+        nodeData.add(nData);
     }
 
     function getNodePaths(id, position) {

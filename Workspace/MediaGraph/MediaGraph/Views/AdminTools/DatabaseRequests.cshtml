@@ -46,13 +46,6 @@
         }
     </div>
 }
-@section navigation {
-    <section class="col s12 offset-m5 m7 center">
-        <button id="previous-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_left</i></button>
-        <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@(Model.TotalPages == 0 ? 0 : Model.CurrentPage)" /> of <span id="total-pages">@Model.TotalPages</span></span>
-        <button id="next-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_right</i></button>
-    </section>
-}
 @section scripts {
     <script src="~/Scripts/myScripts/admin-tools/request-base.js"></script>
     <script src="~/Scripts/myScripts/admin-tools/request-manager.js"></script>

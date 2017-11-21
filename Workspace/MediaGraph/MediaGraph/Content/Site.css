@@ -6,20 +6,16 @@
 main {
     flex: 1 0 auto;
 }
-/*.info-display {
-    min-height: 200px;
-    height: 250px;
-}*/
 .scroll-list {
     height: 200px;
     max-height: 200px;
     overflow-y: scroll;
 }
-.relationship-group {
+/*.relationship-group {
     overflow-y: scroll;
     height: 250px;
     max-height: 250px;
-}
+}*/
 .pointer-item {
     cursor: pointer;
 }
@@ -43,4 +39,12 @@ main {
     width: 50px;
     text-align: center;
     border-radius: 5px;
+}
+/* Contribution Page */
+.tabs.green-tabs .tab a {
+    /* 1b5e20 */
+    color: rgba(27,94,32,0.7) !important;
+}
+.tabs.green-tabs .indicator {
+    background-color: #81c784 !important;
 }

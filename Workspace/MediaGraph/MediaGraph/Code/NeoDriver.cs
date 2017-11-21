@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MediaGraph.Code
 {
-    public class Neo4jGraphDatabaseDriver : IGraphDatabaseDriver
+    public class NeoDriver : IGraphDatabaseDriver
     {
         private const string kNodeCreationStatement = "CREATE (n:{0} $props) ";
         private const string kMatchNodeQuery = "MATCH (n {id: $id}) RETURN n";
@@ -29,13 +29,15 @@ namespace MediaGraph.Code
 
         private readonly IDriver driver;
 
-        private const bool kUseInternal = false;
-
-        public Neo4jGraphDatabaseDriver()
+#if DEBUG
+        private readonly string kConnectionString = ConfigurationManager.AppSettings["neoExternal"];
+#else 
+        private readonly string kConnectionString = ConfigurationManager.AppSettings["neoInternal"];
+#endif
+        public NeoDriver()
         {
             // Create the database driver
-            driver = GraphDatabase.Driver(kUseInternal ? ConfigurationManager.AppSettings["neoInternal"] : ConfigurationManager.AppSettings["neoExternal"],
-                AuthTokens.Basic(ConfigurationManager.AppSettings["neoLogin"], ConfigurationManager.AppSettings["neoPass"]));
+            driver = GraphDatabase.Driver(kConnectionString, AuthTokens.Basic(ConfigurationManager.AppSettings["neoLogin"], ConfigurationManager.AppSettings["neoPass"]));
         }
 
         /// <summary>
@@ -70,6 +72,14 @@ namespace MediaGraph.Code
 
             return sessionResult != null;
         }
+
+        //public List<string> GenerateStatements(BasicNodeModel node)
+        //{
+        //    List<Tuple<string, object>> statements = new List<Tuple<string, object>>();
+
+
+        //    return statements;
+        //}
         
         /// <summary>
         /// Creates a single large query for the creation of a node and it's direct relationships.
@@ -106,7 +116,7 @@ namespace MediaGraph.Code
                 if (relModel.IsNewAddition)
                 {
                     // Set the commonName of related node
-                    builder.AppendFormat("ON CREATE SET {0}.commonName: '{1}'", identifier, relModel.TargetName);
+                    builder.AppendFormat("ON CREATE SET {0}.commonName = '{1}'", identifier, relModel.TargetName).AppendLine();
                 }
 
                 // Append the creation statement for the relationship

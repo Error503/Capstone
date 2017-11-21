@@ -15,8 +15,13 @@
     </section>
 </article>
 <article class="row">
-    @RenderSection("navigation", true)
+    <section class="col s12 offset-m5 m7 center">
+        <button id="previous-page-button" type="button" class="waves-effect waves-light btn green accent-4"><i class="material-icons">chevron_left</i></button>
+        <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@(Model.TotalPages == 0 ? 1 : Model.CurrentPage)" /> of <span id="total-pages">@(Model.TotalPages == 0 ? 1 : Model.TotalPages)</span></span>
+        <button id="next-page-button" type="button" class="waves-effect waves-light btn green accent-4"><i class="material-icons">chevron_right</i></button>
+    </section>
 </article>
+@RenderBody()
 
 @section scripts {
     @RenderSection("scripts", false)    

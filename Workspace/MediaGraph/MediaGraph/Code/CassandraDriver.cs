@@ -18,6 +18,12 @@ namespace MediaGraph.Code
         private string autocompleteKeySpace;
         private string autocompleteMetadataTable;
 
+#if DEBUG
+        private const string kContactPoint = "automediadata.southcentralus.cloudapp.azure.com";
+#else
+        private const string kContactPoint = "10.0.0.5";
+#endif
+
         /*
          * Autocomplete Table Schema:
          * Prefix, Remaining, Id, Name, DataType, CommonName, PRIMARY KEY (Prefix, Remaining, Id)
@@ -32,7 +38,7 @@ namespace MediaGraph.Code
             autocompleteMetadataTable = "names_meta_table";
             autocompleteKeySpace = "test_space"; //"autocomplete_space";
             connection = Cluster.Builder().WithCredentials("cassandra", "GiLY9v5jVfzy")
-                .AddContactPoint("automediadata.southcentralus.cloudapp.azure.com")
+                .AddContactPoint(kContactPoint)
                 .WithPort(9042).Build();
         }
 
@@ -83,7 +89,7 @@ namespace MediaGraph.Code
             return await Task.Run(() => { return Search(name); });
         }
 
-        #region Batch Add Methods
+#region Batch Add Methods
         /// <summary>
         /// Adds the given node to the database using a Apache Cassandra BATCH statement.
         /// </summary>
@@ -183,7 +189,7 @@ namespace MediaGraph.Code
             Match m = Regex.Match(name.ToLowerInvariant(), @"^(.{1,3})(.*)");
             return new Tuple<string, string>(m.Groups[1].Value, m.Groups[2].Value);
         }
-        #endregion
+#endregion
 
         /// <summary>
         /// Updates the given node within the autocomplete database.

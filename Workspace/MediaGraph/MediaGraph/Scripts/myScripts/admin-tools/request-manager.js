@@ -1,22 +1,8 @@
-﻿function searchStarted() {
-    //$('#request-list-container').hide();
-    //$('#preloader').show().addClass('active');
-}
-
-function searchCompleted() {
-    //$('#preloader').hide().removeClass('active');
-    //$('#request-list-container').show();
-}
-
-function searchSuccessful(response) {
-    totalPages = response.TotalPages;
+﻿function searchSuccessful(response) {
     currentPage = response.CurrentPage;
+    totalPages = response.TotalPages == 0 ? 1 : response.TotalPages;
     updateDisplay(response.Requests);
     updateSytling();
-}
-
-function searchFailed(response) {
-    console.error(response);
 }
 
 function updateDisplay(list) {

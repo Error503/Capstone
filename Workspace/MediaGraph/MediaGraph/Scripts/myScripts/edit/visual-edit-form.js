@@ -241,7 +241,7 @@ function updateSourceNode(event) {
     // Update the node
     nodeData.update({
         id: 'source',
-        group: "" + form['ContentType'].value,
+        group: "" + contentType,
         label: displayName != null && displayName != "" ? createLabel(displayName, 15) : 'Source',
         title: displayName != null && displayName != "" ? displayName : 'Source'
     });

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace MediaGraph.Controllers
@@ -14,7 +15,7 @@ namespace MediaGraph.Controllers
     [Authorize(Roles = "admin,staff")]
     public class AdminToolsController : Controller
     {
-        private static readonly bool kDeleteOnReview = true;
+        private static readonly bool kDeleteOnReview = false;
         // Exclude the default admin, myself, from being displayed
         private static readonly string[] kExcludedUsers = new string[] { "a8ea39f9-e1b1-4ecb-bc88-7d22f5d2b165" };
 
@@ -77,57 +78,6 @@ namespace MediaGraph.Controllers
             return result;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "staff")]
-        public ActionResult GetUserPage(string username, string email, int page = 1, int resultsPerPage = 25)
-        {
-            ActionResult result = Json(new { PageCount = 0, Users = 0 }, JsonRequestBehavior.AllowGet);
-            using (ApplicationDbContext context = ApplicationDbContext.Create())
-            {
-                // Filter the user list
-                List<ApplicationUser> matchingUsers = (from user in context.Users
-                                                       where !kExcludedUsers.Contains(user.Id) &&
-                                                             (username == string.Empty && email == string.Empty) ||
-                                                             (username != string.Empty && user.UserName.Contains(username)) ||
-                                                             (email != string.Empty && user.Email.Contains(email))
-                                                       orderby user.UserName
-                                                       select user).ToList();
-                // Get the total number of pages
-                int totalPages = (int)Math.Ceiling(matchingUsers.Count / (double)resultsPerPage);
-                // Calculate the offset
-                int offset = (page - 1) * resultsPerPage;
-                // Get the user page
-                if (matchingUsers.Count - offset > resultsPerPage)
-                {
-                    // Get a full page of users
-                    matchingUsers = matchingUsers.Skip(offset).Take(resultsPerPage).ToList();
-                }
-                else
-                {
-                    // Get the remaining users
-                    matchingUsers = matchingUsers.Skip(offset).ToList();
-                }
-
-                // Convert the results 
-                List<UserViewModel> resultUsers = new List<UserViewModel>();
-                for (int i = 0; i < matchingUsers.Count; i++)
-                {
-                    ApplicationUser user = matchingUsers[i];
-                    resultUsers.Add(new UserViewModel
-                    {
-                        Id = user.Id,
-                        Username = user.UserName,
-                        Email = user.Email,
-                        Role = user.Roles.First().RoleId
-                    });
-                }
-
-                result = Json(new { PageCount = totalPages, Users = resultUsers }, JsonRequestBehavior.AllowGet);
-            }
-
-            return result;
-        }
-
         // AdminTools/UpdateUser
         [HttpPost]
         [Authorize(Roles = "staff")]
@@ -165,6 +115,38 @@ namespace MediaGraph.Controllers
             }
 
             return result;
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "staff")]
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            bool success = await Task.Run<bool>(() =>
+            {
+                bool userDeleted = true;
+                using (ApplicationDbContext context = ApplicationDbContext.Create())
+                {
+                    // Try to find the user to delete
+                    ApplicationUser userToDelete = context.Users.SingleOrDefault(x => x.Id == id);
+
+                    // If the user was found,
+                    if(userToDelete != null)
+                    {
+                        // Delete the user
+                        context.Users.Remove(userToDelete);
+                        // Save the changes
+                        context.SaveChanges();
+                    } 
+                    else
+                    {
+                        userDeleted = false;
+                    }
+
+                    return userDeleted;
+                }
+            });
+
+            return Json(new { success = success });
         }
         #endregion
 
@@ -270,7 +252,7 @@ namespace MediaGraph.Controllers
                                 fromDatabase.ApprovalDate = DateTime.Now;
                         }
                         // If the database action was successful,
-                        if(saveDatabase)
+                        if (saveDatabase)
                         {
                             // Save the changes to the database
                             context.SaveChanges();
@@ -285,24 +267,28 @@ namespace MediaGraph.Controllers
         }
 
         [NonAction]
-        private bool CheckRequestsAndCommitChanges(BasicNodeViewModel fromForm, DatabaseRequest fromDatabase)
+        public bool CheckRequestsAndCommitChanges(BasicNodeViewModel fromForm, DatabaseRequest fromDatabase)
         {
             bool result = true;
             
             try
             {
-                DatabaseSystemDriver systemDriver = new DatabaseSystemDriver();
+                DatabaseDriver systemDriver = new DatabaseDriver();
                 if (fromDatabase.RequestType == DatabaseRequestType.Create)
                 {
-                    systemDriver.AddNode(fromForm.ToModel());
+                    //systemDriver.AddNodeAsync(fromForm.ToModel());
+                    using (NeoDriver driver = new NeoDriver())
+                    {
+                        driver.AddNode(fromForm.ToModel());
+                    }
                 }
                 else if (fromDatabase.RequestType == DatabaseRequestType.Update)
                 {
-                    systemDriver.UpdateNode(fromForm.ToModel());
+                    systemDriver.UpdateNodeAsync(fromForm.ToModel());
                 }
                 else if (fromDatabase.RequestType == DatabaseRequestType.Delete)
                 {
-                    systemDriver.DeleteNode(fromForm.Id);
+                    systemDriver.DeleteNodeAsync(fromForm.Id);
                 }
             }
             catch

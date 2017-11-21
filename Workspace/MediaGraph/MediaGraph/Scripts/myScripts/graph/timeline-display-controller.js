@@ -69,10 +69,15 @@
         clear: clearData,
         destroy: destroyTimeline,
         goToDate: goToDate,
-        changeColorPalette: changeColorPalette
+        changeColorPalette: changeColorPalette,
+        checkScreenSize: checkScreenSize
     };
 
     // ===== Functions =====
+
+    function checkScreenSize(screenWidth) {
+        // Nothing to check for now
+    }
 
     function addNode(data) {
         var window = timeline.getWindow();

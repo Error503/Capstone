@@ -24,13 +24,11 @@ $(document).ready(function () {
         }
     });
     $('#color-blind-option').on('change', function (event) {
-        console.log("Changing color palette");
         display.changeColorPalette(Number.parseInt($(this).val()));
     }).material_select();
 
     $(window).keydown(function (event) {
         if (event.keyCode == 13) {
-            getInformation();
             event.preventDefault();
             return false;
         }
@@ -49,6 +47,42 @@ $(document).ready(function () {
     function autocompleteCallback(value) {
         document.forms['search-form']['id'].value = value.id;
         getInformation();
+    }
+
+    // Set up the responsive screen sizing
+    // Setup an event to handle screen resizing
+    var isInSmallMode = false;
+    // Check the screen size
+    checkScreenSize();
+    // Add an event handler for the window resizing
+    $(window).on('resize', checkScreenSize);
+
+    function checkScreenSize() {
+        // Get the screen width
+        var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        // Check the width of the screen for the filter dropdown
+        var isScreenSmall = screenWidth <= 600; // Materialize setting for small screens
+        // If there has been a change in state,
+        if (isInSmallMode != isScreenSmall) {
+            isInSmallMode = isScreenSmall;
+            var content = $('#search-and-options');
+            // If the screen is now small
+            if (isScreenSmall) {
+                // Put the filter in the filter dropdown
+                $('#search-dropdown-content').empty().append(content);
+                $('#search-dropdown').show();
+                $('#search-column').empty().hide();
+            } else {
+                // Put the search in the side column
+                $('#search-column').empty().append(content).show();
+                $('#search-dropdown').hide();
+            }
+        }
+
+        // Call the check screen size method on the visualization
+        if (display != null) {
+            display.checkScreenSize(screenWidth);
+        }
     }
 
     function initializeNetworkDisplay() {
@@ -70,24 +104,29 @@ $(document).ready(function () {
 
 function getInformation(position) {
     var formAction = selectedType === 'network' ? '/graph/networkdata' : '/graph/timelinedata';
-    $.ajax({
-        method: 'get',
-        url: formAction,
-        data: $('#search-form').serialize(),
-        success: function (response) {
-            if (response.success) {
-                if (selectedType === 'network') {
-                    updateNetwork(response.data, position);
+    if ($('#id-field').val() != '') {
+        $.ajax({
+            method: 'get',
+            url: formAction,
+            data: $('#search-form').serialize(),
+            success: function (response) {
+                if (response.success) {
+                    if (selectedType === 'network') {
+                        updateNetwork(response.data, position);
+                    } else {
+                        updateTimeline({ ReleaseDate: response.ReleaseDate, DeathDate: response.DeathDate });
+                    }
+                    $('#id-field').val('');
                 } else {
-                    updateTimeline({ ReleaseDate: response.ReleaseDate, DeathDate: response.DeathDate });
+                    $('#create-node-modal').modal('open');
                 }
-            } else {
-                console.log("MODAL");
-                $('#create-node-modal').modal('open');
-            }
-        },
-        error: function (response) { console.log(response); }
-    });
+                isAwaitingInformation = false;
+            },
+            error: function (response) { console.log(response); isAwaitingInformation = false;}
+        });
+    } else {
+        $('#create-node-modal').modal('open');
+    }
 }
 
 function closeModal() {

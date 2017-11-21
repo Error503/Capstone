@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace MediaGraph.Code
 {
-    public class DatabaseSystemDriver
+    public class DatabaseDriver
     {
+
         /// <summary>
         /// Adds the given node into the database system.
         /// </summary>
@@ -21,7 +22,7 @@ namespace MediaGraph.Code
                 autocompleteDriver.AddNode(node);
             }
             // Add the node to the graph
-            using (Neo4jGraphDatabaseDriver graphDriver = new Neo4jGraphDatabaseDriver())
+            using (NeoDriver graphDriver = new NeoDriver())
             {
                 graphDriver.AddNode(node);
             }
@@ -48,7 +49,7 @@ namespace MediaGraph.Code
                 autocompleteDriver.UpdateNode(node);
             }
             // Update the node in the graph database
-            using (Neo4jGraphDatabaseDriver graphDriver = new Neo4jGraphDatabaseDriver())
+            using (NeoDriver graphDriver = new NeoDriver())
             {
                 graphDriver.UpdateNode(node);
             }
@@ -75,7 +76,7 @@ namespace MediaGraph.Code
                 autocompleteDriver.DeleteNode(id.ToString());
             }
             // Delete the node from the graph database
-            using (Neo4jGraphDatabaseDriver graphDriver = new Neo4jGraphDatabaseDriver())
+            using (NeoDriver graphDriver = new NeoDriver())
             {
                 graphDriver.DeleteNode(id);
             }

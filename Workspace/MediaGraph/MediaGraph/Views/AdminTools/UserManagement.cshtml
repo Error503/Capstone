@@ -16,8 +16,8 @@
         @foreach(UserViewModel user in Model.Users)
         {
             <li class="collection-item valign-wrapper">
-                <div class="col s4">@user.Username</div>
-                <div class="col s4 input-field">
+                <div class="col s5">@user.Username</div>
+                <div class="col s3 input-field">
                     @Html.DropDownList("user-role-" + user.Id, new List<SelectListItem>
                     {
                         new SelectListItem { Value = "0", Text = "Member", Selected = user.Role == "0" },
@@ -25,18 +25,22 @@
                         new SelectListItem { Value = "2", Text = "Staff", Selected = user.Role == "2" }
                     })
                 </div>
-                <div class="col s4"><button type="button" data-user="@user.Id" class="waves-effect waves-blue btn-flat update-button">Update</button></div>
+                <div class="col s2"><button type="button" data-user="@user.Id" class="waves-effect waves-blue btn-flat update-button"><i class="material-icons">edit</i></button></div>
+                <div class="col s2"><button type="button" data-user="@user.Id" class="waves-effect waves-red btn-flat modal-trigger" data-target="confirm-delete-modal"><i class="material-icons">delete</i></button></div>
             </li>
         }
     </ul>
 }
-@section navigation {
-    <section class="col s12 offset-m5 m7 center">
-        <button id="previous-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_left</i></button>
-        <span><input id="page-selection-box" class="browser-default" type="text" pattern="/[0-9]+/" value="@(Model.TotalPages == 0 ? 0 : Model.CurrentPage)" /> of <span id="total-pages">@Model.TotalPages</span></span>
-        <button id="next-page-button" type="button" class="waves-effect waves-light btn"><i class="material-icons">chevron_right</i></button>
-    </section>
-}
+<div id="confirm-delete-modal" class="modal">
+    <div class="modal-content">
+        <h4 class="left-align">Confirm User Deletion</h4>
+        <p class="flow-text">Are you sure you want to delete this user.</p>
+    </div>
+    <div class="modal-footer">
+        <a id="confirm-delete-button" class="modal-action modal-close waves-effect waves-red btn-flat">Delete</a>
+        <a class="modal-action modal-close waves-effect waves-green btn-flat">Cancel</a>
+    </div>
+</div>
 @section scripts {
     <script src="~/Scripts/myScripts/admin-tools/request-base.js"></script>
     <script src="~/Scripts/myScripts/admin-tools/user-manager.js"></script>

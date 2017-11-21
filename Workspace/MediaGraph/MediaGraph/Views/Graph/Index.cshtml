@@ -11,48 +11,19 @@
 }
 
 <article class="row">
-    <section id="small-search" class="col s12 hide-on-large-only"></section>
+    <section id="search-dropdown" class="col s12" style="display:none;">
+        <ul class="collapsible">
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_list</i>Search and Options</div>
+                <div class="collapsible-body" id="search-dropdown-content"></div>
+            </li>
+        </ul>
+    </section>
     <section id="visualization-container" class="col s12 l6">
         <div id="visualization-target" class="visualization full"></div>
     </section>
-    <section id="search-and-options" class="col s12 l6 hide-on-med-and-down">
-        <div class="search-content">
-            <div class="section">
-                <h5 class="left-align">Search
-                <button class="waves-effect waves-light btn-flat modal-trigger info-button tooltipped" data-target="help-modal" data-delay="250" data-position="right" data-tooltip="Help"><i class="material-icons">info_outline</i></button>
-                </h5>
-                <form id="search-form" autocomplete="off">
-                    <input id="id-field" type="hidden" name="id" />
-                    <div class="valign-wrapper">
-                        <div class="col s9 input-field">
-                            <input type="text" name="text" id="autocomplete-field" class="autocomplete" />
-                            <label for="autocomplete-field">Search</label>
-                        </div>
-                        <div class="col s3">
-                            <button id="search-button" type="button" class="waves-effect waves-light btn green darken-2"><i class="material-icons">search</i></button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="section">
-                <h5 class="left-align">Options</h5>
-                <div class="row">
-                    <div class="col s6">
-                        <button id="switch-visualization-button" type="button" class="waves-effect waves-light green darken-2 btn-large">Timeline</button>
-                    </div>
-                    <div class="col s6 input-field">
-                        <label for="color-blind-option" class="active">Color Options</label>
-                        <select id="color-blind-option">
-                            <option value="0" selected>Full Color</option>
-                            <option value="1">Deuteranopia</option>
-                            <option value="2">Protanopia</option>
-                            <option value="3">Tritanopia</option>
-                            <option value="5">Grayscale</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <section id="search-column" class="col s12 l6 hide-on-med-and-down">
+        @Html.Partial("_SearchAndOptionsPartial")
     </section>
 </article>
 

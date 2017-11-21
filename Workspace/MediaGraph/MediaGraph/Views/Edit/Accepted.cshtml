@@ -1,11 +1,23 @@
-﻿@{
+﻿@model MediaGraph.ViewModels.Edit.BasicNodeViewModel
+@{
     ViewBag.Title = "Request Accepted";
     Layout = "~/Views/Shared/_ContainerLayout.cshtml";
 }
 <article class="row">
     <section class="col s12">
-        <h4>Request Accepted</h4>
+        <h4 class="left-align">Request Accepted</h4>
+        <p class="flow-text">
+            Your request has been accepted. While your request still needs to be reviewed and approved
+            by an administrator you can visualize your addition to the database below.
+        </p>
+    </section>
+    <section class="col s12">
+        <div id="visualization-target" class="visualization-wrapper"></div>
     </section>
 </article>
+
+@section scripts {
+    @Scripts.Render("~/bundles/visualization")
+}
 
 

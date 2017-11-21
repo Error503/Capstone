@@ -277,10 +277,10 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Code\CassandraDriver.cs" />
     <Compile Include="Code\CustomModelBinders.cs" />
-    <Compile Include="Code\DatabaseSystemDriver.cs" />
+    <Compile Include="Code\DatabaseDriver.cs" />
     <Compile Include="Code\DateValueConverter.cs" />
     <Compile Include="Code\IGraphDatabaseDriver.cs" />
-    <Compile Include="Code\Neo4jGraphDatabaseDriver.cs" />
+    <Compile Include="Code\NeoDriver.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminToolsController.cs" />
     <Compile Include="Controllers\AutocompleteController.cs" />
@@ -496,6 +496,7 @@
     <Content Include="Views\Graph\_HelpCardPartial.cshtml" />
     <Content Include="Views\Edit\_HelpModalPartial.cshtml" />
     <Content Include="Views\Home\AccountDeleted.cshtml" />
+    <Content Include="Views\Graph\_SearchAndOptionsPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

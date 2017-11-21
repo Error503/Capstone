@@ -3,8 +3,6 @@
     AjaxOptions options = new AjaxOptions
     {
         HttpMethod = "post",
-        OnBegin = "searchStarted",
-        OnComplete = "searchCompleted",
         OnSuccess = "searchSuccessful",
         OnFailure = "searchFailed"
     };
@@ -25,11 +23,11 @@
         @Html.EnumDropDownListFor(x => x.RequestType, "All Request Types")
     </div>
     <div class="col s6 input-field">
-        <input type="date" name="@Html.NameFor(x => x.LowerBoundDate)" value="@Model.LowerBoundDate?.ToString("yyyy-mm-dd")" />
+        <input type="date" name="@Html.NameFor(x => x.LowerBoundDate)" value="@(Model.LowerBoundDate?.ToString("yyyy-mm-dd"))" />
         @Html.LabelFor(x => x.LowerBoundDate, new { @class = "active" })
     </div>
-    <div class="col s6">
-        <input type="date" name="@Html.NameFor(x => x.UpperBoundDate)" value="@Model.UpperBoundDate?.ToString("yyyy-mm-dd")" />
+    <div class="col s6 input-field">
+        <input type="date" name="@Html.NameFor(x => x.UpperBoundDate)" value="@(Model.UpperBoundDate?.ToString("yyyy-mm-dd"))" />
         @Html.LabelFor(x => x.UpperBoundDate, new { @class = "active" })
     </div>
     <div class="col s12 input-field">

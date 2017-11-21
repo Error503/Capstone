@@ -98,10 +98,8 @@ $(document).ready(function () {
             method: $('#filterForm').attr('data-ajax-method'),
             url: $('#filterForm').attr('action'),
             data: $('#filterForm').serialize(),
-            beforeSend: searchStarted,
-            complete: searchCompleted,
             success: searchSuccessful,
-            failure: searchFailed
+            failure: function (response) { console.error(response); }
         });
     }
 });

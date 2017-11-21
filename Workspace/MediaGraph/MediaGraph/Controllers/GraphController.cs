@@ -33,7 +33,7 @@ namespace MediaGraph.Controllers
         {
             BasicNodeModel model = null;
 
-            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            using (NeoDriver driver = new NeoDriver())
             {
                 if(!id.HasValue || id == Guid.Empty)
                 {
@@ -62,7 +62,7 @@ namespace MediaGraph.Controllers
             BasicNodeModel model = new BasicNodeModel();
             if(id != Guid.Empty)
             {
-                using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+                using (NeoDriver driver = new NeoDriver())
                 {
                     model = driver.GetNode(id);
                 }
@@ -77,7 +77,7 @@ namespace MediaGraph.Controllers
             GraphEdgeViewModel viewModel = new GraphEdgeViewModel();
             if(source != Guid.Empty && target != Guid.Empty)
             {
-                using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+                using (NeoDriver driver = new NeoDriver())
                 {
                     IRecord record = driver.GetRelationship(source, target);
 
@@ -102,7 +102,7 @@ namespace MediaGraph.Controllers
             GraphDataViewModel result = null;
             // Get the paths from the database
             List<IPath> paths = new List<IPath>();
-            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            using (NeoDriver driver = new NeoDriver())
             {
                 if(id == null || id == Guid.Empty)
                 {
@@ -175,7 +175,7 @@ namespace MediaGraph.Controllers
             List<TimelineDisplayViewModel> result = new List<TimelineDisplayViewModel>();
 
             List<BasicNodeModel> nodes;
-            using (Neo4jGraphDatabaseDriver driver = new Neo4jGraphDatabaseDriver())
+            using (NeoDriver driver = new NeoDriver())
             {
                 nodes = driver.GetNodesBetweenDates(start, end);
             }
