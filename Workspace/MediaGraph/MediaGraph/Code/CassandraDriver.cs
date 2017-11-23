@@ -89,6 +89,43 @@ namespace MediaGraph.Code
             return await Task.Run(() => { return Search(name); });
         }
 
+        /// <summary>
+        /// Searches the database for nodes with the given name as used
+        /// for mapping new additions.
+        /// </summary>
+        /// <param name="nodeName">The name of the node to map</param>
+        /// <param name="dataType">The data type of the node being searched</param>
+        /// <returns>A list of matching records</returns>
+        public List<AutocompleteRecord> MappingSearch(string nodeName, NodeContentType dataType)
+        {
+            List<AutocompleteRecord> records = new List<AutocompleteRecord>();
+
+            // Create a session
+            using (ISession session = connection.Connect(autocompleteKeySpace))
+            {
+                PreparedStatement statement = session.Prepare($"SELECT * FROM {autocompleteTable} WHERE prefix = ? AND remaining = ?");
+                Tuple<string, string> nameBinding = BindName(nodeName);
+                // Run the statement
+                RowSet result = session.Execute(statement.Bind(nameBinding.Item1, nameBinding.Item2));
+                if(result.Count() > 0)
+                {
+                    // For each of the rows in the result
+                    foreach (Row r in result)
+                    {
+                        records.Add(new AutocompleteRecord
+                        {
+                            CommonName = r.GetValue<string>("commonnme"),
+                            MatchedName = r.GetValue<string>("name"),
+                            DataType = (NodeContentType)r.GetValue<int>("datatype"),
+                            Id = r.GetValue<string>("id"),
+                        });
+                    }
+                }
+            }
+
+            return records.Where(x => x.DataType == dataType).ToList();
+        }
+
 #region Batch Add Methods
         /// <summary>
         /// Adds the given node to the database using a Apache Cassandra BATCH statement.
@@ -137,13 +174,13 @@ namespace MediaGraph.Code
             // Get the id string once instead of everytime it is needed
             string idString = node.Id.ToString();
             // Execute the meta statement
-            Console.WriteLine("ADDING TO META: " + node.CommonName + " WITH ID: " + node.Id.ToString());
+            //Console.WriteLine("ADDING TO META: " + node.CommonName + " WITH ID: " + node.Id.ToString());
             session.Execute(metaStatement.Bind(idString, bindingDictionary.Select(x => x.Value.Item1).ToArray(),
                 bindingDictionary.Select(x => x.Value.Item2).ToArray()));
             // For each of the entries in the binding dictionary...
             foreach (KeyValuePair<string, Tuple<string, string>> bindingEntry in bindingDictionary)
             {
-                Console.WriteLine("ADDING TO MAIN: " + bindingEntry.Key);
+                //Console.WriteLine("ADDING TO MAIN: " + bindingEntry.Key);
                 // Execute the main statement
                 session.Execute(mainStatement.Bind(bindingEntry.Value.Item1, bindingEntry.Value.Item2, idString,
                     bindingEntry.Key, node.CommonName, (int)node.ContentType));

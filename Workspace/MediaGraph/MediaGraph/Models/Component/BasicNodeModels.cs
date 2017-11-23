@@ -219,7 +219,7 @@ namespace MediaGraph.Models.Component
         {
             if (TargetType == 0)
                 throw new ArgumentException("TargetType is invalid!!!", "TargetType");
-            return Enum.GetName(typeof(NodeContentType), TargetType);
+            return TargetType.ToLabelString();
         }
     }
 }

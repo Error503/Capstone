@@ -12,6 +12,20 @@ namespace MediaGraph.Models.Component
         Person = 3
     }
 
+    public static class NodeContentTypeExtensions
+    {
+        /// <summary>
+        /// Converts the node content type enumeration value into
+        /// a string value to be used as the Neo4j query label.
+        /// </summary>
+        /// <param name="type">The NodeContentType which to convert</param>
+        /// <returns>The string representation of the node contentType</returns>
+        public static string ToLabelString(this NodeContentType type)
+        {
+            return Enum.GetName(typeof(NodeContentType), type);
+        }
+    }
+
     public enum NodeMediaType : byte
     {
         Audio = 1,

@@ -16,6 +16,8 @@ namespace MediaGraph.Code
         /// <param name="node">The node to add to the system</param>
         public void AddNode(BasicNodeModel node)
         {
+            // Map the node's information for information marked as "New addition"
+            MapNewAdditions(ref node);
             // Add the node into the autocomplete database
             using (CassandraDriver autocompleteDriver = new CassandraDriver())
             {
@@ -25,6 +27,32 @@ namespace MediaGraph.Code
             using (NeoDriver graphDriver = new NeoDriver())
             {
                 graphDriver.AddNode(node);
+            }
+        }
+
+        /// <summary>
+        /// Uses the autocomplete database to map node information to existing information.
+        /// </summary>
+        /// <param name="node">The node to map</param>
+        private void MapNewAdditions(ref BasicNodeModel node)
+        {
+            // Get the referenced nodes that are marked as new additions
+            IEnumerable<RelationshipModel> newAdditions = node.Relationships.Where(x => x.IsNewAddition);
+
+            using (CassandraDriver driver = new CassandraDriver())
+            {
+                // For each of the new additions
+                foreach(RelationshipModel m in newAdditions)
+                {
+                    // Search for an existing record
+                    List<AutocompleteRecord> existingRecords = driver.MappingSearch(m.TargetName, m.TargetType);
+                    // If there is exactly one record,
+                    if(existingRecords.Count == 1)
+                    {
+                        // Update the id to the existing record 
+                        m.TargetId = Guid.Parse(existingRecords.First().Id);
+                    }
+                }
             }
         }
 

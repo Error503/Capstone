@@ -229,7 +229,7 @@ namespace MediaGraph.Controllers
                 // Get the data from the request database
                 using (ApplicationDbContext context = ApplicationDbContext.Create())
                 {
-                    fromDatabase = context.Requests.Single(x => x.Id == request.RequestId);
+                    fromDatabase = context.Requests.SingleOrDefault(x => x.Id == request.RequestId);
                     if (!fromDatabase.Reviewed)
                     {
                         // Only save changes to the database if the request was rejected or if the request was 
@@ -271,30 +271,26 @@ namespace MediaGraph.Controllers
         {
             bool result = true;
             
-            try
-            {
+            //try
+            //{
                 DatabaseDriver systemDriver = new DatabaseDriver();
                 if (fromDatabase.RequestType == DatabaseRequestType.Create)
                 {
-                    //systemDriver.AddNodeAsync(fromForm.ToModel());
-                    using (NeoDriver driver = new NeoDriver())
-                    {
-                        driver.AddNode(fromForm.ToModel());
-                    }
+                    systemDriver.AddNode(fromForm.ToModel());
                 }
                 else if (fromDatabase.RequestType == DatabaseRequestType.Update)
                 {
-                    systemDriver.UpdateNodeAsync(fromForm.ToModel());
+                    systemDriver.UpdateNode(fromForm.ToModel());
                 }
                 else if (fromDatabase.RequestType == DatabaseRequestType.Delete)
                 {
-                    systemDriver.DeleteNodeAsync(fromForm.Id);
+                    systemDriver.DeleteNode(fromForm.Id);
                 }
-            }
-            catch
-            {
-                result = false;
-            }
+            //}
+            //catch
+            //{
+            //    result = false;
+            //}
 
             return result;
         }

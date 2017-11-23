@@ -25,8 +25,6 @@ namespace MediaGraph.Code
         private const string kMatchNodeByNameQuery = "MATCH (n {commonName: $name}) RETURN n";
         private const string kMatchPathsByNameQuery = "MATCH p = ({commonName: $name})--() RETURN p";
 
-        //private const string kMatchNodeByAnyName = "MATCH (n) WHERE n.commonName = $name OR $name IN n.otherNames RETURN n";
-
         private readonly IDriver driver;
 
 #if DEBUG
@@ -56,31 +54,100 @@ namespace MediaGraph.Code
         /// <returns>Returns true if the node was added to the graph successfully</returns>
         public bool AddNode(BasicNodeModel node)
         {
-            INode sessionResult;
+            // The total number of nodes that should be created
+            int expectedNodeCount = node.Relationships.Where(x => x.IsNewAddition).Count() + 1;
+            int expectedRelationshipCount = node.Relationships.Count();
+            int actualNodeCount = 0;
+            int actualRelationshipCount = 0;
+            // Get the statements that need to be run
+            List<Statement> creationStatements = GenerateStatements(node);
 
             // Create the session
             using (ISession session = driver.Session())
-            {
-                // Run the statement in a transaction
-                sessionResult = session.WriteTransaction(action =>
+            { 
+                // Add the source node
+                session.WriteTransaction(action =>
                 {
-                    // Create the node
-                    IStatementResult result = action.Run(BuildNodeCreationQuery(node), new { props = node.GetPropertyMap() });
-                    return result.Single()[0].As<INode>();
+                    IStatementResult nodeResult = action.Run(new Statement($"CREATE (s:{node.GetNodeLabels()} $props)",
+                        new Dictionary<string, object> { { "props", node.GetPropertyMap() } }));
+                    actualNodeCount += nodeResult.Summary.Counters.NodesCreated;
+                    // Only continue if the node was added
+                    if (actualNodeCount == 1)
+                    {
+                        // For each of the relationship statements,
+                        foreach (Statement relStatement in creationStatements)
+                        {
+                            // Run the statement
+                            IStatementResult relResult = action.Run(relStatement);
+                            // Update the counts of the actual node and relationship values
+                            actualNodeCount += relResult.Summary.Counters.NodesCreated;
+                            actualRelationshipCount += relResult.Summary.Counters.RelationshipsCreated;
+                        } 
+                    }
+
+                    // If the node and relationship counts do not equal the expected values,
+                    if (actualNodeCount != expectedNodeCount || actualRelationshipCount != expectedRelationshipCount)
+                    {
+                        // This transaction has failed
+                        action.Failure();
+                    }
+                    else
+                    {
+                        // This transaction has succeeded
+                        action.Success();
+                    }
                 });
             }
 
-            return sessionResult != null;
+            return actualNodeCount == expectedNodeCount && actualRelationshipCount == expectedRelationshipCount;
         }
 
-        //public List<string> GenerateStatements(BasicNodeModel node)
-        //{
-        //    List<Tuple<string, object>> statements = new List<Tuple<string, object>>();
+        /// <summary>
+        /// Creates a group of creation statements for the given node that adds the referenced
+        /// nodes 10 at a time.
+        /// </summary>
+        /// <param name="model">The node for which to generate the creation statements</param>
+        /// <returns>A collection of statements that will be used to create the node</returns>
+        private List<Statement> GenerateStatements(BasicNodeModel model)
+        {
+            List<Statement> creationStatements = new List<Statement>();
 
+            // For each of the relationships...
+            foreach(RelationshipModel relModel in model.Relationships)
+            {
+                // Create the statement for the relationship
+                creationStatements.Add(GenerateRelationshipStatement(relModel, model.ContentType));
+            }
 
-        //    return statements;
-        //}
-        
+            return creationStatements;
+        }
+
+        private Statement GenerateRelationshipStatement(RelationshipModel relationship, NodeContentType sourceType)
+        {
+            StringBuilder builder = new StringBuilder();
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+            // Create the MATCH statement - all statements will be run separately, so we need to match the node each time
+            builder.AppendFormat("MATCH (s:{0} ", sourceType.ToLabelString()).Append("{id: $sId})").AppendLine();
+            parameters.Add("sId", relationship.SourceId.ToString());
+            // Create the MERGE statement
+            builder.AppendFormat("MERGE (t:{0} ", relationship.GetNodeLabel()).Append("{id: $tId})").AppendLine();
+            parameters.Add("tId", relationship.TargetId.ToString());
+            // If the node is a new addition,
+            if(relationship.IsNewAddition)
+            {
+                // Add the ON CREATE statement
+                builder.Append("ON CREATE SET t.commonName = $tName").AppendLine();
+                parameters.Add("tName", relationship.TargetName);
+            }
+            // Append the CREATE statement for the relationship
+            builder.AppendFormat("CREATE ({0})-[:Related{1} ", (sourceType == NodeContentType.Media ? "t" : "s"), relationship.GetNodeLabel())
+                .Append("{roles: $rRoles}]->").AppendFormat("({0})", sourceType == NodeContentType.Media ? "s" : "t");
+            parameters.Add("rRoles", relationship.Roles);
+
+            return new Statement(builder.ToString(), parameters);
+        }
+
         /// <summary>
         /// Creates a single large query for the creation of a node and it's direct relationships.
         /// </summary>

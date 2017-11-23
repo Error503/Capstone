@@ -18,9 +18,9 @@
             //"pal2-2": { color: { background: '#9A00F2', border: '#000000' } }, // Red eq
             //"pal2-3": { color: { background: '#910D00', border: '#000000' } }, // Blue eq
             // Colorblind option 3 - Tritanopia (Blue-Yellow)
-            "pal3-1": { color: { background: '#05E500', border: '#000000' } }, // Green eq
-            "pal3-2": { color: { background: '#6100A3', border: '#000000' } }, // Purple eq
-            "pal3-3": { color: { background: '#910D00', border: '#000000' } }, // Red eq
+            "pal2-1": { color: { background: '#05E500', border: '#000000' } }, // Green eq
+            "pal2-2": { color: { background: '#6100A3', border: '#000000' } }, // Purple eq
+            "pal2-3": { color: { background: '#910D00', border: '#000000' } }, // Red eq
             // Color blind option 3 - Monochrome
             "pal4-1": { color: { background: '#757575', border: '#000000' }, shape: 'square' },
             "pal4-2": { color: { background: '#262626', border: '#000000' }, shape: 'dot' },

@@ -132,25 +132,35 @@ namespace MediaGraph.Code
                 throw new ArgumentNullException("Binding context is null", "bindingContext");
             }
 
+            HttpRequestBase formRequest = controllerContext.HttpContext.Request;
             RequestReviewViewModel result = new RequestReviewViewModel();
             Guid requestId;
             DatabaseRequestType requestType;
             NodeContentType nodeDataType;
             bool approved;
-            BasicNodeViewModel nodeViewModel = (new NodeModelBinder()).BindModel(controllerContext, bindingContext) as BasicNodeViewModel;
+            BasicNodeViewModel nodeViewModel = null;
 
-            if(!Guid.TryParse(GetAttemptedValue(bindingContext, "RequestId"), out requestId)) {
+            if(!Guid.TryParse(formRequest.Form["RequestId"], out requestId)) {
                 bindingContext.ModelState.AddModelError("RequestId", "Invalid request id");
             }
-            if(!Enum.TryParse<DatabaseRequestType>(GetAttemptedValue(bindingContext, "RequestType"), out requestType))
+            if(!Enum.TryParse<DatabaseRequestType>(formRequest.Form["RequestType"], out requestType))
             {
                 bindingContext.ModelState.AddModelError("RequestType", "Invalid request type");
             }
-            if(!Enum.TryParse<NodeContentType>(GetAttemptedValue(bindingContext, "NodeDataType"), out nodeDataType))
+            if (!Enum.TryParse<NodeContentType>(formRequest.Form["NodeDataType"], out nodeDataType))
             {
                 bindingContext.ModelState.AddModelError("NodeDataType", "Invalid node data type");
             }
-            if(!bool.TryParse(GetAttemptedValue(bindingContext, "Approved"), out approved))
+            // I don't really care about the full data for the deletion requests
+            if (requestType != DatabaseRequestType.Delete)
+            {
+                nodeViewModel = (new NodeModelBinder()).BindModel(controllerContext, bindingContext) as BasicNodeViewModel;
+            }
+            else
+            {
+                nodeViewModel = new BasicNodeViewModel { Id = Guid.Parse(formRequest.Form["Id"]), ContentType = nodeDataType };
+            }
+            if(!bool.TryParse(formRequest.Form["Approved"], out approved))
             {
                 bindingContext.ModelState.AddModelError("Approved", "Invalid approval state");
             }
@@ -163,17 +173,12 @@ namespace MediaGraph.Code
                     RequestType = requestType,
                     NodeDataType = nodeDataType,
                     NodeData = nodeViewModel,
-                    Notes = GetAttemptedValue(bindingContext, "Notes"),
+                    Notes = formRequest.Form["Notes"],
                     Approved = approved
                 };
             }
 
             return result;
-        }
-
-        private string GetAttemptedValue(ModelBindingContext context, string key)
-        {
-            return context.ValueProvider.GetValue(key).AttemptedValue;
         }
     }
 }
