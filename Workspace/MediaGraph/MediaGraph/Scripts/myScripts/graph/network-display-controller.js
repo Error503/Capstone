@@ -10,13 +10,10 @@
             "pal0-2": { color: { background: '#CD7ED1', border: '#8C568F' } }, // Purple
             "pal0-3": { color: { background: '#5BC5D9', border: '#35747F' } }, // Blue
             // Colorblind option 1 - Deutranopia (Red-Green)
+            // Colorblind option 2 - Protanopia (Red-Green)
             "pal1-1": { color: { background: '#50DE00', border: '#000000' } }, // Green eq
             "pal1-2": { color: { background: '#1600F2', border: '#000000' } }, // Blue eq
             "pal1-3": { color: { background: '#910D00', border: '#000000' } }, // Red eq
-            //// Colorblind option 2 - Protanopia (Red-Green)  -- Unused (Same as above)
-            //"pal2-1": { color: { background: '#0EDE00', border: '#000000' } }, // Green eq
-            //"pal2-2": { color: { background: '#9A00F2', border: '#000000' } }, // Red eq
-            //"pal2-3": { color: { background: '#910D00', border: '#000000' } }, // Blue eq
             // Colorblind option 3 - Tritanopia (Blue-Yellow)
             "pal2-1": { color: { background: '#05E500', border: '#000000' } }, // Green eq
             "pal2-2": { color: { background: '#6100A3', border: '#000000' } }, // Purple eq
@@ -116,17 +113,29 @@
     var isInSmallScreenMode = false;
     function checkScreenSize(screenWidth) {
         var isSmallScreen = screenWidth <= 992; // Materialize's setting for large screens
-        // If the state has changed
         if (isInSmallScreenMode != isSmallScreen) {
-            isInSmallScreenMode = true;
-            storedOptions.interaction.navigationButtons = false;
-            storedOptions.clickToUse = true;
-        } else {
-            isScreenInSmallState = false;
-            storedOptions.interaction.navigationButtons = true;
-            storedOptions.clickToUse = false;
+            if (isSmallScreen) {
+                isInSmallScreenMode = true;
+                storedOptions.interaction.navigationButtons = false;
+                storedOptions.clickToUse = true;
+            } else {
+                isScreenInSmallState = false;
+                storedOptions.interaction.navigationButtons = true;
+                storedOptions.clickToUse = false;
+            }
+            network.setOptions(storedOptions);
+            // Work around for vis.js crashing when screen is resized
+            var n = nodeData.get();
+            nodeData.clear();
+            var e = edgeData.get();
+            edgeData.clear();
+            for (var x = 0; x < n.length; x++) {
+                nodeData.add(n[x]);
+            }
+            for (var x = 0; x < e.length; x++) {
+                edgeData.add(e[x]);
+            }
         }
-        network.setOptions(storedOptions);
     }
 
     function addNode(data, position) {
@@ -134,9 +143,10 @@
             nodeData.add({
                 id: data.Id,
                 group: 'pal' + colorPalette + '-' + data.DataType,
-                title: createLabel(data.CommonName),
-                label: createLabel(data.CommonName, LABEL_LENGTH),
+                title: data.CommonName,
+                label: truncateLabel(data.CommonName, LABEL_LENGTH),
                 mass: 1.5,
+                radius: 15,
                 shape: 'dot',
                 x: position != null ? position.x + (Math.random() * 20): null,
                 y: position != null ? position.y + (Math.random() * 20) : null,
@@ -150,11 +160,11 @@
             }
         });
         if (existingEdges.length === 0) {
-            var capitalizedLabel = createLabel(target.Roles[0], LABEL_LENGTH);
+            var capitalizedLabel = truncateLabel(target.Roles[0], LABEL_LENGTH);
             edgeData.add({
                 from: sourceId,
                 to: target.Id,
-                label: capitalizedLabel,
+                //label: capitalizedLabel,
                 font: { align: 'top' },
                 color: {
                     color: '#777777'

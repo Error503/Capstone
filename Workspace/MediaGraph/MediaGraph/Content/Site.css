@@ -11,11 +11,19 @@ main {
     max-height: 200px;
     overflow-y: scroll;
 }
-/*.relationship-group {
-    overflow-y: scroll;
-    height: 250px;
-    max-height: 250px;
-}*/
+.front-page-caption {
+    font-size: 1.7rem;
+    font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+.front-page-promo {
+    width: 100%;
+}
+.front-page-link {
+    font-style:normal;
+    color: black !important;
+}
 .pointer-item {
     cursor: pointer;
 }

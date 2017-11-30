@@ -302,6 +302,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Component\BasicNodeModels.cs" />
+    <Compile Include="Models\Component\HashFactory.cs" />
     <Compile Include="Models\Component\NodeEnums.cs" />
     <Compile Include="Models\DatabaseRequestModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -497,6 +498,7 @@
     <Content Include="Views\Edit\_HelpModalPartial.cshtml" />
     <Content Include="Views\Home\AccountDeleted.cshtml" />
     <Content Include="Views\Graph\_SearchAndOptionsPartial.cshtml" />
+    <Content Include="Views\Home\_HomeLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -11,6 +11,32 @@ namespace MediaGraph.Models.Component
     [JsonObject]
     public class BasicNodeModel
     {
+        private string partialHash;
+        [JsonProperty("partialHash")]
+        public string PartialHash
+        {
+            get
+            {
+                if (partialHash == null)
+                    partialHash = HashFactory.CalculatePartialHash(this);
+                return partialHash;
+            }
+            set { partialHash = value; }
+        }
+
+        private string fullHash;
+        [JsonProperty("fullHash")]
+        public string FullHash
+        {
+            get
+            {
+                if (fullHash == null)
+                    fullHash = HashFactory.CalculateFullHash(this);
+                return fullHash;
+            }
+            set { fullHash = value; }
+        }
+
         [JsonProperty("id")]
         public Guid Id { get; set; }
         [JsonProperty("contentType")]
@@ -49,7 +75,9 @@ namespace MediaGraph.Models.Component
                 { "commonName", CommonName },
                 { "otherNames", OtherNames },
                 { "releaseDate", ReleaseDate },
-                { "deathDate", DeathDate }
+                { "deathDate", DeathDate },
+                { "partialHash", PartialHash },
+                { "fullHash", FullHash }
             };
         }
 
@@ -121,6 +149,8 @@ namespace MediaGraph.Models.Component
                 result.DeathDate = node.Properties.ContainsKey("deathDate") ? node.Properties["deathDate"].As<long>() : default(long?);
                 result.CommonName = node.Properties.ContainsKey("commonName") ? node.Properties["commonName"].As<string>() : null;
                 result.OtherNames = node.Properties.ContainsKey("otherNames") ? node.Properties["otherNames"].As<List<string>>() : new List<string>();
+                result.PartialHash = node.Properties.ContainsKey("partialHash") ? node.Properties["partialHash"].As<string>() : "";
+                result.FullHash = node.Properties.ContainsKey("fullHash") ? node.Properties["fullHash"].As<string>() : "";
             }
             catch (Exception e)
             {
