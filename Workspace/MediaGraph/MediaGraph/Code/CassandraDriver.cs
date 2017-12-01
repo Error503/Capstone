@@ -7,6 +7,7 @@ using Cassandra;
 using MediaGraph.Models.Component;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using MediaGraph.Models;
 
 namespace MediaGraph.Code
 {
@@ -47,6 +48,7 @@ namespace MediaGraph.Code
             connection?.Dispose();
         }
 
+        #region Autocomplete Keyspace
         /// <summary>
         /// Searches the database for records that match the given string.
         /// </summary>
@@ -126,7 +128,7 @@ namespace MediaGraph.Code
             return records.Where(x => x.DataType == dataType).ToList();
         }
 
-#region Batch Add Methods
+        #region Batch Add Methods
         /// <summary>
         /// Adds the given node to the database using a Apache Cassandra BATCH statement.
         /// </summary>
@@ -226,7 +228,7 @@ namespace MediaGraph.Code
             Match m = Regex.Match(name.ToLowerInvariant(), @"^(.{1,3})(.*)");
             return new Tuple<string, string>(m.Groups[1].Value, m.Groups[2].Value);
         }
-#endregion
+        #endregion
 
         /// <summary>
         /// Updates the given node within the autocomplete database.
@@ -276,6 +278,7 @@ namespace MediaGraph.Code
                 session.Execute(session.Prepare($"DELETE FROM {autocompleteMetadataTable} WHERE id = ?").Bind(id));
             }
         }
+        #endregion
     }
 
     /// <summary>

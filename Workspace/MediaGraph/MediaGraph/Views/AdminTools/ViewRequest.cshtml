@@ -54,12 +54,15 @@
             <textarea id="notes-input" class="materialize-textarea"></textarea>
             <label for="notes-input">Notes</label>
         </div>
-        <div class="left">
-            <button id="reject-button" type="button" class="waves-effect waves-light btn red">Reject <i class="material-icons left">clear</i></button>
-        </div>
-        <div class="right">
-            <button id="approve-button" type="button" class="waves-effect waves-light btn green right">Approve <i class="material-icons left">done</i></button>
-        </div>
+        @if (!Model.Reviewed)
+        {
+            <div class="left">
+                <button id="reject-button" type="button" class="waves-effect waves-light btn red">Reject <i class="material-icons left">clear</i></button>
+            </div>
+            <div class="right">
+                <button id="approve-button" type="button" class="waves-effect waves-light btn green right">Approve <i class="material-icons left">done</i></button>
+            </div>
+        }
     </section>
 </article>
 
